@@ -12,12 +12,17 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+    env:
+      # linuxdeploy expects to extract itself from an AppImage. Honour
+      # the AppImage runtime env vars but allow FUSE-less extraction via
+      # the bundled AppRun by setting these on the runner.
+      APPIMAGE_EXTRACT_AND_RUN: "1"
     steps:
       - name: Fetch Sources
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          tags: true
+          fetch-tags: true
 
       - name: Set execute permissions on gradlew
         run: chmod +x ./gradlew
@@ -56,11 +61,12 @@ jobs:
             unzip \
             wget \
             file \
-            zsync
+            zsync \
+            libfcitx5-qt6-1 \
+            libibus-1.0-5
 
       - name: Build Rust JNI library (rust-zstd-jni)
         run: |
-          # Install Rust toolchain (needed by Gradle's buildRustZstdJni task)
           if ! command -v cargo >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
             echo "$HOME/.cargo/bin" >> $GITHUB_PATH
@@ -79,130 +85,72 @@ jobs:
                      -x jvmTest
           cd ..
 
-      - name: Build Linux Runtime (tar.gz)
-        # The JetBrains Compose plugin generates `createDistributable` for the
-        # application module. It produces a self-contained tar.gz at
-        # build/compose/binaries/main/<packageName>-<version>.tar.gz
+      - name: Build Linux Runtime
+        # The Compose Desktop plugin's `createDistributable` task unpacks
+        # the self-contained runtime into `build/compose/binaries/main/app/`.
+        # That directory IS our AppDir payload; we wrap it with linuxdeploy
+        # below to turn it into an AppImage.
         run: ./gradlew createDistributable
 
-      - name: Locate runtime tar.gz
-        id: locate
+      - name: Verify runtime layout
         run: |
           set -euo pipefail
-          RUNTIME=$(find build/compose/binaries/main -type f -name '*.tar.gz' | head -n 1 || true)
-          if [ -z "${RUNTIME:-}" ]; then
-            echo "::error::Compose Desktop runtime tar.gz was not produced by createDistributable."
+          APP_DIR="build/compose/binaries/main/app"
+          if [ ! -d "$APP_DIR" ]; then
+            echo "::error::Expected runtime dir missing: $APP_DIR"
             ls -la build/compose/binaries/main 2>/dev/null || true
             exit 1
           fi
-          echo "runtime=$RUNTIME" >> "$GITHUB_OUTPUT"
-          echo "Found runtime: $RUNTIME"
+          echo "Runtime directory contents:"
+          ls -la "$APP_DIR"
+          echo "Inner app folder:"
+          INNER=$(ls -d "$APP_DIR"/*/ | head -n 1)
+          ls -la "$INNER"
 
-      - name: Verify ffmpeg is present in runtime
-        run: |
-          set -euo pipefail
-          RUNTIME="${{ steps.locate.outputs.runtime }}"
-          EXTRACT_DIR="runtime-extracted"
-          rm -rf "$EXTRACT_DIR"
-          mkdir -p "$EXTRACT_DIR"
-          tar -xzf "$RUNTIME" -C "$EXTRACT_DIR"
-          echo "Runtime contents:"
-          ls -la "$EXTRACT_DIR"
-          echo "App contents:"
-          ls -la "$EXTRACT_DIR"/*/ 2>/dev/null || ls -la "$EXTRACT_DIR"
-
-      - name: Download linuxdeploy and Qt/Wayland plugins
+      - name: Download linuxdeploy and plugins
         run: |
           set -euo pipefail
           mkdir -p tools
           cd tools
-          # linuxdeploy static binary
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
             -O linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy-x86_64.AppImage
-          # linuxdeploy Qt plugin (handles platforms/, libqxcb.so, libqwayland-*.so)
           wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage \
             -O linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
-          # linuxdeploy GTK plugin (themes & icons for GTK apps)
           wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk-x86_64.AppImage \
             -O linuxdeploy-plugin-gtk-x86_64.AppImage
           chmod +x linuxdeploy-plugin-gtk-x86_64.AppImage
           cd ..
           ls -la tools
 
-      - name: Prepare AppDir
+      - name: Stage AppDir
         run: |
           set -euo pipefail
-          RUNTIME="${{ steps.locate.outputs.runtime }}"
           APPDIR="AppDir"
           rm -rf "$APPDIR"
           mkdir -p "$APPDIR"
-          # Extract runtime into AppDir
-          tar -xzf "$RUNTIME" -C "$APPDIR"
-          echo "Extracted layout:"
-          ls -la "$APPDIR"
-          # Rename inner folder to a stable name expected by the runtime launcher.
-          # Compose Desktop puts the launcher at <AppDir>/<packageName>/bin/<packageName>
-          # In this project, packageName is "幕境" (Chinese). Use a stable alias folder.
-          cd "$APPDIR"
-          INNER=$(ls -d */ | head -n 1 | tr -d '/')
-          echo "Inner folder detected: $INNER"
-          # Ensure consistent launcher name
-          if [ -d "$INNER" ]; then
-            if [ "$INNER" != "MuJing" ]; then
-              mv "$INNER" "MuJing"
-              INNER="MuJing"
-            fi
-            # Compose Desktop tarball already ships its own AppRun-style launcher
-            # at MuJing/bin/MuJing. We need an AppImage-compatible AppRun that
-            # delegates to that launcher so that linuxdeploy plugins can patch
-            # the binary before packaging.
-            cat > AppRun <<'APPRUN_EOF'
-          #!/usr/bin/env bash
-          # AppRun wrapper for MuJing AppImage
-          # Forward to Compose Desktop launcher; prefer Wayland when available,
-          # fall back to X11. This avoids blurry fractional scaling under XWayland.
-
-          set -e
-
-          HERE="$(dirname "$(readlink -f "$0")")"
-          LAUNCHER="$HERE/MuJing/bin/MuJing"
-
-          if [ ! -x "$LAUNCHER" ]; then
-            echo "MuJing launcher not found at $LAUNCHER" >&2
-            exit 1
+          # Compose produced: build/compose/binaries/main/app/<packageName>/...
+          # Copy the inner package folder directly under AppDir as `MuJing/`
+          # so that paths are stable regardless of the original packageName.
+          SRC_APP="build/compose/binaries/main/app"
+          INNER=$(ls -d "$SRC_APP"/*/ | head -n 1 | tr -d '/')
+          echo "Original inner folder name: $INNER"
+          cp -a "$SRC_APP/$INNER" "$APPDIR/MuJing"
+          # Bundle ffmpeg (whisper-enabled build) into the runtime bin dir
+          if [ -f resources/linux/ffmpeg/ffmpeg ]; then
+            cp -v resources/linux/ffmpeg/ffmpeg "$APPDIR/MuJing/bin/ffmpeg"
+            chmod +x "$APPDIR/MuJing/bin/ffmpeg"
           fi
-
-          # Prefer Wayland when a Wayland compositor is available, otherwise
-          # fall back to X11. Wayland avoids fractional-scaling blur caused
-          # by XWayland and matches Qt's preferred platform on KDE Plasma 6.
-          if [ -z "${WAYLAND_DISPLAY:-}" ] && [ -n "${XDG_SESSION_TYPE:-}" ] && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
-            export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
-          fi
-
-          # Tell Qt / Compose to try Wayland first, then X11 (libxcb).
-          export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
-          export QT_WAYLAND_DISABLE_WINDOWDECORATION="${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
-          # Allow running inside Flatpak/Snap-style sandboxes where /tmp is small.
-          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-
-          exec "$LAUNCHER" "$@"
-          APPRUN_EOF
-            chmod +x AppRun
-          fi
-          cd ..
+          ls -la "$APPDIR/MuJing"
+          echo "AppDir contents:"
           ls -la "$APPDIR"
 
-      - name: Patch desktop entry and icon
+      - name: Generate desktop entry and icon
         run: |
           set -euo pipefail
-          APPDIR="AppDir"
-          # linuxdeploy-plugin-qt expects <APPDIR>/<APPNAME>.desktop
-          # and <APPDIR>/<APPNAME>.png as the icon. Ensure both exist.
-          cd "$APPDIR"
-          if [ ! -f MuJing.desktop ]; then
-            cat > MuJing.desktop <<'DESKTOP_EOF'
+          cd AppDir
+          cat > MuJing.desktop <<'DESKTOP_EOF'
           [Desktop Entry]
           Type=Application
           Name=幕境 MuJing
@@ -216,89 +164,78 @@ jobs:
           StartupNotify=true
           StartupWMClass=幕境
           DESKTOP_EOF
-          fi
-          # Copy icon from resources
-          if [ -f src/main/resources/logo/logo.png ]; then
-            cp src/main/resources/logo/logo.png MuJing.png
-          elif [ -f resources/common/logo/logo.svg ]; then
-            cp resources/common/logo/logo.svg MuJing.svg
+          if [ -f ../src/main/resources/logo/logo.png ]; then
+            cp ../src/main/resources/logo/logo.png MuJing.png
+          elif [ -f ../resources/common/logo/logo.svg ]; then
+            cp ../resources/common/logo/logo.svg MuJing.svg
           fi
           ls -la
           cd ..
 
-      - name: Bundle ffmpeg into runtime resources
+      - name: Write AppRun (Wayland-first launcher)
+        run: |
+          set -euo pipefail
+          cat > AppDir/AppRun <<'APPRUN_EOF'
+          #!/usr/bin/env bash
+          # AppRun wrapper for MuJing AppImage.
+          # Forward to the Compose Desktop launcher; prefer Wayland when a
+          # Wayland session is detected, otherwise fall back to X11.
+          set -e
+
+          HERE="$(dirname "$(readlink -f "$0")")"
+          LAUNCHER="$HERE/MuJing/bin/MuJing"
+
+          if [ ! -x "$LAUNCHER" ]; then
+            echo "MuJing launcher not found at $LAUNCHER" >&2
+            exit 1
+          fi
+
+          # If a Wayland compositor is running but WAYLAND_DISPLAY isn't set,
+          # synthesise one (helps nested sessions / sandboxed launches).
+          if [ -z "${WAYLAND_DISPLAY:-}" ] \
+              && [ -n "${XDG_SESSION_TYPE:-}" ] \
+              && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+            export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
+          fi
+
+          # Prefer Wayland, then X11 (libxcb). This avoids fractional-scaling
+          # blur under XWayland on KDE Plasma 6 / GNOME.
+          export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
+          export QT_WAYLAND_DISABLE_WINDOWDECORATION="${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
+          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+
+          exec "$LAUNCHER" "$@"
+          APPRUN_EOF
+          chmod +x AppDir/AppRun
+
+      - name: Bundle Fcitx5/IBus Qt6 input-method plugins
         run: |
           set -euo pipefail
           APPDIR="AppDir"
-          RUNTIME_BIN="$APPDIR/MuJing/bin"
-          RUNTIME_RES="$APPDIR/MuJing/resources"
-          # Replace the bundled ffmpeg with the host one (it has whisper filter support).
-          if [ -f resources/linux/ffmpeg/ffmpeg ]; then
-            cp -v resources/linux/ffmpeg/ffmpeg "$RUNTIME_BIN/ffmpeg"
-            chmod +x "$RUNTIME_BIN/ffmpeg"
-          else
-            echo "WARN: bundled resources/linux/ffmpeg/ffmpeg not found, leaving default."
-          fi
-          # Ensure ffmpeg in resources/linux path the Compose plugin copies
-          mkdir -p "$RUNTIME_RES/linux"
-          if [ -f resources/linux/ffmpeg/ffmpeg ]; then
-            cp -v resources/linux/ffmpeg/ffmpeg "$RUNTIME_RES/linux/ffmpeg" || true
-            chmod +x "$RUNTIME_RES/linux/ffmpeg" || true
-          fi
-
-      - name: Install Qt/GTK input-method platform plugins
-        run: |
-          set -euo pipefail
-          # Compose Desktop bundles Qt 6 via JetBrains runtime. To support
-          # Fcitx5 / IBus natively (recommended by Fedora KDE and Ubuntu),
-          # we install the input-method Qt plugins on the build host and
-          # rely on the system loader at runtime via QT_IM_MODULE / GTK_IM_MODULE.
-          # Inside the AppImage we ALSO bundle the Fcitx5 Qt plugin so the
-          # IME works out-of-the-box without host configuration.
-          sudo apt-get install -y \
-            libfcitx5-qt6-1 \
-            libfcitx5-qt6-dev \
-            fcitx5-modules \
-            fcitx5-frontend-qt5 \
-            libqt6gui6 \
-            libqt6widgets6 \
-            libqt6core6 \
-            libqt6dbus6 \
-            libibus-1.0-5
-
-      - name: Bundle Fcitx5/IBus Qt platforminputcontext plugins
-        run: |
-          set -euo pipefail
-          APPDIR="AppDir"
-          # Locate the Qt 6 plugin directory that ships with the JetBrains
-          # Compose runtime. It contains platforms/, platformthemes/, etc.
-          QT_PLUGINS_DIR=$(find "$APPDIR" -type d -path '*/lib/runtime/lib/plugins' | head -n 1 || true)
+          # JetBrains Compose runtime ships Qt 6 plugins at
+          # MuJing/lib/runtime/lib/plugins/ inside the unpacked distributable.
+          QT_PLUGINS_DIR=$(find "$APPDIR/MuJing" -type d -path '*plugins' | head -n 1 || true)
           if [ -z "${QT_PLUGINS_DIR:-}" ]; then
-            QT_PLUGINS_DIR=$(find "$APPDIR" -type d -path '*platforms' | head -n 1 || true)
-            QT_PLUGINS_DIR="$(dirname "$QT_PLUGINS_DIR" 2>/dev/null || true)"
-          fi
-          echo "Detected Qt plugins dir: ${QT_PLUGINS_DIR:-<not found>}"
-          if [ -z "${QT_PLUGINS_DIR:-}" ]; then
-            echo "WARN: Qt plugins dir not found; relying on system Qt plugins at runtime."
+            echo "::warning::Qt plugins dir not found; IME plugins will fall back to host at runtime."
           else
-            mkdir -p "$QT_PLUGINS_DIR/platforminputcontexts" || true
-            # Pull Fcitx5 / IBus Qt6 input-method plugins from the build host.
+            mkdir -p "$QT_PLUGINS_DIR/platforminputcontexts"
             for plugin in \
               /usr/lib/x86_64-linux-gnu/qt6/plugins/platforminputcontexts/libfcitx5platforminputcontextplugin.so \
               /usr/lib/x86_64-linux-gnu/qt6/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so; do
               if [ -f "$plugin" ]; then
-                echo "Copying $plugin -> $QT_PLUGINS_DIR/platforminputcontexts/"
-                cp -v "$plugin" "$QT_PLUGINS_DIR/platforminputcontexts/" || true
+                echo "Bundling $plugin"
+                cp -v "$plugin" "$QT_PLUGINS_DIR/platforminputcontexts/"
               fi
             done
           fi
 
-      - name: Run linuxdeploy (AppImage)
+      - name: Run linuxdeploy to produce AppImage
         run: |
           set -euo pipefail
-          cd "$(pwd)"
-          export DEPLOY_DIR="$(pwd)/AppDir"
-          # linuxdeploy will run plugins against the AppDir.
+          export DEPLOY_DIR="$PWD/AppDir"
+          # Export the embedded Qt path so linuxdeploy-plugin-qt finds the
+          # Compose runtime's Qt libraries.
+          export QML_SOURCES_PATHS=""
           ./tools/linuxdeploy-x86_64.AppImage \
             --appdir "$DEPLOY_DIR" \
             --desktop-file "$DEPLOY_DIR/MuJing.desktop" \
@@ -307,36 +244,32 @@ jobs:
             --output appimage \
             --plugin qt \
             --plugin gtk
-          ls -la *.AppImage 2>/dev/null || ls -la MuJing*.AppImage 2>/dev/null || true
+          ls -la *.AppImage
 
       - name: Rename and verify AppImage
         run: |
           set -euo pipefail
-          APPIMAGE_PATH=$(find . -maxdepth 2 -name 'MuJing-*.AppImage' -type f | head -n 1 || true)
-          if [ -z "${APPIMAGE_PATH:-}" ]; then
-            APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1 || true)
-          fi
-          if [ -z "${APPIMAGE_PATH:-}" ]; then
+          set +e
+          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1)
+          set -e
+          if [ -z "${APPIMAGE_PATH:-}" ] || [ "$APPIMAGE_PATH" = "." ]; then
             echo "::error::AppImage not produced by linuxdeploy."
             ls -la
             exit 1
           fi
           echo "AppImage produced at: $APPIMAGE_PATH"
-          # Determine version
           VERSION=$(grep '^version=' gradle.properties | head -n 1 | cut -d'=' -f2 | tr -d ' \r\n')
           TARGET="MuJing-${VERSION}-x86_64.AppImage"
           mv -v "$APPIMAGE_PATH" "$TARGET"
           chmod +x "$TARGET"
-          ls -la "$TARGET"
-          # Quick sanity check: file type and an in-place --appimage-help probe.
           file "$TARGET"
-          "$TARGET" --appimage-help 2>&1 | head -n 5 || true
+          ls -la "$TARGET"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MuJing-linux-appimage-x86_64
-          path: MuJing-*.AppImage
+          path: MuJing-*-x86_64.AppImage
 
   draft-release:
     name: Draft Release
