@@ -108,11 +108,12 @@ jobs:
           cd ..
 
       - name: Build Linux Runtime
-        # The Compose Desktop plugin's `createDistributable` task unpacks
-        # the self-contained runtime into `build/compose/binaries/main/app/`.
-        # That directory IS our AppDir payload; we wrap it with linuxdeploy
-        # below to turn it into an AppImage.
-        run: ./gradlew createDistributable
+        # The Compose Desktop plugin only materialises the launcher script
+        # (`<packageName>/bin/<packageName>`) during a `package<Format>`
+        # task — `createDistributable` alone leaves `bin/` empty.
+        # Run `packageDeb` so the runtime tree is fully assembled, then
+        # we treat `build/compose/binaries/main/app/` as the AppDir payload.
+        run: ./gradlew packageDeb
 
       - name: Verify runtime layout
         run: |
