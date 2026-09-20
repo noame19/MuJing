@@ -398,9 +398,7 @@ jobs:
       - name: Rename and verify AppImage
         run: |
           set -euo pipefail
-          set +e
-          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1)
-          set -e
+          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1 || true)
           if [ -z "${APPIMAGE_PATH:-}" ] || [ "$APPIMAGE_PATH" = "." ]; then
             echo "::error::AppImage not produced by linuxdeploy."
             ls -la
@@ -409,7 +407,11 @@ jobs:
           echo "AppImage produced at: $APPIMAGE_PATH"
           VERSION=$(grep '^version=' gradle.properties | head -n 1 | cut -d'=' -f2 | tr -d ' \r\n')
           TARGET="MuJing-${VERSION}-x86_64.AppImage"
-          mv -v "$APPIMAGE_PATH" "$TARGET"
+          # Use cp + rm instead of mv: rename across filesystems or
+          # filenames containing non-ASCII chars can fail under mv on
+          # some runner images.
+          cp -f "$APPIMAGE_PATH" "$TARGET"
+          rm -f "$APPIMAGE_PATH"
           chmod +x "$TARGET"
           file "$TARGET"
           ls -la "$TARGET"
