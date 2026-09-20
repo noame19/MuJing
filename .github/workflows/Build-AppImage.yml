@@ -380,8 +380,11 @@ jobs:
           export DEPLOY_DIR="$PWD/AppDir"
           INNER=$(find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
           echo "linuxdeploy: target executable $DEPLOY_DIR/$INNER/bin/$INNER"
-          # Export the embedded Qt path so linuxdeploy-plugin-qt finds the
-          # Compose runtime's Qt libraries.
+          # linuxdeploy-plugin-qt runs qmake from PATH; on jammy
+          # qt6-base-dev installs qmake6 and sets qt6 as the default
+          # selector, but qmake from qt6-base-dev still needs QT_SELECT
+          # to find its Qt installation at /usr/lib/x86_64-linux-gnu/qt6.
+          export QT_SELECT=qt6
           export QML_SOURCES_PATHS=""
           ./tools/linuxdeploy-x86_64.AppImage \
             --appdir "$DEPLOY_DIR" \
