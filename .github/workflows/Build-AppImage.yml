@@ -113,12 +113,82 @@ jobs:
           cd ..
 
       - name: Build Linux Runtime
-        # The Compose Desktop plugin only materialises the launcher script
-        # (`<packageName>/bin/<packageName>`) during a `package<Format>`
-        # task — `createDistributable` alone leaves `bin/` empty.
-        # Run `packageDeb` so the runtime tree is fully assembled, then
-        # we treat `build/compose/binaries/main/app/` as the AppDir payload.
-        run: ./gradlew packageDeb
+        # The Compose Desktop plugin's `createDistributable` task unpacks
+        # the self-contained runtime (Java + app jars + resources) into
+        # `build/compose/binaries/main/app/<packageName>/`. It does NOT
+        # write the launcher script — that is only created when a
+        # `package<Format>` task runs jpackage to completion. Since
+        # the only Linux target enabled in this project is `Deb`, and
+        # jpackage's deb path is fragile in CI, we run createDistributable
+        # to lay down the runtime tree, then synthesise the launcher
+        # ourselves in the next step.
+        run: ./gradlew createDistributable
+
+      - name: Synthesise launcher script
+        # The Compose Desktop plugin writes a small bash wrapper at
+        # `<packageName>/bin/<packageName>` that invokes the bundled
+        # JetBrains JDK with `-m <module>/<mainClass>` and the JVM args
+        # declared in build.gradle.kts. We reproduce that wrapper using
+        # the mainClass resolved from gradle.properties / args file.
+        run: |
+          set -euo pipefail
+          APP_DIR="build/compose/binaries/main/app"
+          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          if [ -z "${INNER_PATH:-}" ]; then
+            echo "::error::No inner package folder found under $APP_DIR"
+            exit 1
+          fi
+          INNER=$(basename "$INNER_PATH")
+          LAUNCHER="$INNER_PATH/bin/$INNER"
+          if [ -x "$LAUNCHER" ]; then
+            echo "Launcher already exists at $LAUNCHER; skipping synthesise."
+          else
+            echo "Synthesising launcher at $LAUNCHER"
+            mkdir -p "$(dirname "$LAUNCHER")"
+            # The Compose plugin's app uses mainClass = "com.mujingx.MainKt"
+            # from build.gradle.kts. We hard-code it here (rather than
+            # parsing jpackage's args file, which createDistributable
+            # does not produce) so the AppImage build is self-contained.
+            MAIN_CLASS="com.mujingx.MainKt"
+            echo "Using main class: $MAIN_CLASS"
+            cat > "$LAUNCHER" <<EOF
+          #!/usr/bin/env bash
+          # Synthesised launcher for MuJing AppImage.
+          # Compose Desktop ships a JPMS modular app; the launcher normally
+          # uses \`-m java/com.mujingx.MainKt\`, but the exact module name
+          # depends on the Compose plugin's packaging internals. We use
+          # \`-cp\` over the full runtime classpath, which works for any
+          # JPMS setup because the bundled JetBrains JDK 21 has all the
+          # required modules on the module path implicitly.
+          HERE="\$(cd "\$(dirname "\$0")" && pwd)"
+          APP_HOME="\$(dirname "\$(dirname "\$HERE")")"
+          RUNTIME="\$APP_HOME/lib/runtime"
+          APP_CLASSPATH="\$RUNTIME/lib/app/*:\$RUNTIME/lib/*"
+          exec "\$RUNTIME/bin/java" \\
+            -server \\
+            "-XX:+UnlockExperimentalVMOptions" \\
+            "-XX:+UseZGC" \\
+            "-XX:+ZGenerational" \\
+            "-XX:+ZUncommit" \\
+            "-XX:ZUncommitDelay=5" \\
+            "-XX:ZCollectionInterval=2" \\
+            "-Xms64m" \\
+            "-Xmx1g" \\
+            "-Dfile.encoding=UTF-8" \\
+            "-Dstdout.encoding=UTF-8" \\
+            "-Dstderr.encoding=UTF-8" \\
+            "-Dsun.stdout.encoding=UTF-8" \\
+            "-Dapple.awt.application.appearance=system" \\
+            "-Dcompose.swing.render.on.graphics=true" \\
+            "-Dcompose.interop.blending=true" \\
+            -cp "\$APP_CLASSPATH" \\
+            "$MAIN_CLASS" \\
+            "\$@"
+          EOF
+            chmod +x "$LAUNCHER"
+          fi
+          ls -la "$LAUNCHER"
+          head -20 "$LAUNCHER"
 
       - name: Verify runtime layout
         run: |
