@@ -396,24 +396,21 @@ jobs:
           ls -la *.AppImage
 
       - name: Rename and verify AppImage
-        run: |
-          set -euo pipefail
+        run: bash -euo pipefail
           # Force a UTF-8 locale so filenames with non-ASCII chars
           # round-trip correctly through cp / ls / glob expansion.
           export LANG=C.UTF-8 LC_ALL=C.UTF-8
-          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1 || true)
-          if [ -z "${APPIMAGE_PATH:-}" ] || [ "$APPIMAGE_PATH" = "." ]; then
+          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f -print -quit)
+          echo "DEBUG: find output = '$APPIMAGE_PATH'"
+          ls -la *.AppImage 2>&1 || true
+          if [ -z "$APPIMAGE_PATH" ]; then
             echo "::error::AppImage not produced by linuxdeploy."
-            ls -la
             exit 1
           fi
-          echo "AppImage produced at: $APPIMAGE_PATH"
           VERSION=$(grep '^version=' gradle.properties | head -n 1 | cut -d'=' -f2 | tr -d ' \r\n')
           TARGET="MuJing-${VERSION}-x86_64.AppImage"
-          # Use cp + rm instead of mv: rename across filesystems or
-          # filenames containing non-ASCII chars can fail under mv on
-          # some runner images.
-          cp -v "$APPIMAGE_PATH" "$TARGET"
+          echo "Copying $APPIMAGE_PATH -> $TARGET"
+          cp -v "$APPIMAGE_PATH" "$TARGET" || { echo "cp failed with code $?"; ls -la; exit 1; }
           rm -f "$APPIMAGE_PATH"
           chmod +x "$TARGET"
           file "$TARGET"
