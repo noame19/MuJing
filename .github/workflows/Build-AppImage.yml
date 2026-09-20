@@ -13,13 +13,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Generate a token
-        id: generate-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - name: Fetch Sources
         uses: actions/checkout@v4
         with:
@@ -34,8 +27,6 @@ jobs:
         with:
           distribution: 'jetbrains'
           java-version: '21'
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
