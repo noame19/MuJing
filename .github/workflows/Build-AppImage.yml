@@ -315,37 +315,60 @@ jobs:
           # name, so the launcher is at AppDir/幕境/bin/幕境.
           INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
           echo "AppRun will dispatch to inner folder: $INNER"
-          cat > "$APPDIR/AppRun" <<EOF
+          cat > "$APPDIR/AppRun" <<'APPRUN_EOF'
           #!/usr/bin/env bash
           # AppRun wrapper for MuJing AppImage.
           # Forward to the Compose Desktop launcher; prefer Wayland when a
           # Wayland session is detected, otherwise fall back to X11.
+          #
+          # HiDPI scaling:
+          #   The Compose runtime is a Swing/AWT app built on JetBrains
+          #   Runtime. On KDE Plasma 6 / GNOME running Wayland with
+          #   fractional scaling (125%, 150%) the Swing UI ignores the
+          #   system scale unless -Dsun.java2d.uiScale.enabled=true is
+          #   passed. We forward GDK_SCALE / QT_SCALE_FACTOR and inject
+          #   the JBR HiDPI flags via _JAVA_OPTIONS so the embedded JDK
+          #   picks them up without editing the upstream Compose
+          #   launcher script.
           set -e
 
-          HERE="\$(dirname "\$(readlink -f "\$0")")"
-          LAUNCHER="\$HERE/$INNER/bin/$INNER"
+          HERE="$(cd "$(dirname "$0")" && pwd)"
+          LAUNCHER="$HERE/MuJing/bin/MuJing"
 
-          if [ ! -x "\$LAUNCHER" ]; then
-            echo "MuJing launcher not found at \$LAUNCHER" >&2
+          if [ ! -x "$LAUNCHER" ]; then
+            echo "MuJing launcher not found at $LAUNCHER" >&2
             exit 1
           fi
 
           # If a Wayland compositor is running but WAYLAND_DISPLAY isn't set,
           # synthesise one (helps nested sessions / sandboxed launches).
-          if [ -z "\${WAYLAND_DISPLAY:-}" ] \
-              && [ -n "\${XDG_SESSION_TYPE:-}" ] \
-              && [ "\${XDG_SESSION_TYPE}" = "wayland" ]; then
-            export WAYLAND_DISPLAY="\${WAYLAND_DISPLAY:-wayland-0}"
+          if [ -z "${WAYLAND_DISPLAY:-}" ] \
+              && [ -n "${XDG_SESSION_TYPE:-}" ] \
+              && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+            export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
           fi
 
           # Prefer Wayland, then X11 (libxcb). This avoids fractional-scaling
           # blur under XWayland on KDE Plasma 6 / GNOME.
-          export QT_QPA_PLATFORM="\${QT_QPA_PLATFORM:-wayland;xcb}"
-          export QT_WAYLAND_DISABLE_WINDOWDECORATION="\${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
-          export XDG_RUNTIME_DIR="\${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}"
+          export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
+          export QT_WAYLAND_DISABLE_WINDOWDECORATION="${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
+          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-          exec "\$LAUNCHER" "\$@"
-          EOF
+          # Tell Qt / GDK about the user's scale factor (KDE Plasma /
+          # GNOME set these via XSettings; we forward them explicitly
+          # so XWayland sessions and isolated sandboxes still see them).
+          : "${GDK_SCALE:=${QT_SCALE_FACTOR:-}}"
+          : "${QT_SCALE_FACTOR:=${GDK_SCALE:-}}"
+          export GDK_SCALE QT_SCALE_FACTOR
+
+          # JBR HiDPI: enable JRE-managed HiDPI mode so the Swing UI
+          # honours the system / user scale factor on Linux. Without
+          # this, the UI renders at 1.0 scale on KDE Wayland fractional
+          # scaling and looks tiny.
+          export _JAVA_OPTIONS="${_JAVA_OPTIONS:-} -Dsun.java2d.uiScale.enabled=true"
+
+          exec "$LAUNCHER" "$@"
+          APPRUN_EOF
           chmod +x "$APPDIR/AppRun"
 
       - name: Bundle Fcitx5/IBus Qt6 input-method plugins
