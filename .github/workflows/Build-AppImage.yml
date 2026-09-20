@@ -398,6 +398,9 @@ jobs:
       - name: Rename and verify AppImage
         run: |
           set -euo pipefail
+          # Force a UTF-8 locale so filenames with non-ASCII chars
+          # round-trip correctly through cp / ls / glob expansion.
+          export LANG=C.UTF-8 LC_ALL=C.UTF-8
           APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f | head -n 1 || true)
           if [ -z "${APPIMAGE_PATH:-}" ] || [ "$APPIMAGE_PATH" = "." ]; then
             echo "::error::AppImage not produced by linuxdeploy."
@@ -410,7 +413,7 @@ jobs:
           # Use cp + rm instead of mv: rename across filesystems or
           # filenames containing non-ASCII chars can fail under mv on
           # some runner images.
-          cp -f "$APPIMAGE_PATH" "$TARGET"
+          cp -v "$APPIMAGE_PATH" "$TARGET"
           rm -f "$APPIMAGE_PATH"
           chmod +x "$TARGET"
           file "$TARGET"
