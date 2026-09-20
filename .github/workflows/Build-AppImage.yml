@@ -62,8 +62,30 @@ jobs:
             wget \
             file \
             zsync \
-            libfcitx5-qt6-1 \
             libibus-1.0-5
+
+      - name: Fetch Fcitx5 Qt6 plugin from noble
+        # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The
+        # AppImage needs these to provide IME support for Qt apps. Pull
+        # the prebuilt `.deb` files from noble (Ubuntu 24.04) and extract
+        # just the plugin shared objects; Qt6 ABI is stable across these
+        # releases so a cross-version drop-in works.
+        run: |
+          set -euo pipefail
+          mkdir -p ime-debs
+          cd ime-debs
+          BASE="http://archive.ubuntu.com/ubuntu/pool/universe/f/fcitx5-qt"
+          wget -q "$BASE/libfcitx5-qt6-1_5.1.13-1_amd64.deb"
+          wget -q "$BASE/fcitx5-frontend-qt6_5.1.13-1_amd64.deb"
+          ls -la
+          cd ..
+          mkdir -p ime-extracted
+          for d in ime-debs/*.deb; do
+            echo "Extracting $d"
+            dpkg-deb -x "$d" ime-extracted
+          done
+          echo "Plugins found:"
+          find ime-extracted -name '*.so' | head -20
 
       - name: Build Rust JNI library (rust-zstd-jni)
         run: |
@@ -219,14 +241,16 @@ jobs:
             echo "::warning::Qt plugins dir not found; IME plugins will fall back to host at runtime."
           else
             mkdir -p "$QT_PLUGINS_DIR/platforminputcontexts"
-            for plugin in \
-              /usr/lib/x86_64-linux-gnu/qt6/plugins/platforminputcontexts/libfcitx5platforminputcontextplugin.so \
-              /usr/lib/x86_64-linux-gnu/qt6/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so; do
-              if [ -f "$plugin" ]; then
-                echo "Bundling $plugin"
-                cp -v "$plugin" "$QT_PLUGINS_DIR/platforminputcontexts/"
-              fi
-            done
+            # Use the Fcitx5 Qt6 plugin pulled from the noble deb above.
+            # IBus uses the system daemon via QT_IM_MODULE=ibus (no extra Qt
+            # plugin file is needed in the AppImage).
+            fcitx_plugin=$(find ime-extracted -name 'libfcitx5platforminputcontextplugin.so' | head -n 1 || true)
+            if [ -n "${fcitx_plugin:-}" ]; then
+              echo "Bundling $fcitx_plugin"
+              cp -v "$fcitx_plugin" "$QT_PLUGINS_DIR/platforminputcontexts/"
+            else
+              echo "::warning::libfcitx5platforminputcontextplugin.so not found in extracted ime-extracted tree."
+            fi
           fi
 
       - name: Run linuxdeploy to produce AppImage
