@@ -42,7 +42,8 @@ jobs:
           # Compose Desktop bundles its own Qt 6 runtime, so we don't
           # need qt6-base-dev or linuxdeploy-plugin-qt. The libs we
           # install here are the standard X11/GL stack that the runtime
-          # expects to find on a Linux desktop.
+          # expects to find on a Linux desktop. imagemagick is used to
+          # downscale the AppImage icon to a standard size.
           sudo apt-get install -y \
             libxext6 \
             libxrender1 \
@@ -68,7 +69,8 @@ jobs:
             zsync \
             libibus-1.0-5 \
             dpkg \
-            fakeroot
+            fakeroot \
+            imagemagick
 
       - name: Fetch Fcitx5 Qt6 plugin from noble
         # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The
@@ -291,7 +293,14 @@ jobs:
           StartupWMClass=幕境
           EOF
           if [ -f ../src/main/resources/logo/logo.png ]; then
-            cp ../src/main/resources/logo/logo.png "$INNER.png"
+            # linuxdeploy rejects non-standard icon sizes; downscale
+            # the project's 1280x1280 logo to 256x256 which is the most
+            # widely-supported target for AppImage icons.
+            if command -v convert >/dev/null 2>&1; then
+              convert ../src/main/resources/logo/logo.png -resize 256x256 "$INNER.png"
+            else
+              cp ../src/main/resources/logo/logo.png "$INNER.png"
+            fi
           elif [ -f ../resources/common/logo/logo.svg ]; then
             cp ../resources/common/logo/logo.svg "$INNER.svg"
           fi
