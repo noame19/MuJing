@@ -247,11 +247,12 @@ jobs:
           rm -rf "$APPDIR"
           mkdir -p "$APPDIR"
           # Compose produced: build/compose/binaries/main/app/<packageName>/...
-          # Copy the inner package folder directly under AppDir as `MuJing/`
-          # so that paths are stable regardless of the original packageName
-          # (which may be a Chinese name and not safe for shell expansion).
+          # The launcher Compose created lives at the same relative path
+          # inside the inner folder, so we copy the WHOLE inner folder
+          # under AppDir/ preserving its original name (which here is the
+          # Chinese package name 幕境). Renaming the inner folder would
+          # break the launcher path, so we keep the original name.
           SRC_APP="build/compose/binaries/main/app"
-          # Use find to safely handle folders whose name contains slashes / spaces.
           INNER_PATH=$(find "$SRC_APP" -mindepth 1 -maxdepth 1 -type d | head -n 1)
           if [ -z "$INNER_PATH" ]; then
             echo "::error::No inner package folder found under $SRC_APP"
@@ -259,39 +260,46 @@ jobs:
             exit 1
           fi
           INNER=$(basename "$INNER_PATH")
-          echo "Original inner folder name: $INNER"
-          cp -a "$INNER_PATH" "$APPDIR/MuJing"
+          echo "Inner folder name: $INNER"
+          cp -a "$INNER_PATH" "$APPDIR/$INNER"
           # Bundle ffmpeg (whisper-enabled build) into the runtime bin dir
           if [ -f resources/linux/ffmpeg/ffmpeg ]; then
-            cp -v resources/linux/ffmpeg/ffmpeg "$APPDIR/MuJing/bin/ffmpeg"
-            chmod +x "$APPDIR/MuJing/bin/ffmpeg"
+            cp -v resources/linux/ffmpeg/ffmpeg "$APPDIR/$INNER/bin/ffmpeg"
+            chmod +x "$APPDIR/$INNER/bin/ffmpeg"
           fi
-          ls -la "$APPDIR/MuJing"
+          ls -la "$APPDIR/$INNER"
           echo "AppDir contents:"
           ls -la "$APPDIR"
 
       - name: Generate desktop entry and icon
         run: |
           set -euo pipefail
-          cd AppDir
-          cat > MuJing.desktop <<'DESKTOP_EOF'
+          APPDIR="AppDir"
+          # linuxdeploy-plugin-qt expects the desktop/icon files at
+          # <AppDir>/<AppName>.desktop and <AppDir>/<AppName>.{png,svg}.
+          # Use the same name as the inner Compose package (Chinese) so
+          # linuxdeploy's Qt plugin can match the launcher.
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          cd "$APPDIR"
+          DESKTOP_NAME="$INNER.desktop"
+          cat > "$DESKTOP_NAME" <<EOF
           [Desktop Entry]
           Type=Application
           Name=幕境 MuJing
           GenericName=Language Learning via Movies
           Comment=Learn English vocabulary through movies, TV shows, and documentaries.
           Exec=AppRun %F
-          Icon=MuJing
+          Icon=$INNER
           Terminal=false
           Categories=Education;Languages;Utility;
           Keywords=English;Vocabulary;Subtitle;Learning;Movie;
           StartupNotify=true
           StartupWMClass=幕境
-          DESKTOP_EOF
-          if [ -f ../src/main/resources/logo/logo.png ]; then
-            cp ../src/main/resources/logo/logo.png MuJing.png
-          elif [ -f ../resources/common/logo/logo.svg ]; then
-            cp ../resources/common/logo/logo.svg MuJing.svg
+          EOF
+          if [ -f ../../src/main/resources/logo/logo.png ]; then
+            cp ../../src/main/resources/logo/logo.png "$INNER.png"
+          elif [ -f ../../resources/common/logo/logo.svg ]; then
+            cp ../../resources/common/logo/logo.svg "$INNER.svg"
           fi
           ls -la
           cd ..
@@ -299,46 +307,53 @@ jobs:
       - name: Write AppRun (Wayland-first launcher)
         run: |
           set -euo pipefail
-          cat > AppDir/AppRun <<'APPRUN_EOF'
+          APPDIR="AppDir"
+          # The Compose Desktop inner folder keeps its original (Chinese)
+          # name, so the launcher is at AppDir/幕境/bin/幕境.
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          echo "AppRun will dispatch to inner folder: $INNER"
+          cat > "$APPDIR/AppRun" <<EOF
           #!/usr/bin/env bash
           # AppRun wrapper for MuJing AppImage.
           # Forward to the Compose Desktop launcher; prefer Wayland when a
           # Wayland session is detected, otherwise fall back to X11.
           set -e
 
-          HERE="$(dirname "$(readlink -f "$0")")"
-          LAUNCHER="$HERE/MuJing/bin/MuJing"
+          HERE="\$(dirname "\$(readlink -f "\$0")")"
+          LAUNCHER="\$HERE/$INNER/bin/$INNER"
 
-          if [ ! -x "$LAUNCHER" ]; then
-            echo "MuJing launcher not found at $LAUNCHER" >&2
+          if [ ! -x "\$LAUNCHER" ]; then
+            echo "MuJing launcher not found at \$LAUNCHER" >&2
             exit 1
           fi
 
           # If a Wayland compositor is running but WAYLAND_DISPLAY isn't set,
           # synthesise one (helps nested sessions / sandboxed launches).
-          if [ -z "${WAYLAND_DISPLAY:-}" ] \
-              && [ -n "${XDG_SESSION_TYPE:-}" ] \
-              && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
-            export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
+          if [ -z "\${WAYLAND_DISPLAY:-}" ] \
+              && [ -n "\${XDG_SESSION_TYPE:-}" ] \
+              && [ "\${XDG_SESSION_TYPE}" = "wayland" ]; then
+            export WAYLAND_DISPLAY="\${WAYLAND_DISPLAY:-wayland-0}"
           fi
 
           # Prefer Wayland, then X11 (libxcb). This avoids fractional-scaling
           # blur under XWayland on KDE Plasma 6 / GNOME.
-          export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland;xcb}"
-          export QT_WAYLAND_DISABLE_WINDOWDECORATION="${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
-          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+          export QT_QPA_PLATFORM="\${QT_QPA_PLATFORM:-wayland;xcb}"
+          export QT_WAYLAND_DISABLE_WINDOWDECORATION="\${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
+          export XDG_RUNTIME_DIR="\${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}"
 
-          exec "$LAUNCHER" "$@"
-          APPRUN_EOF
-          chmod +x AppDir/AppRun
+          exec "\$LAUNCHER" "\$@"
+          EOF
+          chmod +x "$APPDIR/AppRun"
 
       - name: Bundle Fcitx5/IBus Qt6 input-method plugins
         run: |
           set -euo pipefail
           APPDIR="AppDir"
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
           # JetBrains Compose runtime ships Qt 6 plugins at
-          # MuJing/lib/runtime/lib/plugins/ inside the unpacked distributable.
-          QT_PLUGINS_DIR=$(find "$APPDIR/MuJing" -type d -path '*plugins' | head -n 1 || true)
+          # <innerFolder>/lib/runtime/lib/plugins/ inside the unpacked
+          # distributable.
+          QT_PLUGINS_DIR=$(find "$APPDIR/$INNER" -type d -path '*plugins' | head -n 1 || true)
           if [ -z "${QT_PLUGINS_DIR:-}" ]; then
             echo "::warning::Qt plugins dir not found; IME plugins will fall back to host at runtime."
           else
@@ -359,14 +374,16 @@ jobs:
         run: |
           set -euo pipefail
           export DEPLOY_DIR="$PWD/AppDir"
+          INNER=$(find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          echo "linuxdeploy: target executable $DEPLOY_DIR/$INNER/bin/$INNER"
           # Export the embedded Qt path so linuxdeploy-plugin-qt finds the
           # Compose runtime's Qt libraries.
           export QML_SOURCES_PATHS=""
           ./tools/linuxdeploy-x86_64.AppImage \
             --appdir "$DEPLOY_DIR" \
-            --desktop-file "$DEPLOY_DIR/MuJing.desktop" \
-            --icon-file "$DEPLOY_DIR/MuJing.png" \
-            --executable "$DEPLOY_DIR/MuJing/bin/MuJing" \
+            --desktop-file "$DEPLOY_DIR/$INNER.desktop" \
+            --icon-file "$DEPLOY_DIR/$INNER.png" \
+            --executable "$DEPLOY_DIR/$INNER/bin/$INNER" \
             --output appimage \
             --plugin qt
           ls -la *.AppImage
