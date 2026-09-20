@@ -290,10 +290,10 @@ jobs:
           StartupNotify=true
           StartupWMClass=幕境
           EOF
-          if [ -f ../../src/main/resources/logo/logo.png ]; then
-            cp ../../src/main/resources/logo/logo.png "$INNER.png"
-          elif [ -f ../../resources/common/logo/logo.svg ]; then
-            cp ../../resources/common/logo/logo.svg "$INNER.svg"
+          if [ -f ../src/main/resources/logo/logo.png ]; then
+            cp ../src/main/resources/logo/logo.png "$INNER.png"
+          elif [ -f ../resources/common/logo/logo.svg ]; then
+            cp ../resources/common/logo/logo.svg "$INNER.svg"
           fi
           ls -la
           cd ..
