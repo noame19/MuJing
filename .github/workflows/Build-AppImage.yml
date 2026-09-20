@@ -126,8 +126,12 @@ jobs:
           echo "Runtime directory contents:"
           ls -la "$APP_DIR"
           echo "Inner app folder:"
-          INNER=$(ls -d "$APP_DIR"/*/ | head -n 1)
-          ls -la "$INNER"
+          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 || true)
+          if [ -n "${INNER_PATH:-}" ]; then
+            ls -la "$INNER_PATH"
+          else
+            echo "::warning::No inner folder under $APP_DIR"
+          fi
 
       - name: Download linuxdeploy and plugins
         run: |
@@ -168,11 +172,19 @@ jobs:
           mkdir -p "$APPDIR"
           # Compose produced: build/compose/binaries/main/app/<packageName>/...
           # Copy the inner package folder directly under AppDir as `MuJing/`
-          # so that paths are stable regardless of the original packageName.
+          # so that paths are stable regardless of the original packageName
+          # (which may be a Chinese name and not safe for shell expansion).
           SRC_APP="build/compose/binaries/main/app"
-          INNER=$(ls -d "$SRC_APP"/*/ | head -n 1 | tr -d '/')
+          # Use find to safely handle folders whose name contains slashes / spaces.
+          INNER_PATH=$(find "$SRC_APP" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          if [ -z "$INNER_PATH" ]; then
+            echo "::error::No inner package folder found under $SRC_APP"
+            ls -la "$SRC_APP"
+            exit 1
+          fi
+          INNER=$(basename "$INNER_PATH")
           echo "Original inner folder name: $INNER"
-          cp -a "$SRC_APP/$INNER" "$APPDIR/MuJing"
+          cp -a "$INNER_PATH" "$APPDIR/MuJing"
           # Bundle ffmpeg (whisper-enabled build) into the runtime bin dir
           if [ -f resources/linux/ffmpeg/ffmpeg ]; then
             cp -v resources/linux/ffmpeg/ffmpeg "$APPDIR/MuJing/bin/ffmpeg"
