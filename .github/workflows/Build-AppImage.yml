@@ -39,12 +39,10 @@ jobs:
       - name: Install Linux build dependencies
         run: |
           sudo apt-get update
-          # Compose Desktop's `packageDeb` invokes jpackage, which needs
-          # dpkg + fakeroot on the build host to actually finish packaging
-          # (and in doing so materialise the launcher script we depend on).
-          # qt6-base-dev provides qmake, which linuxdeploy-plugin-qt
-          # requires to discover the bundled JetBrains Compose runtime's
-          # Qt libraries.
+          # Compose Desktop bundles its own Qt 6 runtime, so we don't
+          # need qt6-base-dev or linuxdeploy-plugin-qt. The libs we
+          # install here are the standard X11/GL stack that the runtime
+          # expects to find on a Linux desktop.
           sudo apt-get install -y \
             libxext6 \
             libxrender1 \
@@ -70,8 +68,7 @@ jobs:
             zsync \
             libibus-1.0-5 \
             dpkg \
-            fakeroot \
-            qt6-base-dev
+            fakeroot
 
       - name: Fetch Fcitx5 Qt6 plugin from noble
         # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The
@@ -213,7 +210,7 @@ jobs:
             echo "::warning::No inner folder under $APP_DIR"
           fi
 
-      - name: Download linuxdeploy and plugins
+      - name: Download linuxdeploy
         run: |
           set -euo pipefail
           mkdir -p tools
@@ -228,19 +225,12 @@ jobs:
             sleep 5
           done
           chmod +x linuxdeploy-x86_64.AppImage
-          # The linuxdeploy-plugin-gtk asset has been retired upstream
-          # (404 on the continuous release). Compose Desktop is a Qt app,
-          # so we only need the Qt plugin — Qt apps already use the
-          # system GTK theme/icon via XDG, no GTK runtime is required.
-          for i in 1 2 3 4 5; do
-            if wget -q --tries=2 --timeout=30 \
-              https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage \
-              -O linuxdeploy-plugin-qt-x86_64.AppImage; then
-              break
-            fi
-            sleep 5
-          done
-          chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+          # We intentionally skip linuxdeploy-plugin-qt: Compose Desktop
+          # bundles its own Qt 6 runtime, so we don't need to drag in
+          # additional system Qt libraries.
+          # We also skip linuxdeploy-plugin-gtk: the upstream continuous
+          # release was retired (404s), and Compose apps don't need
+          # GTK runtime integration.
           cd ..
           ls -la tools
 
@@ -380,19 +370,20 @@ jobs:
           export DEPLOY_DIR="$PWD/AppDir"
           INNER=$(find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
           echo "linuxdeploy: target executable $DEPLOY_DIR/$INNER/bin/$INNER"
-          # linuxdeploy-plugin-qt runs qmake from PATH; on jammy
-          # qt6-base-dev installs qmake6 and sets qt6 as the default
-          # selector, but qmake from qt6-base-dev still needs QT_SELECT
-          # to find its Qt installation at /usr/lib/x86_64-linux-gnu/qt6.
-          export QT_SELECT=qt6
+          # Compose Desktop bundles a complete JetBrains runtime that
+          # includes its own Qt 6 libraries at
+          #   $DEPLOY_DIR/$INNER/lib/runtime/lib/
+          # so we do NOT need linuxdeploy-plugin-qt (which would try to
+          # fetch system Qt / qmake and bundle it separately). Skipping
+          # the Qt plugin keeps the AppImage self-contained and avoids
+          # brittle qmake / qt6-base-dev discovery on jammy.
           export QML_SOURCES_PATHS=""
           ./tools/linuxdeploy-x86_64.AppImage \
             --appdir "$DEPLOY_DIR" \
             --desktop-file "$DEPLOY_DIR/$INNER.desktop" \
             --icon-file "$DEPLOY_DIR/$INNER.png" \
             --executable "$DEPLOY_DIR/$INNER/bin/$INNER" \
-            --output appimage \
-            --plugin qt
+            --output appimage
           ls -la *.AppImage
 
       - name: Rename and verify AppImage
