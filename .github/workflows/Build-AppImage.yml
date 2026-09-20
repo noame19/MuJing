@@ -62,7 +62,12 @@ jobs:
             wget \
             file \
             zsync \
-            libibus-1.0-5
+            libibus-1.0-5 \
+            # jpackage needs dpkg + fakeroot to build .deb packages; we use
+            # `packageDeb` purely as a side-effect to materialise the Compose
+            # runtime launcher (see "Build Linux Runtime" step).
+            dpkg \
+            fakeroot
 
       - name: Fetch Fcitx5 Qt6 plugin from noble
         # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The
