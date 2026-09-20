@@ -42,6 +42,9 @@ jobs:
           # Compose Desktop's `packageDeb` invokes jpackage, which needs
           # dpkg + fakeroot on the build host to actually finish packaging
           # (and in doing so materialise the launcher script we depend on).
+          # qt6-base-dev provides qmake, which linuxdeploy-plugin-qt
+          # requires to discover the bundled JetBrains Compose runtime's
+          # Qt libraries.
           sudo apt-get install -y \
             libxext6 \
             libxrender1 \
@@ -67,7 +70,8 @@ jobs:
             zsync \
             libibus-1.0-5 \
             dpkg \
-            fakeroot
+            fakeroot \
+            qt6-base-dev
 
       - name: Fetch Fcitx5 Qt6 plugin from noble
         # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The
