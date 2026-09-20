@@ -39,6 +39,9 @@ jobs:
       - name: Install Linux build dependencies
         run: |
           sudo apt-get update
+          # Compose Desktop's `packageDeb` invokes jpackage, which needs
+          # dpkg + fakeroot on the build host to actually finish packaging
+          # (and in doing so materialise the launcher script we depend on).
           sudo apt-get install -y \
             libxext6 \
             libxrender1 \
@@ -63,9 +66,6 @@ jobs:
             file \
             zsync \
             libibus-1.0-5 \
-            # jpackage needs dpkg + fakeroot to build .deb packages; we use
-            # `packageDeb` purely as a side-effect to materialise the Compose
-            # runtime launcher (see "Build Linux Runtime" step).
             dpkg \
             fakeroot
 
