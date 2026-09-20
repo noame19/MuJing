@@ -396,11 +396,11 @@ jobs:
           ls -la *.AppImage
 
       - name: Rename and verify AppImage
-        run: bash -euo pipefail
+        run: |
           # Force a UTF-8 locale so filenames with non-ASCII chars
           # round-trip correctly through cp / ls / glob expansion.
           export LANG=C.UTF-8 LC_ALL=C.UTF-8
-          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f -print -quit)
+          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f -print -quit || true)
           echo "DEBUG: find output = '$APPIMAGE_PATH'"
           ls -la *.AppImage 2>&1 || true
           if [ -z "$APPIMAGE_PATH" ]; then
