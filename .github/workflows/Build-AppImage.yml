@@ -375,53 +375,12 @@ jobs:
           : "${QT_SCALE_FACTOR:=${GDK_SCALE:-}}"
           export GDK_SCALE QT_SCALE_FACTOR
 
-          # ---- HiDPI scale detection ----
-          # Priority 1: explicit user override.
-          SCALE="${MUJING_SCALE:-}"
-          # Priority 2: xrandr-reported per-output scale (most
-          # authoritative on Plasma 6 / GNOME Wayland). Pick the max
-          # so the highest-DPI monitor reads correctly; users with
-          # mixed scales can still tune via MUJING_SCALE.
-          if [ -z "$SCALE" ] && command -v xrandr >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then
-            SCALE="$(xrandr --query 2>/dev/null \
-              | sed -n 's/.* connected.*[ ]\([0-9]\+\.[0-9]\+\)x.*/\1/p' \
-              | sort -g | tail -n 1)"
-          fi
-          # Priority 3: Xft.dpi / 96 (KDE Wayland publishes per-monitor
-          # DPI through this resource; values like 168 → 1.75).
-          if [ -z "$SCALE" ] && [ -n "${DISPLAY:-}" ] && command -v xrdb >/dev/null 2>&1; then
-            DPI="$(xrdb -query 2>/dev/null | awk '/^Xft\.dpi:[ \t]+/ {print $2; exit}')"
-            if [ -n "$DPI" ] && awk -v d="$DPI" 'BEGIN{exit !(d+0 >= 96)}'; then
-              SCALE="$(awk -v d="$DPI" 'BEGIN{printf "%.2f", (d+0)/96}')"
-            fi
-          fi
-          # Priority 4: Plasma per-output config (fallback when X11 is
-          # not available, e.g. nested XWayland-free sessions).
-          if [ -z "$SCALE" ] && [ -f "$HOME/.config/kwinoutputconfig.json" ]; then
-            SCALE="$(grep -oE '"scale":[0-9.]+' "$HOME/.config/kwinoutputconfig.json" \
-              | cut -d: -f2 | sort -g | tail -n 1)"
-          fi
-          # Sanity: clamp into a reasonable range, default to 2.0 if
-          # detection failed (Compose on 175%-scaled KDE often needs
-          # a touch more than the bare Xft.dpi ratio).
-          if [ -z "$SCALE" ]; then
-            SCALE="${MUJING_SCALE_DEFAULT:-2.0}"
-          fi
-          SCALE="$(awk -v s="$SCALE" 'BEGIN{
-            v = s + 0
-            if (v < 1.0) v = 1.0
-            if (v > 4.0) v = 4.0
-            printf "%.2f", v
-          }')"
-
-          # Disable skiko autodpi (it would clamp us back to
-          # Xft.dpi/96 = 1.75 regardless of our chosen SCALE).
-          JAVA_OPTS="-Dskiko.linux.autodpi=false -Dsun.java2d.uiScale.enabled=true -Dsun.java2d.uiScale=${SCALE}"
-
-          export _JAVA_OPTIONS="${_JAVA_OPTIONS:-} ${JAVA_OPTS}"
-          export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} ${JAVA_OPTS}"
-
-          echo "MuJing AppRun: uiScale=${SCALE} launcher=$LAUNCHER" >&2
+          # Scaling is configured by Main.kt before Compose initializes.
+          # Keep the override in the process environment so the application
+          # can read MUJING_SCALE before skiko creates any AWT surfaces.
+          # The tested Linux default is 2.5; users can override it with
+          # MUJING_SCALE=1.5, MUJING_SCALE=2, etc.
+          echo "MuJing AppRun: MUJING_SCALE=${MUJING_SCALE:-2.5} launcher=$LAUNCHER" >&2
           exec "$LAUNCHER" "$@"
           APPRUN_EOF
           chmod +x "$APPDIR/AppRun"

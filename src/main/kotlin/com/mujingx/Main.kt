@@ -32,9 +32,33 @@ import com.mujingx.ui.App
 @OptIn(ExperimentalSerializationApi::class)
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
-fun main() = application {
-    init()
-    App()
+fun main() {
+    configureLinuxScaling()
+    application {
+        init()
+        App()
+    }
+}
+
+/**
+ * Compose/skiko's Linux autodpi path enlarges the AWT window from Xft.dpi,
+ * while the Compose content can remain at 1x density under KDE Plasma
+ * fractional scaling. Set one explicit scale before Compose initializes so
+ * the window and its content use the same density.
+ */
+private fun configureLinuxScaling() {
+    if (!System.getProperty("os.name").contains("linux", ignoreCase = true)) {
+        return
+    }
+
+    val scale = System.getenv("MUJING_SCALE")
+        ?.toFloatOrNull()
+        ?.takeIf { it in 1.0f..4.0f }
+        ?: 2.5f
+
+    System.setProperty("skiko.linux.autodpi", "false")
+    System.setProperty("sun.java2d.uiScale.enabled", "true")
+    System.setProperty("sun.java2d.uiScale", scale.toString())
 }
 
 fun init(){
