@@ -311,80 +311,122 @@ jobs:
         run: |
           set -euo pipefail
           APPDIR="AppDir"
-          # The Compose Desktop inner folder keeps its original (Chinese)
-          # name, so the launcher is at AppDir/<innerName>/bin/<innerName>.
           INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
           echo "AppRun will dispatch to inner folder: $INNER"
-          cat > "$APPDIR/AppRun" <<EOF
+          cat > "$APPDIR/AppRun" <<'APPRUN_EOF'
           #!/usr/bin/env bash
           # AppRun wrapper for MuJing AppImage.
-          # Forward to the Compose Desktop launcher; prefer Wayland when a
-          # Wayland session is detected, otherwise fall back to X11.
+          # Forwards to the Compose Desktop launcher; prefers Wayland
+          # when available, falls back to X11.
           #
-          # HiDPI scaling:
-          #   The Compose runtime is a Swing/AWT app built on JetBrains
-          #   Runtime. On KDE Plasma 6 / GNOME running Wayland with
-          #   fractional scaling (125%, 150%) the Swing UI ignores the
-          #   system scale unless -Dsun.java2d.uiScale.enabled=true is
-          #   passed. We forward GDK_SCALE / QT_SCALE_FACTOR and inject
-          #   the JBR HiDPI flags via _JAVA_OPTIONS so the embedded JDK
-          #   picks them up without editing the upstream Compose
-          #   launcher script.
+          # HiDPI / fractional scaling — the painful part:
+          #   The bundled skiko/linuxGetSystemDpiScale reads Xft.dpi
+          #   via Xlib at startup and, when skiko.linux.autodpi=true
+          #   (the default), sets sun.java2d.uiScale = Xft.dpi / 96
+          #   BEFORE the Compose UI asks for its density. On KDE
+          #   Plasma 6 Wayland with fractional scaling (1.35x / 1.75x
+          #   etc.) the resulting uiScale makes the window bigger but
+          #   the *Compose* font/layout rendering does not follow,
+          #   so the window content looks tiny inside a giant window.
+          #   Disabling autodpi and injecting an explicit, generous
+          #   uiScale makes the window AND its content scale together
+          #   so the UI looks the same size as other native apps.
+          #
+          #   MUJING_SCALE overrides the detected factor (e.g.
+          #   MUJING_SCALE=1.5 ./MuJing.AppImage).
           set -e
 
-          HERE="\$(cd "\$(dirname "\$0")" && pwd)"
+          HERE="$(cd "$(dirname "$0")" && pwd)"
 
-          # The Compose Desktop inner folder uses the upstream Chinese
-          # package name (幕境), so the launcher path is
-          # \$HERE/$INNER/bin/$INNER — not \$HERE/MuJing/bin/MuJing.
-          LAUNCHER="\$HERE/$INNER/bin/$INNER"
-          if [ ! -x "\$LAUNCHER" ]; then
-            echo "MuJing launcher not found at \$LAUNCHER" >&2
-            # Fall back: locate any executable launcher in the first
-            # inner folder's bin/ directory (covers upstream renames).
-            INNER_FALLBACK=\$(find "\$HERE" -mindepth 2 -maxdepth 2 -type f -executable -path '*/bin/*' | head -n 1 || true)
-            if [ -n "\$INNER_FALLBACK" ]; then
-              echo "Falling back to launcher at \$INNER_FALLBACK" >&2
-              LAUNCHER="\$INNER_FALLBACK"
-            else
-              exit 1
+          # Locate the jpackage launcher (its name == parent dir name
+          # in standard Compose Desktop layouts).
+          INNER=""
+          for d in "$HERE"/*/; do
+            [ -d "$d" ] || continue
+            n="$(basename "$d")"
+            [ "$n" = "lib" ] || [ "$n" = "usr" ] || [ "$n" = "share" ] && continue
+            if [ -x "$d/bin/$n" ]; then
+              INNER="$n"
+              break
             fi
+          done
+          LAUNCHER=""
+          if [ -n "$INNER" ]; then
+            LAUNCHER="$HERE/$INNER/bin/$INNER"
+          fi
+          if [ ! -x "$LAUNCHER" ]; then
+            LAUNCHER="$(find "$HERE" -mindepth 3 -maxdepth 3 -type f -path '*/bin/*' -perm -u+x | sort | head -n 1 || true)"
+          fi
+          if [ -z "$LAUNCHER" ]; then
+            echo "MuJing launcher not found inside AppImage" >&2
+            exit 1
           fi
 
-          # If a Wayland compositor is running but WAYLAND_DISPLAY isn't set,
-          # synthesise one (helps nested sessions / sandboxed launches).
-          if [ -z "\${WAYLAND_DISPLAY:-}" ] \\
-              && [ -n "\${XDG_SESSION_TYPE:-}" ] \\
-              && [ "\${XDG_SESSION_TYPE}" = "wayland" ]; then
-            export WAYLAND_DISPLAY="\${WAYLAND_DISPLAY:-wayland-0}"
+          # Wayland presence nudge for sandboxed launches.
+          if [ -z "${WAYLAND_DISPLAY:-}" ] \
+              && [ -n "${XDG_SESSION_TYPE:-}" ] \
+              && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+            export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
           fi
 
-          # Prefer Wayland, then X11 (libxcb). This avoids fractional-scaling
-          # blur under XWayland on KDE Plasma 6 / GNOME.
-          export QT_QPA_PLATFORM="\${QT_QPA_PLATFORM:-wayland;xcb}"
-          export QT_WAYLAND_DISABLE_WINDOWDECORATION="\${QT_WAYLAND_DISABLE_WINDOWDECORATION:-1}"
-          export XDG_RUNTIME_DIR="\${XDG_RUNTIME_DIR:-/run/user/\$(id -u)}"
-
-          # Tell Qt / GDK about the user's scale factor (KDE Plasma /
-          # GNOME set these via XSettings; we forward them explicitly
-          # so XWayland sessions and isolated sandboxes still see them).
-          : "\${GDK_SCALE:=\${QT_SCALE_FACTOR:-}}"
-          : "\${QT_SCALE_FACTOR:=\${GDK_SCALE:-}}"
+          # Forward toolkit scale hints (harmless for a Java app, kept
+          # for any Qt/GTK dialogs the launcher might invoke).
+          : "${GDK_SCALE:=${QT_SCALE_FACTOR:-}}"
+          : "${QT_SCALE_FACTOR:=${GDK_SCALE:-}}"
           export GDK_SCALE QT_SCALE_FACTOR
 
-          # JBR HiDPI: enable JRE-managed HiDPI mode so the Swing UI
-          # honours the system / user scale factor on Linux. Without
-          # this, the UI renders at 1.0 scale on KDE Wayland fractional
-          # scaling and looks tiny.
-          export _JAVA_OPTIONS="\${_JAVA_OPTIONS:-} -Dsun.java2d.uiScale.enabled=true"
+          # ---- HiDPI scale detection ----
+          # Priority 1: explicit user override.
+          SCALE="${MUJING_SCALE:-}"
+          # Priority 2: xrandr-reported per-output scale (most
+          # authoritative on Plasma 6 / GNOME Wayland). Pick the max
+          # so the highest-DPI monitor reads correctly; users with
+          # mixed scales can still tune via MUJING_SCALE.
+          if [ -z "$SCALE" ] && command -v xrandr >/dev/null 2>&1 && [ -n "${DISPLAY:-}" ]; then
+            SCALE="$(xrandr --query 2>/dev/null \
+              | sed -n 's/.* connected.*[ ]\([0-9]\+\.[0-9]\+\)x.*/\1/p' \
+              | sort -g | tail -n 1)"
+          fi
+          # Priority 3: Xft.dpi / 96 (KDE Wayland publishes per-monitor
+          # DPI through this resource; values like 168 → 1.75).
+          if [ -z "$SCALE" ] && [ -n "${DISPLAY:-}" ] && command -v xrdb >/dev/null 2>&1; then
+            DPI="$(xrdb -query 2>/dev/null | awk '/^Xft\.dpi:[ \t]+/ {print $2; exit}')"
+            if [ -n "$DPI" ] && awk -v d="$DPI" 'BEGIN{exit !(d+0 >= 96)}'; then
+              SCALE="$(awk -v d="$DPI" 'BEGIN{printf "%.2f", (d+0)/96}')"
+            fi
+          fi
+          # Priority 4: Plasma per-output config (fallback when X11 is
+          # not available, e.g. nested XWayland-free sessions).
+          if [ -z "$SCALE" ] && [ -f "$HOME/.config/kwinoutputconfig.json" ]; then
+            SCALE="$(grep -oE '"scale":[0-9.]+' "$HOME/.config/kwinoutputconfig.json" \
+              | cut -d: -f2 | sort -g | tail -n 1)"
+          fi
+          # Sanity: clamp into a reasonable range, default to 2.0 if
+          # detection failed (Compose on 175%-scaled KDE often needs
+          # a touch more than the bare Xft.dpi ratio).
+          if [ -z "$SCALE" ]; then
+            SCALE="${MUJING_SCALE_DEFAULT:-2.0}"
+          fi
+          SCALE="$(awk -v s="$SCALE" 'BEGIN{
+            v = s + 0
+            if (v < 1.0) v = 1.0
+            if (v > 4.0) v = 4.0
+            printf "%.2f", v
+          }')"
 
-          exec "\$LAUNCHER" "\$@"
-          EOF
+          # Disable skiko autodpi (it would clamp us back to
+          # Xft.dpi/96 = 1.75 regardless of our chosen SCALE).
+          JAVA_OPTS="-Dskiko.linux.autodpi=false -Dsun.java2d.uiScale.enabled=true -Dsun.java2d.uiScale=${SCALE}"
+
+          export _JAVA_OPTIONS="${_JAVA_OPTIONS:-} ${JAVA_OPTS}"
+          export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:-} ${JAVA_OPTS}"
+
+          echo "MuJing AppRun: uiScale=${SCALE} launcher=$LAUNCHER" >&2
+          exec "$LAUNCHER" "$@"
+          APPRUN_EOF
           chmod +x "$APPDIR/AppRun"
-          # Sanity check: print the resolved launcher path so we can
-          # see at a glance whether the inner folder name matched.
           echo "AppRun preview:"
-          head -45 "$APPDIR/AppRun"
+          sed -n '1,30p;50,80p' "$APPDIR/AppRun"
 
       - name: Bundle Fcitx5/IBus Qt6 input-method plugins
         run: |

@@ -19,3 +19,22 @@ This repo ships a `.github/workflows/Build-AppImage.yml` that produces a self-co
 ## Output artifact
 
 - `MuJing-linux-appimage-x86_64` — a 219 MB zip containing `MuJing-<version>-x86_64.AppImage`. Make it executable and run; FUSE-less extraction is supported via `APPIMAGE_EXTRACT_AND_RUN=1`.
+
+## HiDPI / fractional scaling
+
+Compose Desktop on Linux uses the bundled **skiko** AWT backend. By default skiko calls `linuxGetSystemDpiScale`, reads `Xft.dpi` from Xlib, and sets `sun.java2d.uiScale = Xft.dpi / 96`. On KDE Plasma 6 / GNOME with fractional scaling (e.g. 175%), this grows the window but the Compose UI keeps its 1× density, so fonts look tiny inside a giant window.
+
+AppRun disables `skiko.linux.autodpi` and picks an explicit scale factor at runtime, in this order:
+
+1. `MUJING_SCALE` env var (user override)
+2. `xrandr --query` per-output scales (max)
+3. `Xft.dpi / 96`
+4. `~/.config/kwinoutputconfig.json` per-output scales (max)
+5. `MUJING_SCALE_DEFAULT` (default `2.0`)
+
+The detected value is clamped to `[1.0, 4.0]`. Override at launch:
+```bash
+MUJING_SCALE=1.5 ./MuJing-2.12.3-x86_64.AppImage
+MUJING_SCALE=2.5 ./MuJing-2.12.3-x86_64.AppImage
+MUJING_SCALE_DEFAULT=2.0 ./MuJing-2.12.3-x86_64.AppImage   # change the fallback
+```
