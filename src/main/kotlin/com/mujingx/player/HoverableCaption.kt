@@ -56,6 +56,22 @@ import java.nio.charset.Charset
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 
+/**
+ * 判断文本是否包含日语假名。
+ *
+ * 用于在「网络查词」时自动选择日汉词典还是英汉词典，
+ * 避免字幕为日语时仍然打开 lang=en 的英语查词链接。
+ *
+ * 只检测假名（平假名 3041-309F、片假名 30A0-30FF），
+ * 汉字在中文与日语中通用，不能作为判据。
+ */
+fun String.containsJapanese(): Boolean {
+    return any { ch ->
+        val code = ch.code
+        (0x3041..0x309F).contains(code) || (0x30A0..0x30FF).contains(code)
+    }
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HoverableText(
@@ -216,7 +232,8 @@ fun HoverableText(
                                         Button(
                                             onClick = {
                                                 val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
-                                                uriHandler.openUri("https://www.youdao.com/result?word=$encoded&lang=en")
+                                                val lang = if (text.containsJapanese()) "ja" else "en"
+                                                uriHandler.openUri("https://www.youdao.com/result?word=$encoded&lang=$lang")
                                             },
                                             colors = ButtonDefaults.buttonColors(
                                                 backgroundColor = MaterialTheme.colors.secondary
@@ -226,21 +243,24 @@ fun HoverableText(
                                             Text("有道", color = Color.White)
                                         }
 
-                                        Button(
-                                            onClick = {
-                                                val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
-                                                uriHandler.openUri("https://dictionary.cambridge.org/dictionary/english-chinese-simplified/$encoded")
-                                            },
-                                            colors = ButtonDefaults.buttonColors(
-                                                backgroundColor = MaterialTheme.colors.secondary
-                                            ),
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Text("剑桥", color = Color.White)
+                                        // 以下词典只收英语词条，日语文本下不予展示
+                                        if (!text.containsJapanese()) {
+                                            Button(
+                                                onClick = {
+                                                    val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
+                                                    uriHandler.openUri("https://dictionary.cambridge.org/dictionary/english-chinese-simplified/$encoded")
+                                                },
+                                                colors = ButtonDefaults.buttonColors(
+                                                    backgroundColor = MaterialTheme.colors.secondary
+                                                ),
+                                                modifier = Modifier.weight(1f)
+                                            ) {
+                                                Text("剑桥", color = Color.White)
+                                            }
                                         }
                                     }
 
-                                    Row(
+                                    if (!text.containsJapanese()) Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
@@ -276,19 +296,23 @@ fun HoverableText(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
-                                        Button(
-                                            onClick = {
-                                                val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
-                                                uriHandler.openUri("https://www.oxfordlearnersdictionaries.com/definition/english/$encoded")
-                                            },
-                                            colors = ButtonDefaults.buttonColors(
-                                                backgroundColor = MaterialTheme.colors.secondary
-                                            ),
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Text("Oxford", color = Color.White)
+                                        // Oxford 只收英语词条
+                                        if (!text.containsJapanese()) {
+                                            Button(
+                                                onClick = {
+                                                    val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
+                                                    uriHandler.openUri("https://www.oxfordlearnersdictionaries.com/definition/english/$encoded")
+                                                },
+                                                colors = ButtonDefaults.buttonColors(
+                                                    backgroundColor = MaterialTheme.colors.secondary
+                                                ),
+                                                modifier = Modifier.weight(1f)
+                                            ) {
+                                                Text("Oxford", color = Color.White)
+                                            }
                                         }
 
+                                        // 系统词典支持多语言，日语文本下仍可使用
                                         if (isMacOS()) {
                                             Button(
                                                 onClick = {
@@ -301,7 +325,7 @@ fun HoverableText(
                                             ) {
                                                 Text("系统词典", color = Color.White)
                                             }
-                                        } else {
+                                        } else if (text.containsJapanese()) {
                                             Spacer(modifier = Modifier.weight(1f))
                                         }
 

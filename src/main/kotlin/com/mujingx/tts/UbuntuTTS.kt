@@ -24,8 +24,13 @@ import javax.swing.JOptionPane
 
 class UbuntuTTS {
     private var process: Process? = null
-    fun speakAndWait(text:String) {
-        process = speak(text)
+
+    /**
+     * @param text 待朗读文本
+     * @param language espeak 语言代码，默认英语。日语传 "ja"。
+     */
+    fun speakAndWait(text:String, language: String = "en") {
+        process = speak(text, language)
         if (process != null) {
             try {
                 process!!.waitFor()
@@ -35,10 +40,16 @@ class UbuntuTTS {
         }
     }
 
-    private fun speak(text: String): Process? {
+    private fun speak(text: String, language: String): Process? {
         process = null
         try {
-            process = Runtime.getRuntime().exec("espeak \"$text\"")
+            // 用参数数组而非字符串拼接，避免文本中的引号与元字符被 shell 解释
+            val command = if (language == "en") {
+                arrayOf("espeak", text)
+            } else {
+                arrayOf("espeak", "-v", language, text)
+            }
+            process = Runtime.getRuntime().exec(command)
             if (process != null) {
                 // consume the output stream
                 ProcessReader(process!!, false)

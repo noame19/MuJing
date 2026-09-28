@@ -898,6 +898,7 @@ fun MainContent(
                                 volume = appState.global.audioVolume,
                                 audioPlayerComponent = audioPlayerComponent,
                                 changePlayerState = { isPlaying -> isPlayingAudio = isPlaying },
+                                isJapanese = wordScreenState.vocabulary.language.equals("japanese", true),
                             )
                         }
 

@@ -174,7 +174,7 @@ fun AzureTTSDialog(
                                     .border(border = border)
                                     .clickable { showStyle = !showStyle}
                             ) {
-                                Text(text = if(azureTTS.pronunciationStyle == "en-GB") "英式发音" else "美式发音",
+                                Text(text = azureTTS.styleDisplayName(azureTTS.pronunciationStyle),
                                     modifier = Modifier.padding(start = 12.dp),
                                     color = MaterialTheme.colors.onBackground)
                                 val tint = if (MaterialTheme.colors.isLight) Color.DarkGray else MaterialTheme.colors.onBackground
@@ -193,67 +193,41 @@ fun AzureTTSDialog(
                                 expanded = showStyle,
                                 onDismissRequest = { showStyle = false },
                                 offset = DpOffset(64.dp, (-48).dp),
-                                modifier = Modifier.width(246.dp).height(100.dp)
+                                modifier = Modifier.width(246.dp).heightIn(max = 160.dp)
                             ) {
-                                Column(Modifier.width(246.dp).height(80.dp)){
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            azureTTS.pronunciationStyle = "en-GB"
-                                            showStyle = false
-                                            azureTTS.saveAzureState()
-                                        },
-                                        modifier = Modifier.width(246.dp).height(40.dp)
-                                    ){
-
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.fillMaxWidth().height(40.dp)) {
-                                            val color = if(azureTTS.pronunciationStyle == "en-GB")  MaterialTheme.colors.primary else  Color.Transparent
-                                            Spacer(Modifier
-                                                .background(color)
-                                                .height(20.dp)
-                                                .width(2.dp)
-                                            )
-                                            Text(
-                                                text = "英式发音",
-                                                color = if(azureTTS.pronunciationStyle == "en-GB") MaterialTheme.colors.primary else  Color.Unspecified,
-                                                modifier = Modifier.padding(start = 6.dp)
-                                            )
-                                        }
-
-                                    }
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            azureTTS.pronunciationStyle = "en-US"
-                                            showStyle = false
-                                            azureTTS.saveAzureState()
-                                        },
-                                        modifier = Modifier.width(246.dp).height(40.dp)
-                                    ){
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.fillMaxWidth().height(40.dp)) {
-                                            val color = if(azureTTS.pronunciationStyle == "en-US")  MaterialTheme.colors.primary else  Color.Transparent
-                                            Spacer(Modifier
-                                                .background(color)
-                                                .height(20.dp)
-                                                .width(2.dp)
-                                            )
-
-                                            Text(
-                                                text = "美式发音",
-                                                color = if(azureTTS.pronunciationStyle == "en-US") MaterialTheme.colors.primary else  Color.Unspecified,
-                                                modifier = Modifier.padding(start = 6.dp)
-                                            )
+                                Column(Modifier.width(246.dp)){
+                                    // 遍历 azureTTS.supportedStyles，新增语言时无需再改 UI
+                                    azureTTS.supportedStyles.forEach { style ->
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                azureTTS.setPronunciationStyle(style)
+                                                showStyle = false
+                                                azureTTS.saveAzureState()
+                                            },
+                                            modifier = Modifier.width(246.dp).height(40.dp)
+                                        ){
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.fillMaxWidth().height(40.dp)) {
+                                                val color = if(azureTTS.pronunciationStyle == style) MaterialTheme.colors.primary else Color.Transparent
+                                                Spacer(Modifier
+                                                    .background(color)
+                                                    .height(20.dp)
+                                                    .width(2.dp)
+                                                )
+                                                Text(
+                                                    text = azureTTS.styleDisplayName(style),
+                                                    color = if(azureTTS.pronunciationStyle == style) MaterialTheme.colors.primary else Color.Unspecified,
+                                                    modifier = Modifier.padding(start = 6.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
 
-
-
-
                             }
 
+                        }
                         }
                     }
                     Spacer(Modifier.height(8.dp))

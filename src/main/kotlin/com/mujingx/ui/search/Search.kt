@@ -95,6 +95,7 @@ fun Search(
                         volume = appState.global.audioVolume,
                         audioPlayerComponent = audioPlayer,
                         changePlayerState = { isPlaying -> isPlayingAudio = isPlaying },
+                        isJapanese = vocabulary.language.equals("japanese", true),
                     )
                 }
             }

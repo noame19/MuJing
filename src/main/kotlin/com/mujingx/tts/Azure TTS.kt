@@ -72,6 +72,44 @@ class AzureTTS(
     var subscriptionKey: String by mutableStateOf(azureTTSData.subscriptionKey)
     var region: String by mutableStateOf(azureTTSData.region)
 
+    /**
+     * 可选的发音语言。日语使用 ja-JP，不再区分英式/美式。
+     */
+    val supportedStyles: List<String> = listOf("en-US", "en-GB", "ja-JP")
+
+    /**
+     * 切换发音语言，并把声音切换到该语言的默认嗓音。
+     * Azure 声音名带语言前缀（例如 ja-JP-NanamiNeural），
+     * 沿用上一个语言的嗓音名会取不到声音，因此必须整体替换。
+     */
+    fun setPronunciationStyle(style: String) {
+        pronunciationStyle = style
+        val voice = defaultVoiceFor(style)
+        if (voice != null) {
+            shortName = voice
+            displayName = voice.substringAfterLast('-').removeSuffix("Neural")
+            gender = ""
+        }
+    }
+
+    /**
+     * 各语言的默认嗓音。ja-JP 有多位可选，取 Nanami 为默认。
+     */
+    private fun defaultVoiceFor(style: String): String? = when (style) {
+        "en-US" -> "en-US-AvaNeural"
+        "en-GB" -> "en-GB-RyanNeural"
+        "ja-JP" -> "ja-JP-NanamiNeural"
+        else -> null
+    }
+
+    /** 发音风格的中文显示名 */
+    fun styleDisplayName(style: String): String = when (style) {
+        "en-US" -> "美式发音"
+        "en-GB" -> "英式发音"
+        "ja-JP" -> "日语发音"
+        else -> style
+    }
+
     // 支持 Azure Speech 的区域
     private val regionList = listOf("southafricanorth","eastasia","southeastasia","australiaeast","centralindia","japaneast","japanwest","koreacentral","canadacentral","northeurope","westeurope","francecentral","germanywestcentral","norwayeast","swedencentral8","switzerlandnorth","switzerlandwest","uksouth","uaenorth","brazilsouth","qatarcentral3,8","centralus","eastus","eastus2","northcentralus","southcentralus","westcentralus","westus","westus2","westus3","southafricanorth","eastasia","southeastasia","australiaeast","centralindia","japaneast","japanwest","koreacentral","canadacentral","northeurope","westeurope","francecentral","germanywestcentral","norwayeast","swedencentral8","switzerlandnorth","switzerlandwest","uksouth","uaenorth","brazilsouth","qatarcentral3,8","centralus","eastus","eastus2","northcentralus","southcentralus","westcentralus","westus","westus2","westus3")
 

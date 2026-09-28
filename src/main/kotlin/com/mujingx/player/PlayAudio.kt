@@ -53,6 +53,7 @@ fun playAudio(
     volume: Float,
     audioPlayerComponent: AudioPlayerComponent,
     changePlayerState: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
 
     // 取消前一个任务
@@ -65,11 +66,12 @@ fun playAudio(
                     try{
                         if (isWindows()) {
                             val speech = MSTTSpeech()
+                            if (isJapanese) speech.setJapanese()
                             speech.speak(word)
                         } else if (isMacOS()) {
-                            MacTTS().speakAndWait(word)
+                            MacTTS().speakAndWait(word, if (isJapanese) "Kyoko" else null)
                         } else {
-                            UbuntuTTS().speakAndWait(word)
+                            UbuntuTTS().speakAndWait(word, if (isJapanese) "ja" else "en")
                         }
                     }catch (e:Exception){
                         e.printStackTrace()
@@ -119,6 +121,23 @@ fun playAudio(
 }
 
 
+/**
+ * 生成发音缓存文件名中的词条部分。
+ *
+ * 日语词条含汉字与假名，直接作为文件名虽合法，但不同平台的输入法、
+ * 文件系统与打包工具对非 ASCII 名称处理并不一致，且可能与 Windows 保留名冲突。
+ * 这里非 ASCII 一律转写成十六进制形式，例如「食べる」-> "u5403u3079u308b"，
+ * 保证文件名在任何系统上都安全且可逆。
+ */
+private fun audioCacheKey(word: String): String {
+    if (word.all { it.code in 32..126 && it != '/' && it != '\\' }) {
+        return word.lowercase()
+    }
+    return word.lowercase().map { ch ->
+        if (ch.code in 32..126 && ch != '/' && ch != '\\') ch.toString() else "u%04x".format(ch.code)
+    }.joinToString("")
+}
+
 /** 计算单词的发音地址 */
 fun getAudioPath(
     word: String,
@@ -130,7 +149,7 @@ fun getAudioPath(
     if(pronunciation == "local TTS") return ""
     if(pronunciation == "Azure TTS"){
         var audioPath = ""
-        val audioFileName = word.lowercase() + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
+        val audioFileName = audioCacheKey(word) + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
         // 先查询本地有没有
         if (audioSet.contains(audioFileName)) {
             audioPath = File(getAudioDirectory(), audioFileName).absolutePath
@@ -164,7 +183,7 @@ fun getAudioPath(
                 ""
             }
         }
-        val fileName = word.lowercase() + "_" + pronunciation + ".mp3"
+        val fileName = audioCacheKey(word) + "_" + pronunciation + ".mp3"
         // 先查询本地有没有
         if (audioSet.contains(fileName)) {
             path = File(audioDir, fileName).absolutePath
@@ -185,7 +204,7 @@ fun getAudioPath(
                 addToAudioSet(file.name)
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                val ttsFileName = word.lowercase() + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
+                val ttsFileName = audioCacheKey(word) + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
                 var audioPath: String
                 // 先查询本地有没有
                 if (audioSet.contains(ttsFileName)) {
