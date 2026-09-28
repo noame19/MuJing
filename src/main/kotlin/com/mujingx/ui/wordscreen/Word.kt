@@ -313,6 +313,8 @@ fun Word(
 
 /**
  * 音标组件
+ *
+ * 英语显示美式/英式音标；日语没有 IPA 音标，改为显示假名读音与罗马字。
  */
 @Composable
 fun Phonetic(
@@ -325,25 +327,48 @@ fun Phonetic(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (word.usphone.isNotEmpty()) {
-                SelectionContainer {
-                    Text(
-                        text = "美:${word.usphone}",
-                        fontSize = fontSize,
-                        color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(start = 5.dp, end = 5.dp)
-                    )
+            if (word.kana.isNotEmpty()) {
+                // 日语：假名读音，罗马字作为补充
+                if (word.romaji.isNotEmpty()) {
+                    SelectionContainer {
+                        Text(
+                            text = "${word.romaji} [${word.kana}]",
+                            fontSize = fontSize,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                        )
+                    }
+                } else {
+                    SelectionContainer {
+                        Text(
+                            text = word.kana,
+                            fontSize = fontSize,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                        )
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.width(5.dp))
-            if (word.ukphone.isNotEmpty()) {
-                SelectionContainer {
-                    Text(
-                        text = "英:${word.ukphone}",
-                        fontSize = fontSize,
-                        color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(start = 5.dp, end = 5.dp)
-                    )
+            } else {
+                if (word.usphone.isNotEmpty()) {
+                    SelectionContainer {
+                        Text(
+                            text = "美:${word.usphone}",
+                            fontSize = fontSize,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(5.dp))
+                if (word.ukphone.isNotEmpty()) {
+                    SelectionContainer {
+                        Text(
+                            text = "英:${word.ukphone}",
+                            fontSize = fontSize,
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                        )
+                    }
                 }
             }
 

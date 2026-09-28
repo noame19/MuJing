@@ -1031,19 +1031,24 @@ fun MainContent(
                     wordScreenState.wordTextFieldValue = input
                     wordScreenState.wordTypingResult.clear()
                     var done = true
+                    // 以码点切分。日语的汉字、浊音符号可能超出 UTF-16 单个码元，
+                    // 用 String[i] 索引会取到半个字符导致比对错位。
+                    val targetChars = currentWord.value.toList()
                     /**
                      *  防止用户粘贴内容过长，如果粘贴的内容超过 word.value 的长度，
                      * 会改变 BasicTextField 宽度，和 Text 的宽度不匹配
                      */
-                    if (input.length > currentWord.value.length) {
+                    if (input.toList().size > targetChars.size) {
                         wordScreenState.wordTypingResult.clear()
                         wordScreenState.wordTextFieldValue = ""
                     } else {
+                        // 日语罗马字输入法转换途中时，本次输入不参与逐字判错
+                        val romajiInProgress = isRomajiInputInProgress(input, currentWord.romaji)
                         val inputChars = input.toList()
                         for (i in inputChars.indices) {
                             val inputChar = inputChars[i]
-                            val wordChar = currentWord.value[i]
-                            if (inputChar == wordChar) {
+                            val wordChar = targetChars[i]
+                            if (romajiInProgress || inputChar == wordChar) {
                                 wordScreenState.wordTypingResult.add(Pair(inputChar, true))
                             } else {
                                 // 字母输入错误
@@ -1087,7 +1092,13 @@ fun MainContent(
                             }
                         }
                         // 用户输入的单词完全正确
-                        if (wordScreenState.wordTypingResult.size == currentWord.value.length && done) {
+                        // 用码点数量比较：wordTypingResult 按码点累计，
+                        // 而 String.length 是 UTF-16 码元数，日语下两者不相等。
+                        // romajiInProgress 时输入框里还是罗马字，未真正拼出目标词，
+                        // 长度可能凑巧相等，不能算作答正确。
+                        if (!romajiInProgress &&
+                            wordScreenState.wordTypingResult.size == targetChars.size && done
+                        ) {
                             // 输入完全正确
                             playSuccessSound()
                             wordScreenState.wordCorrectTime++
@@ -2584,6 +2595,28 @@ fun Captions(
         if (!isPlaying && (word.captions.isNotEmpty() || word.externalCaptions.isNotEmpty()))
             Divider(Modifier.padding(start = 50.dp))
     }
+}
+
+/**
+ * 判断当前输入是否仍处于「罗马字输入法转换途中」。
+ *
+ * 日语用户普遍用 IME 输入：敲下 t 时文本框里还是 "t"，
+ * 提交候选后才会变成「た」。若此时直接与目标汉字逐字比对，
+ * 每敲一个字母都会被判错并锁定输入框，听写将无法完成。
+ *
+ * 判定条件（全部满足才认为仍在转换中）：
+ *  1. 词条带有 romaji 读音（英语词库此字段为空，逻辑不触发）；
+ *  2. 当前输入全部是 ASCII 字母；
+ *  3. 输入是完整读音的前缀，且尚未输入完。
+ *
+ * 一旦确定不可能构成该读音（例如敲了 x），立即返回 false，
+ * 让常规的逐字比对给出错误反馈。
+ */
+private fun isRomajiInputInProgress(input: String, roman: String): Boolean {
+    if (roman.isEmpty() || input.isEmpty()) return false
+    if (input.length >= roman.length) return false
+    if (!input.all { it in 'a'..'z' || it in 'A'..'Z' }) return false
+    return roman.startsWith(input, ignoreCase = true)
 }
 
 fun replaceSeparator(path:String): String {
