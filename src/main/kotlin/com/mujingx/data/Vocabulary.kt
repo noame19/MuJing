@@ -81,6 +81,12 @@ data class Word(
     var bnc: Int? = 0,
     var frq: Int? = 0,
     var exchange: String = "",
+    /** 日语假名读音，如「たべる」。英语词库为空。 */
+    var kana: String = "",
+    /** 日语罗马字读音，如「taberu」。英语词库为空。 */
+    var romaji: String = "",
+    /** 考试/等级标签，如「JLPT N5」。 */
+    var level: String = "",
     var externalCaptions: MutableList<ExternalCaption> = mutableListOf(),
     var captions: MutableList<Caption> = mutableListOf()
 ) {
@@ -95,7 +101,21 @@ data class Word(
 }
 fun Word.deepCopy():Word{
     val newWord =  Word(
-        value, usphone, ukphone, definition, translation, pos, collins, oxford, tag, bnc, frq, exchange
+        value = value,
+        usphone = usphone,
+        ukphone = ukphone,
+        definition = definition,
+        translation = translation,
+        pos = pos,
+        collins = collins,
+        oxford = oxford,
+        tag = tag,
+        bnc = bnc,
+        frq = frq,
+        exchange = exchange,
+        kana = kana,
+        romaji = romaji,
+        level = level
     )
     externalCaptions.forEach { externalCaption ->
         newWord.externalCaptions.add(externalCaption)
