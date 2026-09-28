@@ -206,9 +206,30 @@ val decompressDictionary by tasks.registering {
     }
 }
 
+// 日→中词典 jadic.db：日语功能依赖它，缺失时调用生成脚本构建。
+// 脚本只依赖 Python 标准库；可选依赖 pykakasi 用于生成罗马字，
+// 缺失时 romaji 字段留空，不影响其他功能。
+val buildJapaneseDictionary by tasks.registering {
+    group = "build"
+    description = "Generate Japanese (ja-zh) dictionary database if missing"
+    doLast {
+        val dictFile = layout.projectDirectory.dir("resources/common/dictionary/jadic.db").asFile
+        if (!dictFile.exists()) {
+            println("生成日语词典 jadic.db")
+            val script = layout.projectDirectory.dir("tools/japanese/build_vocabulary.py").asFile
+            providers.exec {
+                commandLine("python3", script.absolutePath)
+            }.result.assertNormalExitValue()
+        } else {
+            println("日语词典已存在，跳过生成")
+        }
+    }
+}
+
 tasks.named("compileKotlin") {
     // 移除模型下载依赖，只保留 ffmpeg 准备
     dependsOn("prepareFfmpeg")
+    dependsOn(buildJapaneseDictionary)
 }
 
 tasks.register("prepareFfmpeg") {

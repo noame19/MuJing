@@ -30,6 +30,7 @@
 
 import json
 import os
+import sqlite3
 import ssl
 import sys
 import urllib.request
@@ -40,6 +41,10 @@ from io import BytesIO
 # ---------------------------------------------------------------- 配置
 
 OUTPUT_DIR = "resources/common/vocabulary/JLPT日语"
+
+# 日→中词典（供 JapaneseDictionary.kt 查询），与 ECDICT 放在同一目录。
+# 该文件不纳入版本库，由 .gitignore 排除，构建时重新生成。
+DICT_OUTPUT = "resources/common/dictionary/jadic.db"
 
 OPENJLPT_BASE = "https://raw.githubusercontent.com/evanclan/OpenJLPT/main/data/json/vocab"
 YORI_LANG = "zh-cn"
@@ -226,12 +231,56 @@ def is_kana(text):
     return True
 
 
+# ---------------------------------------------------------------- 词典数据库
+
+def build_dictionary_db(yori_index):
+    """
+    生成日→中 SQLite 词典 jadic.db，供 JapaneseDictionary.kt 查询。
+
+    表结构与 Kotlin 侧一一对应：
+        jmdict(word, reading, translation)，主键 (word, reading)
+    """
+    os.makedirs(os.path.dirname(DICT_OUTPUT), exist_ok=True)
+    if os.path.exists(DICT_OUTPUT):
+        os.remove(DICT_OUTPUT)
+
+    conn = sqlite3.connect(DICT_OUTPUT)
+    try:
+        conn.execute(
+            "CREATE TABLE jmdict ("
+            " word TEXT NOT NULL, "
+            " reading TEXT DEFAULT '', "
+            " translation TEXT DEFAULT '', "
+            " PRIMARY KEY(word, reading))"
+        )
+        conn.execute("CREATE INDEX idx_jmdict_word ON jmdict(word)")
+
+        rows = [
+            (word, reading, "\n".join(glosses))
+            for word, readings in yori_index.items()
+            for reading, glosses in readings.items()
+        ]
+        conn.executemany(
+            "INSERT OR REPLACE INTO jmdict(word, reading, translation) VALUES(?,?,?)",
+            rows,
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    size_mb = os.path.getsize(DICT_OUTPUT) / 1048576
+    log(f"词典 {DICT_OUTPUT}：{len(rows)} 条记录，{size_mb:.1f} MiB")
+
+
 # ---------------------------------------------------------------- 主流程
 
 def main():
     openjlpt = load_openjlpt()
     yori_index = load_yori_zh_cn()
     to_romaji = load_romaji_converter()
+
+    # 先生成词典，再生成词库，两者共用同一份 Yori 数据
+    build_dictionary_db(yori_index)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     total_words = 0

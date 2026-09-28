@@ -46,6 +46,7 @@ bin/
 
 ### 未压缩的数据库 ###
 /resources/common/dictionary/ecdict.db
+/resources/common/dictionary/jadic.db
 
 ### 缓存的单词发音数据 ###
 /audio

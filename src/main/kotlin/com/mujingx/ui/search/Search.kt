@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.mujingx.data.Caption
 import com.mujingx.data.Dictionary
+import com.mujingx.data.JapaneseDictionary
 import com.mujingx.data.MutableVocabulary
 import com.mujingx.data.Word
 import com.mujingx.data.deepCopy
@@ -117,7 +118,9 @@ fun Search(
                     searchResult!!.value = ""
                 }
 
-                val inputWord = Word(value = input.lowercase().trim())
+                val isJapanese = vocabulary.language.equals("japanese", ignoreCase = true)
+                // 日语没有大小写之分，统一去空格即可
+                val inputWord = Word(value = if (isJapanese) input.trim() else input.lowercase().trim())
                 // 先搜索当前词库
                 val index = vocabulary.wordList.indexOf(inputWord)
                 if(index != -1){
@@ -135,7 +138,13 @@ fun Search(
 
                 // 如果词库里面没有，就搜索内置词典
                 if((searchResult == null) || searchResult!!.value.isEmpty()){
-                    val dictWord = Dictionary.query(input.lowercase().trim())
+                    val dictWord = if (isJapanese) {
+                        // 日语词典同时支持原形与假名反查
+                        JapaneseDictionary.query(inputWord.value)
+                            ?: JapaneseDictionary.queryByReading(inputWord.value)
+                    } else {
+                        Dictionary.query(input.lowercase().trim())
+                    }
                     if(dictWord != null){
                         searchResult = dictWord.deepCopy()
                     }
