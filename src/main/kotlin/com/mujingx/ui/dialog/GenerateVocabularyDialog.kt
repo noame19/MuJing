@@ -75,6 +75,7 @@ import com.mujingx.state.AppState
 import com.mujingx.state.getResourcesFile
 import com.mujingx.ui.components.BuiltInVocabularyMenu
 import com.mujingx.ui.components.SaveButton
+import com.mujingx.ui.components.formatVocabularyName
 import com.mujingx.ui.dialog.FilterState.*
 import com.mujingx.ui.edit.SaveOtherVocabulary
 import com.mujingx.ui.util.*
@@ -2026,15 +2027,7 @@ fun SelectedList(
                     modifier = Modifier.clickable {}
                         .fillMaxWidth()
                 ) {
-                    var name = file.nameWithoutExtension
-                    if (file.parentFile.nameWithoutExtension == "人教版英语" ||
-                        file.parentFile.nameWithoutExtension == "外研版英语" ||
-                        file.parentFile.nameWithoutExtension == "北师大版高中英语"
-                    ) {
-                        if (name.contains(" ")) {
-                            name = name.split(" ")[1]
-                        }
-                    }
+                    val name = formatVocabularyName(file, file.parentFile)
                     Text(
                         text = name,
                         color = MaterialTheme.colors.onBackground,
