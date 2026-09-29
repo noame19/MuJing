@@ -200,7 +200,7 @@ fun AzureTTSDialog(
                                     azureTTS.supportedStyles.forEach { style ->
                                         DropdownMenuItem(
                                             onClick = {
-                                                azureTTS.setPronunciationStyle(style)
+                                                azureTTS.selectPronunciationStyle(style)
                                                 showStyle = false
                                                 azureTTS.saveAzureState()
                                             },

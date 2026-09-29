@@ -81,8 +81,11 @@ class AzureTTS(
      * 切换发音语言，并把声音切换到该语言的默认嗓音。
      * Azure 声音名带语言前缀（例如 ja-JP-NanamiNeural），
      * 沿用上一个语言的嗓音名会取不到声音，因此必须整体替换。
+     *
+     * 命名避开 setPronunciationStyle：Kotlin 的 var 属性会生成同名同参的
+     * setter，与显式函数在 JVM 上撞签名，导致 Platform declaration clash。
      */
-    fun setPronunciationStyle(style: String) {
+    fun selectPronunciationStyle(style: String) {
         pronunciationStyle = style
         val voice = defaultVoiceFor(style)
         if (voice != null) {
