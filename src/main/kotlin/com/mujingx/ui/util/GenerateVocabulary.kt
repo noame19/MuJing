@@ -25,6 +25,7 @@ import com.matthewn4444.ebml.UnSupportSubtitlesException
 import com.matthewn4444.ebml.subtitles.SSASubtitles
 import com.mujingx.data.Caption
 import com.mujingx.data.Dictionary
+import com.mujingx.data.JapaneseDictionary
 import com.mujingx.data.MutableVocabulary
 import com.mujingx.data.Vocabulary
 import com.mujingx.data.VocabularyType
@@ -495,7 +496,169 @@ fun parseSRT(
 }
 
 /**
- * 解析 ASS 字幕文件
+ * 解析日语文本，抽取词条。
+ *
+ * 与英语链路的区别：
+ *  1. 用 Kuromoji 分词而非 OpenNLP 英语模型，并还原为基本形；
+ *  2. 查 jadic.db（日→中词典）而非 ECDICT；
+ *  3. 不做 lowercase 处理——日语没有大小写。
+ *
+ * @param words 词条到字幕的映射
+ * @param orderList 保持字幕中首次出现的顺序
+ */
+private fun extractJapaneseWords(
+    content: String,
+    dataCaption: Caption,
+    words: MutableMap<String, MutableList<Caption>>,
+    orderList: MutableList<String>
+) {
+    for (form in JapaneseWordSegmenter.tokenizeToBaseForms(content)) {
+        // 只保留确有语义的词，过滤掉纯符号与空白
+        if (form.isBlank() || form.all { !it.isLetterOrDigit() }) continue
+
+        val existing = words[form]
+        if (existing == null) {
+            words[form] = mutableListOf(dataCaption)
+            orderList.add(form)
+        } else if (existing.size < 3 && !existing.contains(dataCaption)) {
+            existing.add(dataCaption)
+        }
+    }
+}
+
+/**
+ * 用日汉词典批量补全词条信息。
+ * 查不到的词直接丢弃，与英语链路保持一致。
+ */
+private fun enrichJapaneseWords(
+    orderList: List<String>,
+    words: Map<String, MutableList<Caption>>,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    setProgressText("从字幕提取出 ${orderList.size} 个词，正在批量查询日汉词典")
+    val results = mutableListOf<Word>()
+
+    for (term in orderList) {
+        val hit = JapaneseDictionary.query(term) ?: continue
+        hit.captions = words[term]?.toMutableList() ?: mutableListOf()
+        results.add(hit)
+    }
+
+    setProgressText("${results.size} 个有效单词")
+    return results
+}
+
+/**
+ * 解析 SRT 字幕中的日语词条。
+ */
+@OptIn(ExperimentalComposeUiApi::class)
+@Throws(IOException::class)
+fun parseJapaneseSRT(
+    pathName: String,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val srtFile = File(pathName)
+    if (hasRichText(srtFile)) {
+        setProgressText("字幕有富文本标签，先移除富文本标签")
+        removeRichText(srtFile)
+    }
+
+    val words: MutableMap<String, MutableList<Caption>> = HashMap()
+    val orderList = mutableListOf<String>()
+
+    try {
+        val file = File(pathName)
+        val encoding = UniversalDetector.detectCharset(file)
+        val charset = if (encoding != null) Charset.forName(encoding) else Charset.defaultCharset()
+
+        setProgressText("正在解析字幕文件")
+        val inputStream: InputStream = FileInputStream(file)
+        val timedTextObject: TimedTextObject = FormatSRT().parseFile(file.name, inputStream, charset)
+
+        setProgressText("正在分词")
+        for (caption in timedTextObject.captions.values) {
+            var content = replaceSpecialCharacter(caption.content)
+            content = removeLocationInfo(content)
+            val dataCaption = Caption(
+                start = caption.start.getTime("hh:mm:ss,ms"),
+                end = caption.end.getTime("hh:mm:ss,ms"),
+                content = content
+            )
+            extractJapaneseWords(content, dataCaption, words, orderList)
+        }
+
+        val validList = enrichJapaneseWords(orderList, words, setProgressText)
+        setProgressText("")
+        return validList
+    } catch (exception: IOException) {
+        JOptionPane.showMessageDialog(null, exception.message)
+    }
+    return listOf()
+}
+
+/**
+ * 解析 MKV 内嵌字幕中的日语词条。
+ *
+ * @param trackId 指定字幕轨道
+ */
+@OptIn(ExperimentalComposeUiApi::class)
+@Throws(IOException::class)
+fun parseJapaneseMKV(
+    pathName: String,
+    trackId: Int,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val words: MutableMap<String, MutableList<Caption>> = HashMap()
+    val orderList = mutableListOf<String>()
+
+    try {
+        val reader = EBMLReader(pathName)
+        setProgressText("正在解析 MKV 文件")
+        if (!reader.readHeader()) {
+            println("This is not an mkv file!")
+            return listOf()
+        }
+        reader.readTracks()
+
+        if (reader.subtitles.isEmpty()) return listOf()
+
+        // 与 parseMKV 一致：先读完所有 cue frame，字幕才会被解析出来
+        for (i in 0 until reader.cuesCount) {
+            reader.readSubtitlesInCueFrame(i)
+        }
+
+        val subtitle = reader.subtitles[trackId] ?: return listOf()
+        val isASS = subtitle is SSASubtitles
+
+        setProgressText("正在分词")
+        for (caption in subtitle.readUnreadSubtitles()) {
+            val captionContent = if (isASS) {
+                caption.formattedVTT.replace("\\N", "\n")
+            } else {
+                caption.stringData
+            }
+
+            var content = replaceSpecialCharacter(captionContent)
+            content = removeLocationInfo(content)
+            val dataCaption = Caption(
+                start = caption.startTime.format().toString(),
+                end = caption.endTime.format(),
+                content = content
+            )
+            extractJapaneseWords(content, dataCaption, words, orderList)
+        }
+
+        val validList = enrichJapaneseWords(orderList, words, setProgressText)
+        setProgressText("")
+        return validList
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return listOf()
+}
+
+/**
+ * 解析 ASS 字幕文件。
  */
 @Throws(IOException::class)
 fun parseASS(
