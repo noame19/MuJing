@@ -512,8 +512,15 @@ def build_grammar():
             pattern = (entry.get("pattern") or "").strip()
             if not pattern:
                 continue
+            # 上游的 pattern 常在括号里附英文说明，如「〜が（but）」、
+            # 「〜に（time/destination）」。这部分是注释，不参与匹配，
+            # 否则会去匹配字幕里的「(but)」字样，直接导致该语法永远检不出。
+            pattern = re.sub(r"[（(][^)）]*[)）]", "", pattern).strip()
+            if not pattern:
+                continue
             # 上游用「 / 」分隔同一条的多个形式，统一成列表
             patterns = [p.strip() for p in pattern.split(" / ") if p.strip()]
+            patterns = [p for p in patterns if p]
             items.append({
                 "id": f"{level}-{len(items) + 1}",
                 "level": level,

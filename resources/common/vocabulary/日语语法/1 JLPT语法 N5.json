@@ -9,7 +9,7 @@
             "id": "N5-1",
             "level": "N5",
             "patterns": [
-                "〜が（but）"
+                "〜が"
             ],
             "meaning": "but; however",
             "formation": "Clause A + が + Clause B",
@@ -54,7 +54,7 @@
             "id": "N5-3",
             "level": "N5",
             "patterns": [
-                "〜から（reason）"
+                "〜から"
             ],
             "meaning": "because; since",
             "formation": "Sentence + から + Result",
@@ -143,7 +143,7 @@
             "id": "N5-7",
             "level": "N5",
             "patterns": [
-                "〜で（place/means）"
+                "〜で"
             ],
             "meaning": "marks the place of action or the means of doing something",
             "formation": "Place/Means + で + Verb",
@@ -299,7 +299,7 @@
             "id": "N5-14",
             "level": "N5",
             "patterns": [
-                "〜と（and/with）"
+                "〜と"
             ],
             "meaning": "and; with; together with",
             "formation": "Noun/Verb-plain + と + Noun/Verb",
@@ -366,7 +366,7 @@
             "id": "N5-17",
             "level": "N5",
             "patterns": [
-                "〜に（time/destination）"
+                "〜に"
             ],
             "meaning": "marks time, destination, or indirect target",
             "formation": "Noun/Time + に + Verb",
@@ -432,7 +432,7 @@
             "id": "N5-20",
             "level": "N5",
             "patterns": [
-                "〜を（object particle）"
+                "〜を"
             ],
             "meaning": "marks the direct object of a verb",
             "formation": "Noun + を + Verb",

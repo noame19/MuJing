@@ -149,9 +149,10 @@ fun HoverableText(
             val dictWord = Dictionary.query(text.lowercase().trim())
 
             // 日语文本额外做语法检出：结合视频学语法。
-            // 语法库缺失或分词器不可用时 match 返回空列表，不影响原有查词流程。
+            // 只取区分度较高的语法，避免「〜に」「〜を」这类几乎每句都有的
+            // 裸助词把真正值得学的语法淹掉。
             val grammarMatch = if (text.containsJapanese()) {
-                JapaneseGrammarMatcher.match(text).firstOrNull()
+                JapaneseGrammarMatcher.match(text, onlyHighSpecificity = true).firstOrNull()
             } else {
                 null
             }

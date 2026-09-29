@@ -69,12 +69,14 @@ private data class GrammarLibrary(
  * @param matchedText 字幕里实际命中的片段，如「食べさせられた」
  * @param startIndex 在原句中的起始下标
  * @param endIndex 在原句中的结束下标
+ * @param specificity 区分度，3 强 / 2 中 / 1 弱（裸助词）
  */
 data class GrammarMatch(
     val point: GrammarPoint,
     val matchedText: String,
     val startIndex: Int,
-    val endIndex: Int
+    val endIndex: Int,
+    val specificity: Int = 1
 )
 
 /**
@@ -163,6 +165,28 @@ object JapaneseGrammarMatcher {
         val isUsable: Boolean get() = tails.isNotEmpty()
 
         /**
+         * 模式的区分度。
+         *
+         * 助词类模式（「〜に」「〜を」「〜で」「〜が」）几乎出现在每一句话里，
+         * 若与「〜なければなりません」这类强模式同等对待，界面会被助词刷屏，
+         * 真正值得学的语法反而被淹没。因此按尾部特征把模式分成若干档，
+         * 展示时优先呈现高区分度的命中。
+         *
+         * @return 3 = 强特征（如「〜なければなりません」）
+         *         2 = 中等（如「〜ておく」）
+         *         1 = 弱（裸助词）
+         */
+        val specificity: Int
+            get() {
+                val longest = tails.maxOfOrNull { it.length } ?: 0
+                return when {
+                    longest >= 4 -> 3
+                    longest >= 2 -> 2
+                    else -> 1
+                }
+            }
+
+        /**
          * 在已分词的句子上尝试匹配。
          *
          * @param terms 词形序列（Kuromoji 还原后的基本形）
@@ -179,21 +203,47 @@ object JapaneseGrammarMatcher {
         }
 
         /**
-         * 在词序列中找 tail 的出现位置，并回溯到承载活用形的那一个词。
+         * 在词序列中找 tail 的出现位置。
          *
          * 语法尾巴往往跨多个词（如「なければなりません」= なければ + なり + ません），
          * 因此先在「词的拼接串」上定位，再换算回词的下标。
+         *
+         * 裸助词类模式额外要求前面存在一个实词：否则「これは〜です」这类
+         * 只有助词的句子也会被当成语法命中。
          */
         private fun findTail(terms: List<String>, tail: String): Int {
             val joined = terms.joinToString("")
-            val at = joined.indexOf(tail)
-            if (at < 0) return -1
+            var searchFrom = 0
 
-            // 把字符下标换算成词下标
+            while (true) {
+                val at = joined.indexOf(tail, searchFrom)
+                if (at < 0) return -1
+
+                val wordIndex = charToWordIndex(terms, at)
+                if (wordIndex >= 0) {
+                    // 弱模式要求前面有一个承载活用形的实词
+                    if (specificity > 1 || hasContentWordBefore(terms, wordIndex)) {
+                        return wordIndex
+                    }
+                }
+                searchFrom = at + 1
+            }
+        }
+
+        /** 判断 at 之前是否有一个实词（排除纯助词与标点） */
+        private fun hasContentWordBefore(terms: List<String>, wordIndex: Int): Boolean {
+            if (wordIndex <= 0) return false
+            return terms.take(wordIndex).any { term ->
+                term.isNotBlank() && term.none { it in PARTICLE_CHARS }
+            }
+        }
+
+        /** 把字符下标换算成词下标 */
+        private fun charToWordIndex(terms: List<String>, charIndex: Int): Int {
             var chars = 0
             for (i in terms.indices) {
                 val end = chars + terms[i].length
-                if (end > at) return i
+                if (end > charIndex) return i
                 chars = end
             }
             return -1
@@ -201,6 +251,9 @@ object JapaneseGrammarMatcher {
     }
 
     companion object {
+        /** 常见助词字符：这些单字本身不承载语法信息 */
+        private val PARTICLE_CHARS = "はがをにでへとやのかねこそ着呢"
+
         fun compile(patterns: List<String>): PatternMatcher {
             val tails = mutableListOf<String>()
             var hasLeadingLiteral = false
@@ -234,9 +287,13 @@ object JapaneseGrammarMatcher {
      * 流程：先用 Kuromoji 分词并还原基本形，再逐条语法在词序列上比对。
      *
      * @param text 通常是一行字幕
-     * @return 命中列表，按出现位置排序；同一条语法在一句内只记一次
+     * @param onlyHighSpecificity 只返回区分度较高的语法（过滤裸助词类）
+     * @return 命中列表，按区分度与位置排序；同一条语法在一句内只记一次
      */
-    fun match(text: String): List<GrammarMatch> {
+    fun match(
+        text: String,
+        onlyHighSpecificity: Boolean = false
+    ): List<GrammarMatch> {
         if (text.isBlank() || compiled.isEmpty()) return emptyList()
 
         val tokens = JapaneseWordSegmenter.tokenize(text)
@@ -246,8 +303,9 @@ object JapaneseGrammarMatcher {
         val matches = mutableListOf<GrammarMatch>()
 
         for (item in compiled) {
-            // 一条语法在一句话里命中一次即可，取最后一次出现的位置：
-            // 字幕常常一句里多次出现同一语法，靠后的一般更接近句意焦点。
+            val specificity = item.matcher.specificity
+            if (onlyHighSpecificity && specificity < 2) continue
+
             val tailStart = item.matcher.findStart(terms)
             if (tailStart < 0) continue
 
@@ -257,18 +315,21 @@ object JapaneseGrammarMatcher {
             val to = (tailStart + MAX_SPAN_TOKENS).coerceAtMost(tokens.size)
             val matchedText = terms.subList(from, to).joinToString("")
 
-            val startIndex = tokens[from].startIndex
-            val endIndex = tokens[to - 1].endIndex
             matches.add(
                 GrammarMatch(
                     point = item.point,
                     matchedText = matchedText,
-                    startIndex = startIndex,
-                    endIndex = endIndex
+                    startIndex = tokens[from].startIndex,
+                    endIndex = tokens[to - 1].endIndex,
+                    specificity = specificity
                 )
             )
         }
-        return matches.sortedBy { it.startIndex }
+        // 先按区分度降序（强语法在前），同区分度再按位置升序
+        return matches.sortedWith(
+            compareByDescending<GrammarMatch> { it.specificity }
+                .thenBy { it.startIndex }
+        )
     }
 
     /** 语法点最多覆盖多少个词，避免尾部较短时向前吞掉整个句子 */
