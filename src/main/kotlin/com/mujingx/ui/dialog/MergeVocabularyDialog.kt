@@ -275,16 +275,23 @@ fun MergeVocabularyDialog(
                                     newVocabulary = Vocabulary(
                                         name = "",
                                         type = VocabularyType.DOCUMENT,
-                                        language = "english",
+                                        // 合并结果的语言由参与合并的词库决定，
+                                        // 稍后按实际读入的词库回填
+                                        language = "",
                                         size = 0,
                                         relateVideoPath = "",
                                         subtitlesTrackId = 0,
                                         wordList = mutableListOf()
                                     )
                                     val wordList = mutableListOf<Word>()
+                                    var mergedLanguage = ""
                                     selectedFileList.forEach { file ->
                                         updateFileName(file.nameWithoutExtension)
                                         val vocabulary = loadVocabulary(file.absolutePath)
+                                        // 以首个非空语言标记为准
+                                        if (mergedLanguage.isEmpty() && vocabulary.language.isNotEmpty()) {
+                                            mergedLanguage = vocabulary.language
+                                        }
                                         vocabulary.wordList.forEach { word ->
                                             val index = wordList.indexOf(word)
                                             // wordList 没有这个单词
@@ -338,6 +345,7 @@ fun MergeVocabularyDialog(
                                         }
                                         updateSize(wordList.size)
                                     }
+                                    newVocabulary!!.language = mergedLanguage
                                     newVocabulary!!.wordList = wordList
                                     newVocabulary!!.size = wordList.size
                                     merging = false

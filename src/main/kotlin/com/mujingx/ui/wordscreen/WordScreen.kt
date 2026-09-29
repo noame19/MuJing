@@ -1367,7 +1367,8 @@ fun MainContent(
                         val vocabulary = Vocabulary(
                             name = selectedFile.nameWithoutExtension,
                             type = VocabularyType.DOCUMENT,
-                            language = "english",
+                            // 沿用当前词库的语言，避免日语词库被保存成 english
+                            language = wordScreenState.vocabulary.language,
                             size = wordScreenState.vocabulary.size,
                             relateVideoPath = wordScreenState.vocabulary.relateVideoPath,
                             subtitlesTrackId = wordScreenState.vocabulary.subtitlesTrackId,

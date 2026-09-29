@@ -861,6 +861,7 @@ fun GenerateVocabularyDialog(
                                     filterState = Filtering
                                 }
                             },
+                            isJapanese = targetLanguage == "japanese",
                         )
                         VocabularyFilter(
                             vocabularyFilterList = vocabularyFilterList,
@@ -971,7 +972,8 @@ fun GenerateVocabularyDialog(
                                                         bncZeroFilter,
                                                         frqZeroFilter,
                                                         replaceToLemma,
-                                                        selectedFileList.isNotEmpty()
+                                                        selectedFileList.isNotEmpty(),
+                                                        isJapanese = targetLanguage == "japanese"
                                                     )
                                                     // 根据选择的词库过滤单词
                                                     val filteredList = filterSelectVocabulary(
@@ -1140,7 +1142,9 @@ fun GenerateVocabularyDialog(
                                     val vocabulary = Vocabulary(
                                         name = selectedFile.nameWithoutExtension,
                                         type = vType,
-                                        language = "english",
+                                        // 与生成时选择的目标语言保持一致，
+                                        // 否则日语词库被标成 english 会走错词典与显示逻辑
+                                        language = targetLanguage,
                                         size = previewList.size,
                                         relateVideoPath = relateVideoPath,
                                         subtitlesTrackId = selectedTrackId,
@@ -1471,6 +1475,7 @@ fun BasicFilter(
     changeFrqZeroFilter: (Boolean) -> Unit,
     replaceToLemma: Boolean,
     setReplaceToLemma: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
     val blueColor = if (MaterialTheme.colors.isLight) Color.Blue else Color(41, 98, 255)
     Column(Modifier.fillMaxWidth().background(MaterialTheme.colors.background)) {
@@ -1549,8 +1554,8 @@ fun BasicFilter(
             )
         }
         Divider()
-        // 过滤词频
-        Row(
+        // 过滤词频：BNC/COCA 为英语语料词频，对日语恒为 0，日语下不展示
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1608,7 +1613,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1662,7 +1667,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1718,7 +1723,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1790,7 +1795,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -2462,9 +2467,15 @@ fun filterWords(
     bncZeroFilter: Boolean,
     frqZeroFilter: Boolean,
     replaceToLemma: Boolean,
-    isBatchMKV: Boolean
+    isBatchMKV: Boolean,
+    isJapanese: Boolean = false
 ): List<Word> {
     val resultList = ArrayList(inputWords)
+
+    // BNC/COCA 是英语语料词频，对日语词条恒为 0。
+    // 若照常套用「过滤 BNC=0」的规则，会把所有日语词条全部删光，
+    // 因此日语下跳过全部词频类过滤。
+    val applyFrequencyFilters = !isJapanese
 
     /**
      * Key 为需要转换为原型的单词，
@@ -2486,16 +2497,16 @@ fun filterWords(
         if (numberFilter && (word.value.toDoubleOrNull() != null)) {
             // 过滤数字
             resultList.remove(word)
-        } else if (bncNumFilter && (word.bnc!! in 1 until bncNum)) {
+        } else if (applyFrequencyFilters && bncNumFilter && (word.bnc!! in 1 until bncNum)) {
             // 过滤最常见的词
             resultList.remove(word)
-        } else if (frqNumFilter && (word.frq!! in 1 until frqNum)) {
+        } else if (applyFrequencyFilters && frqNumFilter && (word.frq!! in 1 until frqNum)) {
             // 过滤最常见的词
             resultList.remove(word)
-        } else if (bncZeroFilter && word.bnc == 0) {
+        } else if (applyFrequencyFilters && bncZeroFilter && word.bnc == 0) {
             // 过滤 BNC 词频为 0 的词
             resultList.remove(word)
-        } else if (frqZeroFilter && word.frq == 0) {
+        } else if (applyFrequencyFilters && frqZeroFilter && word.frq == 0) {
             // 过滤 COCA 词频为 0 的词
             resultList.remove(word)
         }
