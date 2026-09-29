@@ -96,12 +96,12 @@ object JapaneseWordSegmenter {
     }
 
     private fun tokenizeInternal(text: String): List<JapaneseToken> {
-        // JapaneseTokenizer 没有无参构造，必须显式给出：
-        // 单例 UserDictionary（不做用户自定义词典分词）、
-        // discardPunctuation = false（保留标点，字幕断句需要）、
-        // Mode.NORMAL（普通分词，不做搜索/复合词切分）。
+        // JapaneseTokenizer 没有无参构造，且 UserDictionary 只有私有构造，
+        // 公开入口是 open(Reader)。传空 Reader 即表示不启用用户自定义词典。
+        // discardPunctuation = false：保留标点，字幕断句与词性判断都需要。
+        // Mode.NORMAL：普通分词，不做搜索模式或复合词二次切分。
         val tokenizer = JapaneseTokenizer(
-            UserDictionary.getSingleton(),
+            UserDictionary.open(StringReader("")),
             false,
             JapaneseTokenizer.Mode.NORMAL
         )
