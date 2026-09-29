@@ -30,6 +30,7 @@
 
 import json
 import os
+import re
 import sqlite3
 import ssl
 import sys
@@ -53,6 +54,20 @@ YORI_TAG = "data-2026-08-08"
 YORI_URL = (
     f"https://github.com/YoriJP/yori-dict/releases/download/{YORI_TAG}/yori-ja-{YORI_LANG}.zip"
 )
+
+# 扩展词表来源
+# 1) 新标准日本语词表（MIT）。字段结构：
+#    [课次ID, 词性, 中文释义, "假名(汉字)", 音频时间戳]
+STD_WORDS_URL = "https://raw.githubusercontent.com/smartsl/biaori/master/words.json"
+STD_OUTPUT_DIR = "resources/common/vocabulary/标准日本语"
+
+# 2) みんなの日本語 初級 I & II（按课次组织）
+MINNA_YAML_URL = "https://raw.githubusercontent.com/vitto4/MinnaNoDS/master/minna-no-ds.yaml"
+MINNA_OUTPUT_DIR = "resources/common/vocabulary/みんなの日本語"
+
+# 3) JLPT Anki 词表（MIT，CSV：expression,reading,meaning,tags,guid）
+ANKI_BASE = "https://raw.githubusercontent.com/jamsinclair/open-anki-jlpt-decks/main/src"
+ANKI_OUTPUT_DIR = "resources/common/vocabulary/JLPT精选"
 
 # JLPT 等级：由易到难，数字前缀用于词库列表排序
 LEVELS = [
@@ -280,6 +295,191 @@ def build_dictionary_db(yori_index):
     log(f"词典 {DICT_OUTPUT}：{len(rows)} 条记录，{size_mb:.1f} MiB")
 
 
+# ---------------------------------------------------------------- 扩展词表
+
+def write_vocabulary(out_dir, name, words, order=None):
+    """按幕境词库格式写出单个词库文件。"""
+    os.makedirs(out_dir, exist_ok=True)
+    filename = f"{order} {name}.json" if order else f"{name}.json"
+    payload = {
+        "name": name,
+        "type": VOCABULARY_TYPE,
+        "language": LANGUAGE,
+        "size": len(words),
+        "relateVideoPath": "",
+        "subtitlesTrackId": 0,
+        "wordList": words,
+    }
+    path = os.path.join(out_dir, filename)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=4)
+    return path, len(words)
+
+
+def make_word(term, kana, chinese, english, level, romaji="", pos=""):
+    """构造一个 MuJing 词条。"""
+    return {
+        "value": term,
+        "usphone": "",
+        "ukphone": "",
+        "definition": english,
+        "translation": chinese,
+        "pos": pos,
+        "collins": 0,
+        "oxford": False,
+        "tag": f"{level}".lower(),
+        "bnc": 0,
+        "frq": 0,
+        "exchange": "",
+        "kana": kana,
+        "romaji": romaji,
+        "level": level,
+        "externalCaptions": [],
+        "captions": [],
+    }
+
+
+def build_standard_japanese(yori_index, to_romaji):
+    """
+    新标准日本语词表。
+
+    上游字段为 [课次ID, 词性, 中文释义, "假名(汉字)", 音频时间戳]，
+    日语词本身在第 4 字段的括号内（纯假名词条则直接是假名）。
+    """
+    raw = fetch(STD_WORDS_URL, "std-words.json")
+    rows = json.loads(raw.decode("utf-8"))
+
+    # 课次 ID 分册：<1000 与 10000-19999 属初级，20000+ 属中级，0 为未标注
+    def book_of(lesson_id):
+        if lesson_id >= 20000:
+            return "中级"
+        if lesson_id > 0:
+            return "初级"
+        return "未分册"
+
+    grouped = defaultdict(list)
+    for row in rows:
+        lesson_id, pos, chinese, kana_field = row[0], row[1], row[2], row[3]
+        if not kana_field or not chinese:
+            continue
+
+        # 上游的注音字段形如「ちゅうごくじん(中国人)」或「しょく（食）」，
+        # 半角与全角括号都可能出现，两种都要能切出假名与汉字。
+        match = re.search(r"[(（]", kana_field)
+        if match:
+            kana = kana_field[:match.start()].strip()
+            term = kana_field[match.end():]
+            term = re.sub(r"[)）]\s*$", "", term).strip()
+            # 上游偶有括号不配对的脏数据（如「ＦＩＦＡ）／こくさい…」），
+            # 切出后若仍含括号说明解析不可靠，直接丢弃避免生成错乱的词条。
+            if "(" in term or ")" in term or "（" in term or "）" in term:
+                continue
+        else:
+            kana = kana_field.strip()
+            term = kana
+        if not term:
+            continue
+
+        grouped[book_of(lesson_id)].append((lesson_id, term, kana, chinese, pos))
+
+    total = 0
+    # 固定册别顺序：初级 → 中级 → 未分册
+    book_order = {"初级": 1, "中级": 2, "未分册": 3}
+    for index, (book, items) in enumerate(
+        sorted(grouped.items(), key=lambda kv: book_order.get(kv[0], 9)), start=1
+    ):
+        # 同一册内按课次升序，保持上游顺序
+        items.sort(key=lambda x: x[0])
+        words = []
+        seen = set()
+        for _, term, kana, chinese, pos in items:
+            if term in seen:
+                continue
+            seen.add(term)
+            roman = to_romaji(kana) if (to_romaji and kana) else ""
+            label = "标准日本语" if book == "未分册" else f"标准日本语-{book}"
+            words.append(make_word(term, kana, chinese, "", label, roman, pos))
+        path, count = write_vocabulary(STD_OUTPUT_DIR, f"标准日本语 {book}", words, index)
+        log(f"标准日本语 {book}: {count} 词 -> {path}")
+        total += count
+    log(f"标准日本语合计 {total} 词")
+
+
+def build_minna_no_nihongo(yori_index, to_romaji):
+    """みんなの日本語 初級 I & II，按课次生成。"""
+    import yaml  # 可选依赖，仅生成该词表时需要
+
+    raw = fetch(MINNA_YAML_URL, "minna-no-ds.yaml")
+    data = yaml.safe_load(raw.decode("utf-8"))
+
+    lessons = [k for k in data if k.startswith("lesson-")]
+    total = 0
+    for order, lesson in enumerate(sorted(lessons), start=1):
+        words = []
+        seen = set()
+        for entry in data[lesson]:
+            kanji = entry.get("kanji")
+            kana = entry.get("kana") or ""
+            # 纯假名词条没有汉字，此时假名就是词条本身
+            term = kanji or kana
+            if not term or term in seen:
+                continue
+            seen.add(term)
+
+            english = ""
+            meaning = entry.get("meaning") or {}
+            if isinstance(meaning, dict):
+                english = meaning.get("en") or ""
+            elif isinstance(meaning, str):
+                english = meaning
+
+            chinese = pick_chinese_glosses(term, kana, yori_index)
+            roman = entry.get("romaji") or (to_romaji(kana) if (to_romaji and kana) else "")
+            words.append(
+                make_word(term, kana, "\n".join(chinese), english,
+                          "みんなの日本語-初級", roman)
+            )
+        if not words:
+            continue
+        lesson_no = lesson.split("-")[1]
+        path, count = write_vocabulary(
+            MINNA_OUTPUT_DIR, f"第{lesson_no}課", words, order
+        )
+        total += count
+    log(f"みんなの日本語 初级合计 {total} 词，输出目录 {MINNA_OUTPUT_DIR}")
+
+
+def build_anki_jlpt(yori_index, to_romaji):
+    """JLPT Anki 精选词表（CSV）。"""
+    import csv
+    import io
+
+    total = 0
+    for order, (level, _, _) in enumerate(LEVELS, start=1):
+        raw = fetch(f"{ANKI_BASE}/n{level[1]}.csv", f"anki-n{level[1]}.csv")
+        reader = csv.DictReader(io.StringIO(raw.decode("utf-8")))
+
+        words = []
+        seen = set()
+        for row in reader:
+            term = (row.get("expression") or "").strip()
+            if not term or term in seen:
+                continue
+            seen.add(term)
+
+            kana = (row.get("reading") or "").strip()
+            english = (row.get("meaning") or "").strip()
+            chinese = pick_chinese_glosses(term, kana, yori_index)
+            roman = to_romaji(kana) if (to_romaji and kana) else ""
+            words.append(
+                make_word(term, kana, "\n".join(chinese), english, f"JLPT精选-{level}", roman)
+            )
+        path, count = write_vocabulary(ANKI_OUTPUT_DIR, f"JLPT精选 {level}", words, order)
+        log(f"JLPT精选 {level}: {count} 词 -> {path}")
+        total += count
+    log(f"JLPT精选合计 {total} 词")
+
+
 # ---------------------------------------------------------------- 主流程
 
 def load_existing_romaji():
@@ -356,6 +556,23 @@ def main():
         total_words += len(words)
 
     log(f"完成，共 {total_words} 词，输出目录 {OUTPUT_DIR}")
+
+    # 扩展词表。各自失败只记录并跳过，不影响已生成的词库。
+    try:
+        build_standard_japanese(yori_index, to_romaji)
+    except Exception as exc:  # noqa: BLE001
+        log(f"跳过标准日本语词表：{exc}")
+
+    try:
+        build_minna_no_nihongo(yori_index, to_romaji)
+    except Exception as exc:  # noqa: BLE001
+        log(f"跳过みんなの日本語词表：{exc}（需要 pyyaml：pip install pyyaml）")
+
+    try:
+        build_anki_jlpt(yori_index, to_romaji)
+    except Exception as exc:  # noqa: BLE001
+        log(f"跳过 JLPT 精选词表：{exc}")
+
     return 0
 
 

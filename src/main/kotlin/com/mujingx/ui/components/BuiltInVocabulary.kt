@@ -47,7 +47,10 @@ private val NUMERIC_SORT_CATEGORIES = setOf(
     "人教版英语",
     "外研版英语",
     "北师大版高中英语",
-    "JLPT日语"
+    "JLPT日语",
+    "标准日本语",
+    "みんなの日本語",
+    "JLPT精选"
 )
 
 /**
