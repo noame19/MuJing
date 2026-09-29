@@ -69,6 +69,12 @@ MINNA_OUTPUT_DIR = "resources/common/vocabulary/みんなの日本語"
 ANKI_BASE = "https://raw.githubusercontent.com/jamsinclair/open-anki-jlpt-decks/main/src"
 ANKI_OUTPUT_DIR = "resources/common/vocabulary/JLPT精选"
 
+# 4) 日语语法点（OpenJLPT，CC BY-SA 4.0）
+#    N5-N1 各 20 条，共 100 条。pattern 字段是可字面匹配的表面形式，
+#    如「〜たい」「〜てください」，用于在字幕中检索语法。
+GRAMMAR_BASE = "https://raw.githubusercontent.com/evanclan/OpenJLPT/main/data/json/grammar"
+GRAMMAR_OUTPUT_DIR = "resources/common/vocabulary/日语语法"
+
 # JLPT 等级：由易到难，数字前缀用于词库列表排序
 LEVELS = [
     ("N5", 1, "日语能力测试 N5"),
@@ -480,6 +486,66 @@ def build_anki_jlpt(yori_index, to_romaji):
     log(f"JLPT精选合计 {total} 词")
 
 
+# ---------------------------------------------------------------- 语法库
+
+def build_grammar():
+    """
+    生成 JLPT 语法库。
+
+    上游每条形如：
+    {"pattern": "〜たい", "level": "N5", "meaning": "want to do",
+     "formation": "V-stem + たい", "examples": [{"ja": ..., "en": ...}],
+     "tags": ["..."]}
+
+    pattern 中的「〜」是占位符，表示此处接词尾变化。
+    匹配字幕时会把「〜」替换成正则的通配，避免只匹配字面波浪号。
+    """
+    os.makedirs(GRAMMAR_OUTPUT_DIR, exist_ok=True)
+    total = 0
+
+    for order, (level, _, _) in enumerate(LEVELS, start=1):
+        raw = fetch(f"{GRAMMAR_BASE}/{level.lower()}.json", f"grammar-{level.lower()}.json")
+        entries = json.loads(raw.decode("utf-8"))
+
+        items = []
+        for entry in entries:
+            pattern = (entry.get("pattern") or "").strip()
+            if not pattern:
+                continue
+            # 上游用「 / 」分隔同一条的多个形式，统一成列表
+            patterns = [p.strip() for p in pattern.split(" / ") if p.strip()]
+            items.append({
+                "id": f"{level}-{len(items) + 1}",
+                "level": level,
+                "patterns": patterns,
+                "meaning": entry.get("meaning", ""),
+                "formation": entry.get("formation", ""),
+                "examples": [
+                    {"ja": ex.get("ja", ""), "en": ex.get("en", "")}
+                    for ex in (entry.get("examples") or [])
+                    if isinstance(ex, dict)
+                ],
+                "tags": entry.get("tags") or [],
+            })
+
+        payload = {
+            "name": f"JLPT语法 {level}",
+            "type": VOCABULARY_TYPE,
+            "language": LANGUAGE,
+            "level": level,
+            "size": len(items),
+            "grammarList": items,
+        }
+        path = os.path.join(GRAMMAR_OUTPUT_DIR, f"{order} JLPT语法 {level}.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(payload, fh, ensure_ascii=False, indent=4)
+        log(f"语法 {level}: {len(items)} 条 -> {path}")
+        total += len(items)
+
+    log(f"语法合计 {total} 条，输出目录 {GRAMMAR_OUTPUT_DIR}")
+    return total
+
+
 # ---------------------------------------------------------------- 主流程
 
 def load_existing_romaji():
@@ -572,6 +638,11 @@ def main():
         build_anki_jlpt(yori_index, to_romaji)
     except Exception as exc:  # noqa: BLE001
         log(f"跳过 JLPT 精选词表：{exc}")
+
+    try:
+        build_grammar()
+    except Exception as exc:  # noqa: BLE001
+        log(f"跳过语法库：{exc}")
 
     return 0
 
