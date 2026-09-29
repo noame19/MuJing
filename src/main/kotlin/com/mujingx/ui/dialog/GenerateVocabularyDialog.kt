@@ -933,6 +933,8 @@ fun GenerateVocabularyDialog(
                                 enablePhrases = it
                                 filterState = Filtering
                             },
+                            targetLanguage = targetLanguage,
+                            setTargetLanguage = { targetLanguage = it },
                         )
 
                         // 单词预览和任务列表
@@ -2109,6 +2111,8 @@ fun SelectFile(
     showEnablePhrases: Boolean,
     enablePhrases: Boolean,
     changeEnablePhrases: (Boolean) -> Unit,
+    targetLanguage: String,
+    setTargetLanguage: (String) -> Unit,
 ) {
 
     Column(Modifier.height(IntrinsicSize.Max)) {
@@ -2192,7 +2196,7 @@ fun SelectFile(
                     listOf("english" to "英语", "japanese" to "日语").forEach { (code, label) ->
                         DropdownMenuItem(
                             onClick = {
-                                targetLanguage = code
+                                setTargetLanguage(code)
                                 showLang = false
                                 // 切换语言后需要重新生成，已在运行时自动重跑
                                 if (started) {

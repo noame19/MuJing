@@ -345,9 +345,11 @@ fun MergeVocabularyDialog(
                                         }
                                         updateSize(wordList.size)
                                     }
-                                    newVocabulary!!.language = mergedLanguage
                                     newVocabulary!!.wordList = wordList
                                     newVocabulary!!.size = wordList.size
+                                    // Vocabulary.language 是不可变属性，
+                                    // 需要整体重建才能带上合并后的语言
+                                    newVocabulary = newVocabulary!!.copy(language = mergedLanguage)
                                     merging = false
                                     mergeEnabled = false
                                 }

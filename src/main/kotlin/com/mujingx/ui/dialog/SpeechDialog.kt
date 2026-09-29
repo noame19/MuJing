@@ -229,7 +229,6 @@ fun AzureTTSDialog(
 
                         }
                         }
-                    }
                     Spacer(Modifier.height(8.dp))
                     Box{
                         var showList by remember{ mutableStateOf(false) }

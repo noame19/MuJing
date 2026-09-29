@@ -156,7 +156,7 @@ object JapaneseGrammarMatcher {
      * 再检查各词在还原为基本形后是否满足模式的固定部分。
      * 这样「〜」自然对应「任意个前置词」，边界准确。
      */
-    class PatternMatcher private constructor(
+    class PatternMatcher internal constructor(
         /** 去掉「〜」后的尾部字面形式 */
         private val tails: List<String>,
         /** 「〜」之前是否还有固定文字（少数模式以实词开头） */
@@ -250,36 +250,6 @@ object JapaneseGrammarMatcher {
         }
     }
 
-    companion object {
-        /** 常见助词字符：这些单字本身不承载语法信息 */
-        private val PARTICLE_CHARS = "はがをにでへとやのかねこそ着呢"
-
-        fun compile(patterns: List<String>): PatternMatcher {
-            val tails = mutableListOf<String>()
-            var hasLeadingLiteral = false
-
-            for (raw in patterns) {
-                val cleaned = raw.trim()
-                if (cleaned.isEmpty()) continue
-
-                val head = cleaned.takeWhile { it != '〜' && it != '~' }
-                val tail = cleaned.dropWhile { it != '〜' && it != '~' }
-                    .drop(1)   // 去掉「〜」本身
-                    .trim()
-
-                // 尾部是判定语法身份的关键；尾部为空说明该模式无法用于匹配
-                if (tail.isEmpty()) continue
-                if (head.isNotEmpty()) hasLeadingLiteral = true
-
-                // 「〜がいます / 〜があります」已在构建期按 / 拆分；
-                // 这里再按「或」处理一次，兼容含顿号的写法
-                tail.split('、', '/').map { it.trim() }
-                    .filter { it.isNotEmpty() }
-                    .forEach { tails.add(it) }
-            }
-            return PatternMatcher(tails.toList(), hasLeadingLiteral)
-        }
-    }
 
     /**
      * 在一段文本中检出全部语法点。
@@ -343,4 +313,40 @@ object JapaneseGrammarMatcher {
 
     /** 全部语法条目 */
     fun allPoints(): List<GrammarPoint> = compiled.map { it.point }
+    companion object {
+        /** 常见助词字符：这些单字本身不承载语法信息 */
+        private val PARTICLE_CHARS = "はがをにでへとやのかねこそ着呢"
+
+        /**
+         * 编译语法模式。
+         *
+         * 「〜」是占位符，表示词尾变化；其余部分是判定语法身份的字面形式。
+         * 尾部为空的模式无法用于匹配，会被跳过。
+         */
+        fun compile(patterns: List<String>): PatternMatcher {
+            val tails = mutableListOf<String>()
+            var hasLeadingLiteral = false
+
+            for (raw in patterns) {
+                val cleaned = raw.trim()
+                if (cleaned.isEmpty()) continue
+
+                val head = cleaned.takeWhile { it != '〜' && it != '~' }
+                val tail = cleaned.dropWhile { it != '〜' && it != '~' }
+                    .drop(1)   // 去掉「〜」本身
+                    .trim()
+
+                // 尾部是判定语法身份的关键；尾部为空说明该模式无法用于匹配
+                if (tail.isEmpty()) continue
+                if (head.isNotEmpty()) hasLeadingLiteral = true
+
+                // 「〜がいます / 〜があります」已在构建期按 / 拆分；
+                // 这里再按「或」处理一次，兼容含顿号的写法
+                tail.split('、', '/').map { it.trim() }
+                    .filter { it.isNotEmpty() }
+                    .forEach { tails.add(it) }
+            }
+            return PatternMatcher(tails.toList(), hasLeadingLiteral)
+        }
+    }
 }

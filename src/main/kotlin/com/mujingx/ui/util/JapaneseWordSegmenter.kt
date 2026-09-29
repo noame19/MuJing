@@ -19,6 +19,7 @@
 
 package com.mujingx.ui.util
 
+import org.apache.lucene.analysis.TokenStream
 import org.apache.lucene.analysis.Tokenizer
 import org.apache.lucene.analysis.ja.JapaneseBaseFormFilter
 import org.apache.lucene.analysis.ja.JapaneseTokenizer as KuromojiTokenizer
@@ -96,31 +97,31 @@ object JapaneseWordSegmenter {
 
     private fun tokenizeInternal(text: String): List<JapaneseToken> {
         val tokenizer: Tokenizer = KuromojiTokenizer()
-        tokenizer.setReader(StringReader(text))
-        // BasicFormFilter 会把表层形式改写为基本形：
+        // JapaneseBaseFormFilter 会把表层形式改写为基本形：
         // 「食べました」→「食べる」。词典外的未知词保持原样。
-        tokenizer.addFilter(JapaneseBaseFormFilter(tokenizer))
+        val stream: TokenStream = JapaneseBaseFormFilter(tokenizer)
 
-        val termAttr = tokenizer.addAttribute(CharTermAttribute::class.java)
-        val offsetAttr = tokenizer.addAttribute(OffsetAttribute::class.java)
-        val typeAttr = tokenizer.addAttribute(TypeAttribute::class.java)
+        val termAttr = stream.addAttribute(CharTermAttribute::class.java)
+        val offsetAttr = stream.addAttribute(OffsetAttribute::class.java)
+        val typeAttr = stream.addAttribute(TypeAttribute::class.java)
 
         val tokens = mutableListOf<JapaneseToken>()
         try {
-            tokenizer.reset()
-            while (tokenizer.incrementToken()) {
+            stream.setReader(StringReader(text))
+            stream.reset()
+            while (stream.incrementToken()) {
                 tokens.add(
                     JapaneseToken(
                         term = termAttr.toString(),
-                        partOfSpeech = typeAttr.type.orEmpty(),
-                        startIndex = offsetAttr.startOffset,
-                        endIndex = offsetAttr.endOffset
+                        partOfSpeech = typeAttr.type().orEmpty(),
+                        startIndex = offsetAttr.startOffset(),
+                        endIndex = offsetAttr.endOffset()
                     )
                 )
             }
-            tokenizer.end()
+            stream.end()
         } finally {
-            tokenizer.close()
+            stream.close()
         }
         return tokens
     }
