@@ -69,9 +69,9 @@ object JapaneseWordSegmenter {
      */
     private val lock = Any()
 
-    /** 分词器是否可用。词典加载失败时为 false，调用方据此走降级路径。 */
+    /** 是否已打印过分词失败堆栈，避免逐句刷屏 */
     @Volatile
-    private var available: Boolean? = null
+    private var failureReported: Boolean = false
 
     /**
      * 对日语文本分词，并还原为基本形。
@@ -84,9 +84,11 @@ object JapaneseWordSegmenter {
         return try {
             synchronized(lock) { tokenizeInternal(text) }
         } catch (e: Throwable) {
-            if (available != false) {
+            // 词典缺失属于环境问题（词典已内嵌于 jar，正常不会发生）。
+            // 只在首次失败时打印堆栈，避免逐句刷屏。
+            if (!failureReported) {
                 e.printStackTrace()
-                available = false
+                failureReported = true
             }
             fallbackTokenize(text)
         }
@@ -120,7 +122,6 @@ object JapaneseWordSegmenter {
         } finally {
             tokenizer.close()
         }
-        available = true
         return tokens
     }
 
