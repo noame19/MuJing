@@ -44,6 +44,8 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.mujingx.data.*
 import com.mujingx.player.danmaku.DisplayMode
+import com.mujingx.ui.dialog.GrammarDetailCard
+import com.mujingx.ui.util.JapaneseGrammarMatcher
 import com.mujingx.player.danmaku.WordDetail
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -146,6 +148,14 @@ fun HoverableText(
 
             val dictWord = Dictionary.query(text.lowercase().trim())
 
+            // 日语文本额外做语法检出：结合视频学语法。
+            // 语法库缺失或分词器不可用时 match 返回空列表，不影响原有查词流程。
+            val grammarMatch = if (text.containsJapanese()) {
+                JapaneseGrammarMatcher.match(text).firstOrNull()
+            } else {
+                null
+            }
+
             Popup(
                 alignment = Alignment.TopCenter,
                 offset = with(density) { IntOffset(0, -350.dp.toPx().toInt()) },
@@ -168,7 +178,12 @@ fun HoverableText(
                         onPopupHoverChanged(false)
                     }){
                     Box(modifier = Modifier.size(400.dp, 350.dp),) {
-                        if(dictWord != null){
+                        if(grammarMatch != null){
+                            GrammarDetailCard(
+                                match = grammarMatch,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else if(dictWord != null){
                             WordDetail(
                                 word =dictWord ,
                                 displayMode = DisplayMode.DICT,

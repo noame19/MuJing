@@ -55,6 +55,7 @@ import com.mujingx.ui.flatlaf.updateFlatLaf
 import com.mujingx.ui.window.windowBackgroundFlashingOnCloseFixHack
 import com.mujingx.ui.wordscreen.*
 import com.mujingx.ui.util.rememberMonospace
+import com.mujingx.ui.util.JapaneseGrammarMatcher
 import java.awt.Toolkit
 
 
@@ -773,6 +774,7 @@ private val subtitleLanguageOptions = listOf(
 @OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun OtherSettings(appState: AppState) {
+    var showGrammarLibrary by remember { mutableStateOf(false) }
     Box(Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter){
         Column(modifier = Modifier.fillMaxWidth().padding(top = 20.dp,end = 50.dp),
@@ -852,6 +854,25 @@ fun OtherSettings(appState: AppState) {
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
                 fontSize = MaterialTheme.typography.caption
             )
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // 语法库入口。仅在语法数据可用时展示，避免出现打不开的空窗口。
+        if (JapaneseGrammarMatcher.isAvailable) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center){
+                Text("日语语法库")
+                Spacer(Modifier.width(20.dp))
+                OutlinedButton(onClick = { showGrammarLibrary = true }) {
+                    Text("打开（${JapaneseGrammarMatcher.size} 条）")
+                }
+            }
+
+            if (showGrammarLibrary) {
+                GrammarLibraryDialog(onClose = { showGrammarLibrary = false })
+            }
         }
         }
     }
