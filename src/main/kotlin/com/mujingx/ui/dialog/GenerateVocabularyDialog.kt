@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Help
@@ -228,6 +229,12 @@ fun GenerateVocabularyDialog(
          * 是否过滤词组
          */
         var enablePhrases by remember { mutableStateOf(false) }
+
+        /**
+         * 生成词库的目标语言，决定使用哪套分词器与词典。
+         * english 走 OpenNLP + ECDICT，japanese 走 Kuromoji + 日汉词典。
+         */
+        var targetLanguage by remember { mutableStateOf("english") }
 
         /**
          * 过滤单词
@@ -603,6 +610,7 @@ fun GenerateVocabularyDialog(
             previewList.clear()
             parsedList.clear()
             scope.launch(Dispatchers.Default) {
+                val isJapanese = targetLanguage == "japanese"
                 val words = when (type) {
                     DOCUMENT -> {
                         if (title == "过滤词库") {
@@ -623,7 +631,13 @@ fun GenerateVocabularyDialog(
 
                     SUBTITLES -> {
                         val extension = File(pathName).extension
-                        if (extension == "srt") {
+                        if (isJapanese) {
+                            // 日语字幕统一按 SRT 解析；ASS 会先转换为 SRT
+                            parseJapaneseSRT(
+                                pathName = pathName,
+                                setProgressText = { progressText = it }
+                            )
+                        } else if (extension == "srt") {
                             parseSRT(
                                 pathName = pathName,
                                 enablePhrases = enablePhrases,
@@ -639,12 +653,20 @@ fun GenerateVocabularyDialog(
                     }
 
                     MKV -> {
-                        parseVideo(
-                            pathName = pathName,
-                            enablePhrases = enablePhrases,
-                            trackId = trackId,
-                            setProgressText = { progressText = it }
-                        )
+                        if (isJapanese) {
+                            parseJapaneseMKV(
+                                pathName = pathName,
+                                trackId = trackId,
+                                setProgressText = { progressText = it }
+                            )
+                        } else {
+                            parseVideo(
+                                pathName = pathName,
+                                enablePhrases = enablePhrases,
+                                trackId = trackId,
+                                setProgressText = { progressText = it }
+                            )
+                        }
                     }
                 }
                 parsedList.addAll(words)
@@ -2134,13 +2156,69 @@ fun SelectFile(
                 selectedFilePath.isNotEmpty()
             } else selectedSubtitle != "    " || selectedFileList.isNotEmpty()
 
+            // 目标语言：决定使用哪套分词器与词典生成词库
+            Box {
+                var showLang by remember { mutableStateOf(false) }
+                val langBorder = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .width(120.dp).height(35.dp).padding(start = 10.dp, end = 4.dp)
+                        .border(border = langBorder)
+                        .clickable { showLang = !showLang }
+                ){
+                    Text(
+                        text = if (targetLanguage == "japanese") "日语" else "英语",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = "Localized description",
+                        tint = if (MaterialTheme.colors.isLight) Color.DarkGray else MaterialTheme.colors.onBackground,
+                        modifier = Modifier.size(24.dp, 24.dp)
+                    )
+                }
+                DropdownMenu(
+                    expanded = showLang,
+                    onDismissRequest = { showLang = false }
+                ){
+                    listOf("english" to "英语", "japanese" to "日语").forEach { (code, label) ->
+                        DropdownMenuItem(
+                            onClick = {
+                                targetLanguage = code
+                                showLang = false
+                                // 切换语言后需要重新生成，已在运行时自动重跑
+                                if (started) {
+                                    if (selectedFileList.isEmpty()) {
+                                        analysis(selectedFilePath, selectedTrackId)
+                                    } else {
+                                        batchAnalysis(code)
+                                    }
+                                }
+                            },
+                            modifier = Modifier.width(120.dp).height(40.dp)
+                        ){
+                            Text(
+                                text = label,
+                                fontSize = 12.sp,
+                                color = if (targetLanguage == code) MaterialTheme.colors.primary
+                                else MaterialTheme.colors.onBackground
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.width(10.dp))
+
             OutlinedButton(
                 enabled = startEnable,
                 onClick = {
                     if (selectedFileList.isEmpty()) {
                         analysis(selectedFilePath, selectedTrackId)
                     } else {
-                        batchAnalysis("English")
+                        batchAnalysis(targetLanguage)
                     }
 
                 }) {
@@ -2163,7 +2241,7 @@ fun SelectFile(
                                 if (selectedFileList.isEmpty()) {
                                     analysis(selectedFilePath, selectedTrackId)
                                 } else {
-                                    batchAnalysis("English")
+                                    batchAnalysis(targetLanguage)
                                 }
                             }
                         },
@@ -2288,7 +2366,7 @@ fun SelectFile(
 
                     }
                 } else {
-                    // 批量处理，现在只能批量处理英语字幕，所以就写死了。
+                    // 批量处理时自动识别字幕轨，字幕语言跟随上方选择的目标语言
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.width(IntrinsicSize.Max).padding(end = 10.dp)
@@ -2306,7 +2384,8 @@ fun SelectFile(
                                 .border(1.dp, Color.Transparent)
                         ) {
                             Text(
-                                text = "英语", fontSize = 12.sp,
+                                text = if (targetLanguage == "japanese") "日语" else "英语",
+                                fontSize = 12.sp,
                             )
                         }
                     }

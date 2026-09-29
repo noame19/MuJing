@@ -834,6 +834,31 @@ fun parseMKV(
 
 
 /**
+ * 启发式判断文本是否像日语。
+ *
+ * MKV 容器里的字幕轨常常没有可靠的 languageIetf 标记，只能靠内容判断。
+ * OpenNLP 的语言检测对很短的字幕（几十字的台词）准确率不稳定，
+ * 因此辅以字符集判断：日文必有假名，而汉字中日英共用、不能作为依据。
+ *
+ * 只要出现一定比例的假名即判为日语。
+ */
+fun String.looksJapanese(): Boolean {
+    if (isBlank()) return false
+    var kana = 0
+    var letters = 0
+    for (ch in this) {
+        val code = ch.code
+        if ((0x3041..0x309F).contains(code) || (0x30A0..0x30FF).contains(code)) {
+            kana++
+        }
+        if (ch.isLetter()) letters++
+    }
+    if (letters == 0) return false
+    // 假名占比不足 30% 时不足以判定，汉字为主的英语字幕会误判
+    return kana * 10 >= letters * 3
+}
+
+/**
  * 批量读取 MKV
  */
 @OptIn(ExperimentalComposeUiApi::class)
@@ -854,8 +879,6 @@ fun batchReadMKV(
     }
     val languageDetector: LanguageDetector = LanguageDetectorME(langModel)
 
-    val englishIetfList = listOf("en", "en-US", "en-GB")
-    val english = listOf("en", "eng")
     for (file in selectedFileList) {
         setCurrentTask(file)
         var reader: EBMLReader? = null
@@ -884,12 +907,27 @@ fun batchReadMKV(
             }
 
             var trackID = -1
-            // 轨道名称和轨道 ID 的映射,可能有多个英语字幕
+            // 轨道名称和轨道 ID 的映射,可能有多个目标语言字幕
             val trackMap = mutableMapOf<String,Int>()
+            // IETF 语言码与 Matroska 常见写法：英语与日语
+            val englishIetf = listOf("en", "en-US", "en-GB")
+            val englishLang = listOf("en", "eng")
+            val japaneseIetf = listOf("ja", "ja-JP", "jpn", "jp")
+            val isJapaneseTarget = language.equals("japanese", ignoreCase = true)
             for (i in 0 until reader.subtitles.size) {
                 val subtitles = reader.subtitles[i]
-                if (englishIetfList.contains(subtitles.languageIetf) || english.contains(subtitles.language)) {
-                    val name = if(subtitles.name.isNullOrEmpty()) "English" else subtitles.name
+                val ietf = subtitles.languageIetf?.lowercase().orEmpty()
+                val lang = subtitles.language?.lowercase().orEmpty()
+                val isTargetTrack = if (isJapaneseTarget) {
+                    japaneseIetf.contains(ietf) || japaneseIetf.contains(lang)
+                } else {
+                    englishIetf.contains(ietf) || englishLang.contains(lang)
+                }
+
+                if (isTargetTrack) {
+                    val name = if(subtitles.name.isNullOrEmpty()){
+                        if(isJapaneseTarget) "Japanese" else "English"
+                    } else subtitles.name
                     trackMap[name] = i
                 } else {
                     // 提取一小部分字幕，使用 OpenNLP 的语言检测工具检测字幕的语言
@@ -906,9 +944,18 @@ fun batchReadMKV(
                     subList.forEach { caption ->
                         content += caption.stringData
                     }
-                    val lang = languageDetector.predictLanguage(content)
-                    if (lang.lang == "eng") {
-                        val name = if(subtitles.name.isNullOrEmpty()) "English" else subtitles.name
+                    // 语言检测：英语取 eng；日语用 OpenNLP 的 jpn，
+                    // 若检测不出日文（短句常见），再回退到假名启发式判断。
+                    val detected = languageDetector.predictLanguage(content)
+                    val isDetected = if (isJapaneseTarget) {
+                        detected.lang == "jpn" || content.looksJapanese()
+                    } else {
+                        detected.lang == "eng"
+                    }
+                    if (isDetected) {
+                        val name = if(subtitles.name.isNullOrEmpty()){
+                            if(isJapaneseTarget) "Japanese" else "English"
+                        } else subtitles.name
                         trackMap[name] = i
                     }
                 }
@@ -922,23 +969,32 @@ fun batchReadMKV(
                     break
                 }
             }
-            if(trackID == -1){
+            if(trackID == -1 && trackMap.isNotEmpty()){
                 trackID = trackMap.values.first()
-                logger.info("English 字幕，TrackID: $trackID")
+                logger.info("目标语言字幕，TrackID: $trackID")
             }
 
             if (trackID != -1) {
-                val words = parseVideo(
-                    pathName = file.absolutePath,
-                    enablePhrases = enablePhrases,
-                    trackId = trackID,
-                    setProgressText = { }
-                )
+                val words = if (isJapaneseTarget) {
+                    parseJapaneseMKV(
+                        pathName = file.absolutePath,
+                        trackId = trackID,
+                        setProgressText = { }
+                    )
+                } else {
+                    parseVideo(
+                        pathName = file.absolutePath,
+                        enablePhrases = enablePhrases,
+                        trackId = trackID,
+                        setProgressText = { }
+                    )
+                }
                 orderList.addAll(words)
                 updateTaskState(Pair(file, true))
             } else {
-                errorMessage[file] = "没有找到英语字幕"
-                logger.error("${file.nameWithoutExtension} 没有找到英语字幕")
+                val label = if (isJapaneseTarget) "日语字幕" else "英语字幕"
+                errorMessage[file] = "没有找到$label"
+                logger.error("${file.nameWithoutExtension} 没有找到$label")
                 updateTaskState(Pair(file, false))
                 setCurrentTask(null)
                 continue
