@@ -48,6 +48,9 @@ bin/
 /resources/common/dictionary/ecdict.db
 /resources/common/dictionary/jadic.db
 
+### 词库生成脚本的下载缓存 ###
+/.cache/
+
 ### 缓存的单词发音数据 ###
 /audio
 

@@ -179,7 +179,7 @@ def pick_chinese_glosses(term, kana, yori_index):
     return ordered[:MAX_GLOSSES]
 
 
-def build_word(entry, level, yori_index, to_romaji):
+def build_word(entry, level, yori_index, to_romaji, romaji_cache):
     term = (entry.get("word") or "").strip()
     if not term:
         return None
@@ -196,7 +196,15 @@ def build_word(entry, level, yori_index, to_romaji):
     chinese = pick_chinese_glosses(term, kana, yori_index)
     translation = "\n".join(chinese)
 
-    romaji = to_romaji(kana) if (to_romaji and kana) else ""
+    # 罗马字依赖可选组件 pykakasi。若本次生成时它不可用，
+    # 复用上一轮已生成的读音，避免把仓库里已有的数据清空。
+    cache_key = (term, kana)
+    if to_romaji and kana:
+        romaji = to_romaji(kana)
+        if romaji:
+            romaji_cache[cache_key] = romaji
+    else:
+        romaji = romaji_cache.get(cache_key, "")
 
     return {
         "value": term,
@@ -274,10 +282,35 @@ def build_dictionary_db(yori_index):
 
 # ---------------------------------------------------------------- 主流程
 
+def load_existing_romaji():
+    """读取已生成词库中的罗马字，供缺少 pykakasi 时复用。"""
+    cache = {}
+    if not os.path.isdir(OUTPUT_DIR):
+        return cache
+    for name in os.listdir(OUTPUT_DIR):
+        if not name.endswith(".json"):
+            continue
+        try:
+            with open(os.path.join(OUTPUT_DIR, name), encoding="utf-8") as fh:
+                data = json.load(fh)
+            for word in data.get("wordList", []):
+                # 以「词条 + 读音」为键：同一个词条可能出现在多个等级且读音不同，
+                # 只用词条作键会让后出现的读音覆盖先前的，导致罗马字张冠李戴。
+                key = (word["value"], word.get("kana") or "")
+                if word.get("romaji"):
+                    cache[key] = word["romaji"]
+        except (OSError, ValueError):
+            continue
+    if cache:
+        log(f"已从现有词库复用 {len(cache)} 条罗马字")
+    return cache
+
+
 def main():
     openjlpt = load_openjlpt()
     yori_index = load_yori_zh_cn()
     to_romaji = load_romaji_converter()
+    romaji_cache = load_existing_romaji()
 
     # 先生成词典，再生成词库，两者共用同一份 Yori 数据
     build_dictionary_db(yori_index)
@@ -291,7 +324,7 @@ def main():
         words = []
         seen = set()
         for entry in entries:
-            word = build_word(entry, level, yori_index, to_romaji)
+            word = build_word(entry, level, yori_index, to_romaji, romaji_cache)
             if word is None:
                 continue
             # 同一等级内去重，保持首次出现顺序

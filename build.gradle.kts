@@ -209,19 +209,46 @@ val decompressDictionary by tasks.registering {
 // 日→中词典 jadic.db：日语功能依赖它，缺失时调用生成脚本构建。
 // 脚本只依赖 Python 标准库；可选依赖 pykakasi 用于生成罗马字，
 // 缺失时 romaji 字段留空，不影响其他功能。
+//
+// 注意：词典为可选增强，构建期缺少 Python 时跳过而非中断，
+// 以免英语用户在未安装 Python 的机器上无法构建。
 val buildJapaneseDictionary by tasks.registering {
     group = "build"
     description = "Generate Japanese (ja-zh) dictionary database if missing"
     doLast {
         val dictFile = layout.projectDirectory.dir("resources/common/dictionary/jadic.db").asFile
-        if (!dictFile.exists()) {
-            println("生成日语词典 jadic.db")
-            val script = layout.projectDirectory.dir("tools/japanese/build_vocabulary.py").asFile
-            providers.exec {
-                commandLine("python3", script.absolutePath)
-            }.result.assertNormalExitValue()
-        } else {
+        if (dictFile.exists()) {
             println("日语词典已存在，跳过生成")
+            return@doLast
+        }
+
+        val script = layout.projectDirectory.dir("tools/japanese/build_vocabulary.py").asFile
+        // Windows 上命令名是 python，其余平台是 python3
+        val candidates = if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
+            listOf("python", "python3", "py")
+        } else {
+            listOf("python3", "python")
+        }
+
+        var executed = false
+        for (command in candidates) {
+            try {
+                val process = ProcessBuilder(command, script.absolutePath)
+                    .redirectErrorStream(true)
+                    .start()
+                process.inputStream.bufferedReader().forEachLine { println(it) }
+                if (process.waitFor() == 0 && dictFile.exists()) {
+                    executed = true
+                    break
+                }
+            } catch (e: IOException) {
+                // 该命令不存在，尝试下一个
+            }
+        }
+
+        if (!executed) {
+            println("警告：未能生成日语词典 jadic.db（日语查词功能将不可用）。")
+            println("可手动执行：python3 tools/japanese/build_vocabulary.py")
         }
     }
 }

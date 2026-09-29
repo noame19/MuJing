@@ -33,8 +33,10 @@ private const val VOCABULARY_ROOT = "vocabulary"
 /**
  * 内置词库文件后缀。目录下可能混有 NOTICE.md 等说明文件，
  * 只有 .json 才算作可选择的词库。
+ *
+ * 注意：java.io.File.extension 返回不带点的扩展名，因此这里不能带 "."。
  */
-private const val VOCABULARY_EXTENSION = ".json"
+private const val VOCABULARY_EXTENSION = "json"
 
 /**
  * 需要按文件名中的数字前缀排序的分类。
@@ -75,11 +77,15 @@ fun listVocabularyFiles(directory: File): List<File> {
 }
 
 /**
- * 取文件名开头的数字作为排序依据，取不到时回退到文件名本身，
- * 避免因非数字前缀导致 toFloat() 抛异常。
+ * 取文件名空格前的部分作为排序依据。
+ *
+ * 文件名前缀可能带小数（人教版用「3.1」「3.2」区分上下册），
+ * 因此不能只取第一个点号之前的部分，否则 3.1 与 3.2 会得到相同排序值。
+ * 取不到数字时回退到最大值，让这些文件排在数字前缀的文件之后，
+ * 而不是抛异常。
  */
 private fun numericSortKey(nameWithoutExtension: String): Float {
-    val prefix = nameWithoutExtension.substringBefore(' ').substringBefore('.')
+    val prefix = nameWithoutExtension.substringBefore(' ')
     return prefix.toFloatOrNull() ?: Float.MAX_VALUE
 }
 
