@@ -853,7 +853,7 @@ fun OtherSettings(appState: AppState) {
             Text(
                 text = "重启播放器后生效",
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
-                fontSize = MaterialTheme.typography.caption
+                style = MaterialTheme.typography.caption
             )
         }
 

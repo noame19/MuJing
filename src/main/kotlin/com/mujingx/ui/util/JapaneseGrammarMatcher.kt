@@ -131,7 +131,7 @@ object JapaneseGrammarMatcher {
                 try {
                     val library = json.decodeFromString<GrammarLibrary>(file.readText())
                     library.grammarList.forEach { point ->
-                        val matcher = PatternMatcher.compile(point.patterns)
+                        val matcher = compile(point.patterns)
                         if (matcher.isUsable) {
                             result.add(CompiledPoint(point, matcher))
                         }
@@ -313,40 +313,40 @@ object JapaneseGrammarMatcher {
 
     /** 全部语法条目 */
     fun allPoints(): List<GrammarPoint> = compiled.map { it.point }
-    companion object {
-        /** 常见助词字符：这些单字本身不承载语法信息 */
-        private val PARTICLE_CHARS = "はがをにでへとやのかねこそ着呢"
 
-        /**
-         * 编译语法模式。
-         *
-         * 「〜」是占位符，表示词尾变化；其余部分是判定语法身份的字面形式。
-         * 尾部为空的模式无法用于匹配，会被跳过。
-         */
-        fun compile(patterns: List<String>): PatternMatcher {
-            val tails = mutableListOf<String>()
-            var hasLeadingLiteral = false
+    /** 常见助词字符：这些单字本身不承载语法信息 */
+    private val PARTICLE_CHARS = "はがをにでへとやのかねこそ着呢"
 
-            for (raw in patterns) {
-                val cleaned = raw.trim()
-                if (cleaned.isEmpty()) continue
+    /**
+     * 编译语法模式。
+     *
+     * 「〜」是占位符，表示词尾变化；其余部分是判定语法身份的字面形式。
+     * 尾部为空的模式无法用于匹配，会被跳过。
+     */
+    fun compile(patterns: List<String>): PatternMatcher {
+        val tails = mutableListOf<String>()
+        var hasLeadingLiteral = false
 
-                val head = cleaned.takeWhile { it != '〜' && it != '~' }
-                val tail = cleaned.dropWhile { it != '〜' && it != '~' }
-                    .drop(1)   // 去掉「〜」本身
-                    .trim()
+        for (raw in patterns) {
+            val cleaned = raw.trim()
+            if (cleaned.isEmpty()) continue
 
-                // 尾部是判定语法身份的关键；尾部为空说明该模式无法用于匹配
-                if (tail.isEmpty()) continue
-                if (head.isNotEmpty()) hasLeadingLiteral = true
+            val head = cleaned.takeWhile { it != '〜' && it != '~' }
+            val tail = cleaned.dropWhile { it != '〜' && it != '~' }
+                .drop(1)   // 去掉「〜」本身
+                .trim()
 
-                // 「〜がいます / 〜があります」已在构建期按 / 拆分；
-                // 这里再按「或」处理一次，兼容含顿号的写法
-                tail.split('、', '/').map { it.trim() }
-                    .filter { it.isNotEmpty() }
-                    .forEach { tails.add(it) }
-            }
-            return PatternMatcher(tails.toList(), hasLeadingLiteral)
+            // 尾部是判定语法身份的关键；尾部为空说明该模式无法用于匹配
+            if (tail.isEmpty()) continue
+            if (head.isNotEmpty()) hasLeadingLiteral = true
+
+            // 「〜がいます / 〜があります」已在构建期按 / 拆分；
+            // 这里再按「或」处理一次，兼容含顿号的写法
+            tail.split('、', '/').map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .forEach { tails.add(it) }
         }
+        return PatternMatcher(tails.toList(), hasLeadingLiteral)
     }
+
 }

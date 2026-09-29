@@ -20,9 +20,9 @@
 package com.mujingx.ui.util
 
 import org.apache.lucene.analysis.TokenStream
-import org.apache.lucene.analysis.Tokenizer
 import org.apache.lucene.analysis.ja.JapaneseBaseFormFilter
-import org.apache.lucene.analysis.ja.JapaneseTokenizer as KuromojiTokenizer
+import org.apache.lucene.analysis.ja.JapaneseTokenizer
+import org.apache.lucene.analysis.ja.dict.UserDictionary
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute
@@ -96,7 +96,15 @@ object JapaneseWordSegmenter {
     }
 
     private fun tokenizeInternal(text: String): List<JapaneseToken> {
-        val tokenizer: Tokenizer = KuromojiTokenizer()
+        // JapaneseTokenizer 没有无参构造，必须显式给出：
+        // 单例 UserDictionary（不做用户自定义词典分词）、
+        // discardPunctuation = false（保留标点，字幕断句需要）、
+        // Mode.NORMAL（普通分词，不做搜索/复合词切分）。
+        val tokenizer = JapaneseTokenizer(
+            UserDictionary.getSingleton(),
+            false,
+            JapaneseTokenizer.Mode.NORMAL
+        )
         // JapaneseBaseFormFilter 会把表层形式改写为基本形：
         // 「食べました」→「食べる」。词典外的未知词保持原样。
         val stream: TokenStream = JapaneseBaseFormFilter(tokenizer)
@@ -107,7 +115,9 @@ object JapaneseWordSegmenter {
 
         val tokens = mutableListOf<JapaneseToken>()
         try {
-            stream.setReader(StringReader(text))
+            // setReader 定义在 Tokenizer 上而非 TokenStream，
+            // 且必须在包装成 filter 之前设定，否则过滤器读到的是空输入。
+            tokenizer.setReader(StringReader(text))
             stream.reset()
             while (stream.incrementToken()) {
                 tokens.add(
