@@ -50,6 +50,11 @@ dependencies {
     implementation("com.formdev:flatlaf:3.6.1")
     implementation("com.formdev:flatlaf-extras:2.6")
     implementation("org.apache.opennlp:opennlp-tools:1.9.4")
+
+    // 日语分词。Kuromoji 为纯 JVM 实现，词典（IPADIC 派生）已内嵌在 jar 中，
+    // 无需在构建机安装 Python 或编译 C++，适合直接打进 AppImage / dmg / msi。
+    // JapaneseBaseFormFilter 可还原基本形，对应本项目的 getWordLemma 语义。
+    implementation("org.apache.lucene:lucene-analysis-kuromoji:9.11.1")
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation(files("lib/ebml-reader-0.1.1.jar"))
     implementation(files("lib/subtitleConvert-1.0.3.jar"))
