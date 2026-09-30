@@ -44,6 +44,19 @@ fun updateFlatLaf(
     }else darkTheme
 
     // 启动 FlatLaf
+    // FlatLaf 绘制带下划线的文字（按钮/标签的助记符，如 Swing 对话框里的
+    // 快捷键提示）会走 FlatUIUtils.drawStringUnderlineCharAt → XRGlyphCache。
+    // 在 KDE Plasma 6 Wayland（经 XWayland）下 XRender 返回 glyph format 0，
+    // JDK 无法识别，抛 IllegalStateException: Unknown glyph format: 0，
+    // 结果是绘制中断：对话框正文与按钮文字都画不出来，只剩一个空框。
+    //
+    // 该问题只影响 Swing 对话框的助记符下划线装饰，不影响任何文字内容，
+    // 因此在 Linux 上关闭助记符显示即可绕开这条渲染路径。
+    // 此属性需在 FlatLaf.setup() 之前设置，setup 会读取客户端属性。
+    if (System.getProperty("os.name").contains("linux", ignoreCase = true)) {
+        UIManager.put("flatlaf.showMnemonic", "false")
+    }
+
     if(isDark) {
         FlatDarkLaf.setup()
     }else {
