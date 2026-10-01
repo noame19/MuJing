@@ -307,23 +307,34 @@ jobs:
           ls -la
           cd ..
 
-      - name: Disable XRender font pipeline in launcher config
+      - name: Apply Linux rendering workarounds to launcher config
         run: |
           set -euo pipefail
-          # KDE Plasma 6 Wayland (via XWayland) makes XRender report glyph
-          # format 0, and sun.font.XRGlyphCacheEntry.getType throws
-          # "IllegalStateException: Unknown glyph format: 0" for it. The throw
-          # lands in sun.swing.SwingUtilities2.drawStringUnderlineCharAt,
-          # which is core Swing rather than any look-and-feel specific:
-          # FlatButtonUI, MetalButtonUI and BasicLabelUI all route
-          # mnemonic underlines through it. Each Swing message dialog
-          # therefore aborted its own paint midway and rendered as an
-          # empty frame.
+          # Two independent problems make Swing dialogs unusable on KDE Plasma 6
+          # Wayland, both verified against the real AppImage on that desktop.
           #
-          # Switching Java2D to the older X11 font pipeline keeps it from ever
-          # populating XRGlyphCache. Passing this as a jpackage java-option
-          # applies it before any application code runs, which is earlier than
-          # the System.setProperty fallback in Main.kt can manage.
+          # 1. compose.application.configure.swing.globals
+          #    Compose Desktop writes its own fonts, colours and metrics into
+          #    the UIManager globals on startup, overwriting whatever FlatLaf
+          #    set. The font it installs resolves to metrics that measure fine
+          #    but rasterize to nothing, so every Swing dialog painted an empty
+          #    body and a textless button while raising no exception at all.
+          #    Compose only draws its own UI through Skia, which is unaffected,
+          #    so turning this off costs the app nothing.
+          #
+          # 2. sun.java2d.xrender
+          #    XWayland makes XRender report glyph format 0, which
+          #    sun.font.XRGlyphCacheEntry.getType rejects with
+          #    "IllegalStateException: Unknown glyph format: 0". The throw lands
+          #    in sun.swing.SwingUtilities2.drawStringUnderlineCharAt, which is
+          #    core Swing rather than any look-and-feel specific: FlatButtonUI,
+          #    MetalButtonUI and BasicLabelUI all route mnemonic underlines
+          #    through it. Keeping Java2D on the older X11 font pipeline means
+          #    it never populates XRGlyphCache.
+          #
+          # Passing both as jpackage java-options applies them before any
+          # application code runs, which is earlier than the System.setProperty
+          # fallback in Main.kt can manage.
           APPDIR="AppDir"
           INNER_DIR=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d |
             head -n 1)
@@ -333,10 +344,21 @@ jobs:
             echo "::error::jpackage config not found at $CFG"
             exit 1
           fi
+
+          # Compose emits this with the default value of true.
+          GLOBALS_KEY='java-options=-Dcompose.application.configure'
+          GLOBALS_RE="${GLOBALS_KEY}\.swing\.globals="
+          sed -i "s|^\(${GLOBALS_RE}\)true\$|\1false|" "$CFG"
+          if ! grep -q "${GLOBALS_RE}false" "$CFG"; then
+            echo "::error::failed to disable configure.swing.globals"
+            exit 1
+          fi
+
           if ! grep -q 'java-options=-Dsun\.java2d\.xrender' "$CFG"; then
             OPT='java-options=-Dsun.java2d.xrender=false'
             sed -i "/^\[JavaOptions\]\$/a $OPT" "$CFG"
           fi
+
           echo "jpackage [JavaOptions] now reads:"
           sed -n '/^\[JavaOptions\]$/,$p' "$CFG"
 

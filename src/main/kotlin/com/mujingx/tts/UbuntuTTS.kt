@@ -107,12 +107,19 @@ class UbuntuTTS {
     /**
      * 用 `command -v` 判定二进制是否存在。
      * 不直接启动引擎，避免每次朗读都付出进程启动与合成音频的代价。
+     *
+     * 输出必须重定向到 DISCARD 而不是走管道：管道会在进程写入前被读完或关闭，
+     * sh 随后写入时收到 EPIPE 并因 SIGPIPE 退出（退出码 141），waitFor() 拿到的
+     * 就不是 0，于是已安装的引擎被误报为缺失。实测中 `sh`、`ls` 这类必然存在
+     * 的命令都会判为不可用，而 `espeak-ng` 只是偶尔抢赢竞态——这正是 TTS
+     * 时好时坏、时弹时不弹「未找到语音合成引擎」的原因。DISCARD 直接连
+     * /dev/null，不存在这个问题。
      */
     private fun isAvailable(command: String): Boolean = try {
         val probe = ProcessBuilder("sh", "-c", "command -v $command")
-        probe.redirectErrorStream(true)
+        probe.redirectOutput(ProcessBuilder.Redirect.DISCARD)
+        probe.redirectError(ProcessBuilder.Redirect.DISCARD)
         val process = probe.start()
-        process.inputStream.close()
         process.waitFor() == 0
     } catch (e: Exception) {
         false
