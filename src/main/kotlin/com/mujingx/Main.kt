@@ -33,11 +33,48 @@ import com.mujingx.ui.App
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 fun main() {
+    disableXRenderFontPipeline()
     configureLinuxScaling()
     application {
         init()
         App()
     }
+}
+
+/**
+ * Turn off the JDK's XRender glyph cache on Linux.
+ *
+ * Under KDE Plasma 6 Wayland (via XWayland) `XRender` reports glyph format 0,
+ * which `sun.font.XRGlyphCacheEntry.getType` does not recognise and rejects
+ * with `IllegalStateException: Unknown glyph format: 0`.
+ *
+ * The throw happens while painting text through
+ * `sun.swing.SwingUtilities2.drawStringUnderlineCharAt`, which is core Swing
+ * rather than any look-and-feel specific: `FlatButtonUI`, `MetalButtonUI` and
+ * `BasicLabelUI` all route mnemonic underlines through it. So every Swing
+ * message dialog raised that exception midway through its own paint, which
+ * aborted the remainder of the drawing pass and left an empty frame with no
+ * error text at all.
+ *
+ * `sun.java2d.xrender=false` keeps Java2D on the older X11 font pipeline, which
+ * never populates `XRGlyphCache`, so the crash cannot happen. Compose/Skia
+ * rasterises its own text and is unaffected; only Swing/Java2D drawing changes.
+ *
+ * Must run before any AWT font initialisation, hence the call at the very top
+ * of [main]. The AppImage build also passes this on the command line through
+ * the jpackage config; this call is the fallback for every other launch path.
+ */
+private fun disableXRenderFontPipeline() {
+    if (!System.getProperty("os.name").contains("linux", ignoreCase = true)) {
+        return
+    }
+
+    // Respect an explicit override from the command line or AppRun.
+    if (System.getProperty("sun.java2d.xrender") != null) {
+        return
+    }
+
+    System.setProperty("sun.java2d.xrender", "false")
 }
 
 /**

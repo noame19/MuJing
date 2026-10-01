@@ -307,6 +307,39 @@ jobs:
           ls -la
           cd ..
 
+      - name: Disable XRender font pipeline in launcher config
+        run: |
+          set -euo pipefail
+          # KDE Plasma 6 Wayland (via XWayland) makes XRender report glyph
+          # format 0, and sun.font.XRGlyphCacheEntry.getType throws
+          # "IllegalStateException: Unknown glyph format: 0" for it. The throw
+          # lands in sun.swing.SwingUtilities2.drawStringUnderlineCharAt,
+          # which is core Swing rather than any look-and-feel specific:
+          # FlatButtonUI, MetalButtonUI and BasicLabelUI all route
+          # mnemonic underlines through it. Each Swing message dialog
+          # therefore aborted its own paint midway and rendered as an
+          # empty frame.
+          #
+          # Switching Java2D to the older X11 font pipeline keeps it from ever
+          # populating XRGlyphCache. Passing this as a jpackage java-option
+          # applies it before any application code runs, which is earlier than
+          # the System.setProperty fallback in Main.kt can manage.
+          APPDIR="AppDir"
+          INNER_DIR=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1)
+          INNER=$(basename "$INNER_DIR")
+          CFG="$APPDIR/$INNER/lib/app/$INNER.cfg"
+          if [ ! -f "$CFG" ]; then
+            echo "::error::jpackage config not found at $CFG"
+            exit 1
+          fi
+          if ! grep -q 'java-options=-Dsun\.java2d\.xrender' "$CFG"; then
+            OPT='java-options=-Dsun.java2d.xrender=false'
+            sed -i "/^\[JavaOptions\]\$/a $OPT" "$CFG"
+          fi
+          echo "jpackage [JavaOptions] now reads:"
+          sed -n '/^\[JavaOptions\]$/,$p' "$CFG"
+
       - name: Write AppRun (Wayland-first launcher)
         run: |
           set -euo pipefail
