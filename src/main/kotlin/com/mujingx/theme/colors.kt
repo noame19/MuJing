@@ -140,6 +140,42 @@ fun isSystemDarkMode(): Boolean {
     }
 }
 
+/**
+ * 读 KDE Plasma 的配色方案名，取自 ~/.config/kdeglobals 的
+ * `[General] ColorScheme`。
+ *
+ * 不能改用 `gsettings get org.kde.desktopinterface colorScheme`：实测本机
+ * `gsettings list-schemas` 里没有任何 org.kde 条目，该命令直接报「没有这个
+ * 架构」。kdeglobals 是 Plasma 真正写配置的地方，解析它才靠得住。
+ *
+ * 非 KDE 环境或文件不存在时返回 null，由调用方回落到 GNOME 的 gsettings。
+ */
+private fun readKdeColorScheme(): String? {
+    return try {
+        val configHome = System.getenv("XDG_CONFIG_HOME")
+            ?.takeIf { it.isNotBlank() }
+            ?: "${System.getProperty("user.home")}/.config"
+        val file = File(configHome, "kdeglobals")
+        if (!file.isFile) {
+            return null
+        }
+        var inGeneral = false
+        var colorScheme: String? = null
+        file.forEachLine { line ->
+            val text = line.trim()
+            when {
+                text.startsWith("[") ->
+                    inGeneral = text.equals("[General]", ignoreCase = true)
+                inGeneral && text.startsWith("ColorScheme=", ignoreCase = true) ->
+                    colorScheme = text.substringAfter('=').trim()
+            }
+        }
+        colorScheme
+    } catch (e: Exception) {
+        null
+    }
+}
+
 fun logError(e: Exception, logger: Logger) {
     logger.error("Error StackTrace: ${e.stackTraceToString()}\n")
 }

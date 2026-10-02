@@ -158,7 +158,7 @@ fun getAudioPath(
             // espeak，那是机械的共振峰合成音，和上游默认的有道真人发音差得很远，
             // 用户会以为发音坏了。降级到有道，与未配置 Azure 时保持一致。
             if(azureTTS.subscriptionKey.isEmpty() || azureTTS.region.isEmpty()){
-                return youdaoAudioPath(word, audioSet, addToAudioSet, "us")
+                return youdaoAudioPath(word, audioSet, addToAudioSet, "us", azureTTS)
             }
 
             // 本地没有就从 Azure 服务器下载
@@ -176,7 +176,7 @@ fun getAudioPath(
 
         return audioPath
     }else{
-        return youdaoAudioPath(word, audioSet, addToAudioSet, pronunciation)
+        return youdaoAudioPath(word, audioSet, addToAudioSet, pronunciation, azureTTS)
     }
 
 }
@@ -192,8 +192,8 @@ private fun youdaoAudioPath(
     audioSet: Set<String>,
     addToAudioSet: (String) -> Unit,
     pronunciation: String,
+    azureTTS: AzureTTS,
 ): String {
-    val azureTTS = AzureTTS(AzureTTSData())
     val audioDir = getAudioDirectory()
     var path = ""
     val type: Any = when (pronunciation) {
