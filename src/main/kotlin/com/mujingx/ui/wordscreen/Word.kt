@@ -112,6 +112,7 @@ fun Word(
     updateFocusState: (Boolean) -> Unit,
     textFieldKeyEvent: (KeyEvent) -> Boolean,
     showMenu: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
 
     var hideMenuTask : TimerTask? by remember{ mutableStateOf(null) }
@@ -306,6 +307,7 @@ fun Word(
                 azureTTS = azureTTS,
                 playTimes = playTimes,
                 paddingTop = 12.dp,
+                isJapanese = isJapanese,
             )
 
         }

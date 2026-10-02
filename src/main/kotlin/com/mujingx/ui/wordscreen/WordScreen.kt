@@ -1549,6 +1549,8 @@ fun MainContent(
                         playTimes = wordScreenState.playTimes,
                         isPlaying = isPlayingAudio,
                         setIsPlaying = { isPlayingAudio = it },
+                        isJapanese = wordScreenState.vocabulary.language
+                            .equals("japanese", true),
                         isDictation = (wordScreenState.memoryStrategy == Dictation ||wordScreenState.memoryStrategy == DictationTest),
                         showUnderline = dictationState.showUnderline,
                         fontFamily = monospace,

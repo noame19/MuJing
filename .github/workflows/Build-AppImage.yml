@@ -291,7 +291,7 @@ jobs:
           Type=Application
           Name=幕境 MuJing
           GenericName=Language Learning via Movies
-          Comment=Learn English vocabulary through movies, TV shows, and documentaries.
+          Comment=Learn English vocabulary through movies and TV.
           Exec=AppRun %F
           Icon=$INNER
           Terminal=false
@@ -580,4 +580,5 @@ jobs:
             - [macOS x86_64 Intel 芯片(DMG)](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/MuJing-${{ env.VERSION }}-x64.dmg)
             - [macOS aarch64 M 芯片(DMG)](https://github.com/${{ github.repository }}/releases/download/${{ env.TAG }}/MuJing-${{ env.VERSION }}-aarch64.dmg)
           artifactErrorsFailBuild: false
-          artifacts: "artifacts/**/*.AppImage,artifacts/**/*.msi,artifacts/**/*.zip,artifacts/**/*.dmg"
+          artifacts: "artifacts/**/*.AppImage,artifacts/**/*.msi,\
+            artifacts/**/*.zip,artifacts/**/*.dmg"

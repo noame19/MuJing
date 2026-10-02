@@ -79,6 +79,7 @@ fun AudioButton(
     azureTTS: AzureTTS,
     playTimes: Int,
     paddingTop: Dp,
+    isJapanese: Boolean = false,
 ) {
     if (playTimes != 0) {
         val scope = rememberCoroutineScope()
@@ -93,7 +94,8 @@ fun AudioButton(
                 audioSet = audioSet,
                 addToAudioSet = addToAudioSet,
                 pronunciation = pronunciation,
-                azureTTS = azureTTS
+                azureTTS = azureTTS,
+                isJapanese = isJapanese
             )
             playAudio(
                 word,
@@ -205,7 +207,9 @@ fun AudioButton(
                 audioSet = state.localAudioSet,
                 addToAudioSet = {state.localAudioSet.add(it)},
                 pronunciation = wordScreenState.pronunciation,
-                azureTTS = azureTTS
+                azureTTS = azureTTS,
+                isJapanese = wordScreenState.vocabulary.language
+                    .equals("japanese", true)
             )
             playAudio(
                 word.value,
