@@ -889,7 +889,9 @@ fun MainContent(
                                 audioSet = appState.localAudioSet,
                                 addToAudioSet = { appState.localAudioSet.add(it) },
                                 pronunciation = wordScreenState.pronunciation,
-                                azureTTS = azureTTS
+                                azureTTS = azureTTS,
+                                isJapanese = wordScreenState.vocabulary.language
+                                    .equals("japanese", true)
                             )
                             playAudio(
                                 word = currentWord.value,
@@ -1075,7 +1077,10 @@ fun MainContent(
                                             audioSet = appState.localAudioSet,
                                             addToAudioSet = { appState.localAudioSet.add(it) },
                                             pronunciation = wordScreenState.pronunciation,
-                                            azureTTS = azureTTS
+                                            azureTTS = azureTTS,
+                                            isJapanese = wordScreenState.vocabulary
+                                                .language
+                                                .equals("japanese", true)
                                         )
                                         playAudio(
                                             word = currentWord.value,
@@ -1125,7 +1130,10 @@ fun MainContent(
                                             audioSet = appState.localAudioSet,
                                             addToAudioSet = { appState.localAudioSet.add(it) },
                                             pronunciation = wordScreenState.pronunciation,
-                                            azureTTS = azureTTS
+                                            azureTTS = azureTTS,
+                                            isJapanese = wordScreenState.vocabulary
+                                                .language
+                                                .equals("japanese", true)
                                         )
                                         playAudio(
                                             word = currentWord.value,

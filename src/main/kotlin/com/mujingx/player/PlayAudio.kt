@@ -145,6 +145,7 @@ fun getAudioPath(
     addToAudioSet:(String) -> Unit,
     pronunciation: String,
     azureTTS: AzureTTS,
+    isJapanese: Boolean = false,
 ): String {
     if(pronunciation == "local TTS") return ""
     if(pronunciation == "Azure TTS"){
@@ -157,8 +158,10 @@ fun getAudioPath(
             // 没配密钥/区域时不能直接返回空串：空串会让 playAudio 回落到本地
             // espeak，那是机械的共振峰合成音，和上游默认的有道真人发音差得很远，
             // 用户会以为发音坏了。降级到有道，与未配置 Azure 时保持一致。
+            // 日语词库要请求有道的 le=jap，硬写 us 会被判 HTTP 400。
             if(azureTTS.subscriptionKey.isEmpty() || azureTTS.region.isEmpty()){
-                return youdaoAudioPath(word, audioSet, addToAudioSet, "us", azureTTS)
+                val fallback = if (isJapanese) "jp" else "us"
+                return youdaoAudioPath(word, audioSet, addToAudioSet, fallback, azureTTS)
             }
 
             // 本地没有就从 Azure 服务器下载
