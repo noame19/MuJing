@@ -98,7 +98,8 @@ jobs:
       - name: Build Rust JNI library (rust-zstd-jni)
         run: |
           if ! command -v cargo >/dev/null 2>&1; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+              sh -s -- -y --default-toolchain stable
             echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           fi
           cargo --version
@@ -110,8 +111,8 @@ jobs:
           cd FileKit
           chmod +x ./gradlew
           ./gradlew :filekit-core:publishJvmPublicationToMavenLocal \
-                     :filekit-dialogs:publishJvmPublicationToMavenLocal \
-                     :filekit-dialogs-compose:publishJvmPublicationToMavenLocal \
+                   :filekit-dialogs:publishJvmPublicationToMavenLocal \
+                   :filekit-dialogs-compose:publishJvmPublicationToMavenLocal \
                      -x jvmTest
           cd ..
 
@@ -136,7 +137,8 @@ jobs:
         run: |
           set -euo pipefail
           APP_DIR="build/compose/binaries/main/app"
-          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1)
           if [ -z "${INNER_PATH:-}" ]; then
             echo "::error::No inner package folder found under $APP_DIR"
             exit 1
@@ -205,7 +207,8 @@ jobs:
           echo "Runtime directory contents:"
           ls -la "$APP_DIR"
           echo "Inner app folder:"
-          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 || true)
+          INNER_PATH=$(find "$APP_DIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1 || true)
           if [ -n "${INNER_PATH:-}" ]; then
             ls -la "$INNER_PATH"
           else
@@ -218,9 +221,12 @@ jobs:
           mkdir -p tools
           cd tools
           # linuxdeploy's continuous builds occasionally 5xx; retry.
+          LINUXDEPLOY_URL="https://github.com/linuxdeploy/linuxdeploy"
+          LINUXDEPLOY_URL="$LINUXDEPLOY_URL/releases/download/continuous"
+          LINUXDEPLOY_URL="$LINUXDEPLOY_URL/linuxdeploy-x86_64.AppImage"
           for i in 1 2 3 4 5; do
             if wget -q --tries=2 --timeout=30 \
-              https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage \
+              "$LINUXDEPLOY_URL" \
               -O linuxdeploy-x86_64.AppImage; then
               break
             fi
@@ -249,7 +255,8 @@ jobs:
           # Chinese package name 幕境). Renaming the inner folder would
           # break the launcher path, so we keep the original name.
           SRC_APP="build/compose/binaries/main/app"
-          INNER_PATH=$(find "$SRC_APP" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+          INNER_PATH=$(find "$SRC_APP" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1)
           if [ -z "$INNER_PATH" ]; then
             echo "::error::No inner package folder found under $SRC_APP"
             ls -la "$SRC_APP"
@@ -275,7 +282,8 @@ jobs:
           # <AppDir>/<AppName>.desktop and <AppDir>/<AppName>.{png,svg}.
           # Use the same name as the inner Compose package (Chinese) so
           # linuxdeploy's Qt plugin can match the launcher.
-          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1 | xargs basename)
           cd "$APPDIR"
           DESKTOP_NAME="$INNER.desktop"
           cat > "$DESKTOP_NAME" <<EOF
@@ -297,7 +305,8 @@ jobs:
             # the project's 1280x1280 logo to 256x256 which is the most
             # widely-supported target for AppImage icons.
             if command -v convert >/dev/null 2>&1; then
-              convert ../src/main/resources/logo/logo.png -resize 256x256 "$INNER.png"
+              convert ../src/main/resources/logo/logo.png \
+                -resize 256x256 "$INNER.png"
             else
               cp ../src/main/resources/logo/logo.png "$INNER.png"
             fi
@@ -366,7 +375,8 @@ jobs:
         run: |
           set -euo pipefail
           APPDIR="AppDir"
-          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1 | xargs basename)
           echo "AppRun will dispatch to inner folder: $INNER"
           cat > "$APPDIR/AppRun" <<'APPRUN_EOF'
           #!/usr/bin/env bash
@@ -399,7 +409,8 @@ jobs:
           for d in "$HERE"/*/; do
             [ -d "$d" ] || continue
             n="$(basename "$d")"
-            [ "$n" = "lib" ] || [ "$n" = "usr" ] || [ "$n" = "share" ] && continue
+            [ "$n" = "lib" ] || [ "$n" = "usr" ] ||
+              [ "$n" = "share" ] && continue
             if [ -x "$d/bin/$n" ]; then
               INNER="$n"
               break
@@ -410,7 +421,8 @@ jobs:
             LAUNCHER="$HERE/$INNER/bin/$INNER"
           fi
           if [ ! -x "$LAUNCHER" ]; then
-            LAUNCHER="$(find "$HERE" -mindepth 3 -maxdepth 3 -type f -path '*/bin/*' -perm -u+x | sort | head -n 1 || true)"
+            LAUNCHER="$(find "$HERE" -mindepth 3 -maxdepth 3 -type f \
+              -path '*/bin/*' -perm -u+x | sort | head -n 1 || true)"
           fi
           if [ -z "$LAUNCHER" ]; then
             echo "MuJing launcher not found inside AppImage" >&2
@@ -435,7 +447,8 @@ jobs:
           # can read MUJING_SCALE before skiko creates any AWT surfaces.
           # The tested Linux default is 2.5; users can override it with
           # MUJING_SCALE=1.5, MUJING_SCALE=2, etc.
-          echo "MuJing AppRun: MUJING_SCALE=${MUJING_SCALE:-2.5} launcher=$LAUNCHER" >&2
+          echo "MuJing AppRun: MUJING_SCALE=${MUJING_SCALE:-2.5}" \
+            "launcher=$LAUNCHER" >&2
           exec "$LAUNCHER" "$@"
           APPRUN_EOF
           chmod +x "$APPDIR/AppRun"
@@ -446,24 +459,30 @@ jobs:
         run: |
           set -euo pipefail
           APPDIR="AppDir"
-          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          INNER=$(find "$APPDIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1 | xargs basename)
           # JetBrains Compose runtime ships Qt 6 plugins at
           # <innerFolder>/lib/runtime/lib/plugins/ inside the unpacked
           # distributable.
-          QT_PLUGINS_DIR=$(find "$APPDIR/$INNER" -type d -path '*plugins' | head -n 1 || true)
+          QT_PLUGINS_DIR=$(find "$APPDIR/$INNER" -type d \
+            -path '*plugins' | head -n 1 || true)
           if [ -z "${QT_PLUGINS_DIR:-}" ]; then
-            echo "::warning::Qt plugins dir not found; IME plugins will fall back to host at runtime."
+            echo "::warning::Qt plugins dir not found;" \
+              "IME plugins will fall back to host at runtime."
           else
             mkdir -p "$QT_PLUGINS_DIR/platforminputcontexts"
             # Use the Fcitx5 Qt6 plugin pulled from the noble deb above.
             # IBus uses the system daemon via QT_IM_MODULE=ibus (no extra Qt
             # plugin file is needed in the AppImage).
-            fcitx_plugin=$(find ime-extracted -name 'libfcitx5platforminputcontextplugin.so' | head -n 1 || true)
+            fcitx_plugin=$(find ime-extracted \
+              -name 'libfcitx5platforminputcontextplugin.so' |
+              head -n 1 || true)
             if [ -n "${fcitx_plugin:-}" ]; then
               echo "Bundling $fcitx_plugin"
               cp -v "$fcitx_plugin" "$QT_PLUGINS_DIR/platforminputcontexts/"
             else
-              echo "::warning::libfcitx5platforminputcontextplugin.so not found in extracted ime-extracted tree."
+              echo "::warning::libfcitx5platforminputcontextplugin.so" \
+                "not found in extracted ime-extracted tree."
             fi
           fi
 
@@ -471,7 +490,8 @@ jobs:
         run: |
           set -euo pipefail
           export DEPLOY_DIR="$PWD/AppDir"
-          INNER=$(find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1 | xargs basename)
+          INNER=$(find "$DEPLOY_DIR" -mindepth 1 -maxdepth 1 -type d |
+            head -n 1 | xargs basename)
           echo "linuxdeploy: target executable $DEPLOY_DIR/$INNER/bin/$INNER"
           # Compose Desktop bundles a complete JetBrains runtime that
           # includes its own Qt 6 libraries at
@@ -494,17 +514,20 @@ jobs:
           # Force a UTF-8 locale so filenames with non-ASCII chars
           # round-trip correctly through cp / ls / glob expansion.
           export LANG=C.UTF-8 LC_ALL=C.UTF-8
-          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' -type f -print -quit || true)
+          APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' \
+            -type f -print -quit || true)
           echo "DEBUG: find output = '$APPIMAGE_PATH'"
           ls -la *.AppImage 2>&1 || true
           if [ -z "$APPIMAGE_PATH" ]; then
             echo "::error::AppImage not produced by linuxdeploy."
             exit 1
           fi
-          VERSION=$(grep '^version=' gradle.properties | head -n 1 | cut -d'=' -f2 | tr -d ' \r\n')
+          VERSION=$(grep '^version=' gradle.properties | head -n 1 |
+            cut -d'=' -f2 | tr -d ' \r\n')
           TARGET="MuJing-${VERSION}-x86_64.AppImage"
           echo "Copying $APPIMAGE_PATH -> $TARGET"
-          cp -v "$APPIMAGE_PATH" "$TARGET" || { echo "cp failed with code $?"; ls -la; exit 1; }
+          cp -v "$APPIMAGE_PATH" "$TARGET" ||
+            { echo "cp failed with code $?"; ls -la; exit 1; }
           rm -f "$APPIMAGE_PATH"
           chmod +x "$TARGET"
           file "$TARGET"
