@@ -36,6 +36,8 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 import java.io.File
 import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicReference
 
 
@@ -220,7 +222,11 @@ private fun youdaoAudioPath(
         if (pronunciation == "us" || pronunciation == "uk") {
             mutableWord = mutableWord.replace(" ", "-")
         }
-        val audioURL = "https://dict.youdao.com/dictvoice?audio=${mutableWord}&${type}"
+        // 必须做百分号编码：URL.openStream() 不会自动编码，日文假名与汉字
+        // 会以原始 UTF-8 字节写进请求行，有道直接返回 HTTP 400。英文单词是
+        // ASCII 所以一直没问题，这正是日语词库发音一直失败的根因。
+        val encodedWord = URLEncoder.encode(mutableWord, StandardCharsets.UTF_8)
+        val audioURL = "https://dict.youdao.com/dictvoice?audio=${encodedWord}&${type}"
         try {
             val audioBytes = URL(audioURL).readBytes()
             val file = File(audioDir, fileName)
