@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Help
@@ -75,6 +76,7 @@ import com.mujingx.state.AppState
 import com.mujingx.state.getResourcesFile
 import com.mujingx.ui.components.BuiltInVocabularyMenu
 import com.mujingx.ui.components.SaveButton
+import com.mujingx.ui.components.formatVocabularyName
 import com.mujingx.ui.dialog.FilterState.*
 import com.mujingx.ui.edit.SaveOtherVocabulary
 import com.mujingx.ui.util.*
@@ -227,6 +229,12 @@ fun GenerateVocabularyDialog(
          * 是否过滤词组
          */
         var enablePhrases by remember { mutableStateOf(false) }
+
+        /**
+         * 生成词库的目标语言，决定使用哪套分词器与词典。
+         * english 走 OpenNLP + ECDICT，japanese 走 Kuromoji + 日汉词典。
+         */
+        var targetLanguage by remember { mutableStateOf("english") }
 
         /**
          * 过滤单词
@@ -602,6 +610,7 @@ fun GenerateVocabularyDialog(
             previewList.clear()
             parsedList.clear()
             scope.launch(Dispatchers.Default) {
+                val isJapanese = targetLanguage == "japanese"
                 val words = when (type) {
                     DOCUMENT -> {
                         if (title == "过滤词库") {
@@ -622,7 +631,13 @@ fun GenerateVocabularyDialog(
 
                     SUBTITLES -> {
                         val extension = File(pathName).extension
-                        if (extension == "srt") {
+                        if (isJapanese) {
+                            // 日语字幕统一按 SRT 解析；ASS 会先转换为 SRT
+                            parseJapaneseSRT(
+                                pathName = pathName,
+                                setProgressText = { progressText = it }
+                            )
+                        } else if (extension == "srt") {
                             parseSRT(
                                 pathName = pathName,
                                 enablePhrases = enablePhrases,
@@ -638,12 +653,20 @@ fun GenerateVocabularyDialog(
                     }
 
                     MKV -> {
-                        parseVideo(
-                            pathName = pathName,
-                            enablePhrases = enablePhrases,
-                            trackId = trackId,
-                            setProgressText = { progressText = it }
-                        )
+                        if (isJapanese) {
+                            parseJapaneseMKV(
+                                pathName = pathName,
+                                trackId = trackId,
+                                setProgressText = { progressText = it }
+                            )
+                        } else {
+                            parseVideo(
+                                pathName = pathName,
+                                enablePhrases = enablePhrases,
+                                trackId = trackId,
+                                setProgressText = { progressText = it }
+                            )
+                        }
                     }
                 }
                 parsedList.addAll(words)
@@ -838,6 +861,7 @@ fun GenerateVocabularyDialog(
                                     filterState = Filtering
                                 }
                             },
+                            isJapanese = targetLanguage == "japanese",
                         )
                         VocabularyFilter(
                             vocabularyFilterList = vocabularyFilterList,
@@ -909,6 +933,8 @@ fun GenerateVocabularyDialog(
                                 enablePhrases = it
                                 filterState = Filtering
                             },
+                            targetLanguage = targetLanguage,
+                            setTargetLanguage = { targetLanguage = it },
                         )
 
                         // 单词预览和任务列表
@@ -948,7 +974,8 @@ fun GenerateVocabularyDialog(
                                                         bncZeroFilter,
                                                         frqZeroFilter,
                                                         replaceToLemma,
-                                                        selectedFileList.isNotEmpty()
+                                                        selectedFileList.isNotEmpty(),
+                                                        isJapanese = targetLanguage == "japanese"
                                                     )
                                                     // 根据选择的词库过滤单词
                                                     val filteredList = filterSelectVocabulary(
@@ -1117,7 +1144,9 @@ fun GenerateVocabularyDialog(
                                     val vocabulary = Vocabulary(
                                         name = selectedFile.nameWithoutExtension,
                                         type = vType,
-                                        language = "english",
+                                        // 与生成时选择的目标语言保持一致，
+                                        // 否则日语词库被标成 english 会走错词典与显示逻辑
+                                        language = targetLanguage,
                                         size = previewList.size,
                                         relateVideoPath = relateVideoPath,
                                         subtitlesTrackId = selectedTrackId,
@@ -1448,6 +1477,7 @@ fun BasicFilter(
     changeFrqZeroFilter: (Boolean) -> Unit,
     replaceToLemma: Boolean,
     setReplaceToLemma: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
     val blueColor = if (MaterialTheme.colors.isLight) Color.Blue else Color(41, 98, 255)
     Column(Modifier.fillMaxWidth().background(MaterialTheme.colors.background)) {
@@ -1526,8 +1556,8 @@ fun BasicFilter(
             )
         }
         Divider()
-        // 过滤词频
-        Row(
+        // 过滤词频：BNC/COCA 为英语语料词频，对日语恒为 0，日语下不展示
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1585,7 +1615,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1639,7 +1669,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1695,7 +1725,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1767,7 +1797,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        Row(
+        if (!isJapanese) Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -2026,15 +2056,7 @@ fun SelectedList(
                     modifier = Modifier.clickable {}
                         .fillMaxWidth()
                 ) {
-                    var name = file.nameWithoutExtension
-                    if (file.parentFile.nameWithoutExtension == "人教版英语" ||
-                        file.parentFile.nameWithoutExtension == "外研版英语" ||
-                        file.parentFile.nameWithoutExtension == "北师大版高中英语"
-                    ) {
-                        if (name.contains(" ")) {
-                            name = name.split(" ")[1]
-                        }
-                    }
+                    val name = formatVocabularyName(file, file.parentFile)
                     Text(
                         text = name,
                         color = MaterialTheme.colors.onBackground,
@@ -2089,6 +2111,8 @@ fun SelectFile(
     showEnablePhrases: Boolean,
     enablePhrases: Boolean,
     changeEnablePhrases: (Boolean) -> Unit,
+    targetLanguage: String,
+    setTargetLanguage: (String) -> Unit,
 ) {
 
     Column(Modifier.height(IntrinsicSize.Max)) {
@@ -2141,13 +2165,69 @@ fun SelectFile(
                 selectedFilePath.isNotEmpty()
             } else selectedSubtitle != "    " || selectedFileList.isNotEmpty()
 
+            // 目标语言：决定使用哪套分词器与词典生成词库
+            Box {
+                var showLang by remember { mutableStateOf(false) }
+                val langBorder = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .width(120.dp).height(35.dp).padding(start = 10.dp, end = 4.dp)
+                        .border(border = langBorder)
+                        .clickable { showLang = !showLang }
+                ){
+                    Text(
+                        text = if (targetLanguage == "japanese") "日语" else "英语",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = "Localized description",
+                        tint = if (MaterialTheme.colors.isLight) Color.DarkGray else MaterialTheme.colors.onBackground,
+                        modifier = Modifier.size(24.dp, 24.dp)
+                    )
+                }
+                DropdownMenu(
+                    expanded = showLang,
+                    onDismissRequest = { showLang = false }
+                ){
+                    listOf("english" to "英语", "japanese" to "日语").forEach { (code, label) ->
+                        DropdownMenuItem(
+                            onClick = {
+                                setTargetLanguage(code)
+                                showLang = false
+                                // 切换语言后需要重新生成，已在运行时自动重跑
+                                if (started) {
+                                    if (selectedFileList.isEmpty()) {
+                                        analysis(selectedFilePath, selectedTrackId)
+                                    } else {
+                                        batchAnalysis(code)
+                                    }
+                                }
+                            },
+                            modifier = Modifier.width(120.dp).height(40.dp)
+                        ){
+                            Text(
+                                text = label,
+                                fontSize = 12.sp,
+                                color = if (targetLanguage == code) MaterialTheme.colors.primary
+                                else MaterialTheme.colors.onBackground
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.width(10.dp))
+
             OutlinedButton(
                 enabled = startEnable,
                 onClick = {
                     if (selectedFileList.isEmpty()) {
                         analysis(selectedFilePath, selectedTrackId)
                     } else {
-                        batchAnalysis("English")
+                        batchAnalysis(targetLanguage)
                     }
 
                 }) {
@@ -2170,7 +2250,7 @@ fun SelectFile(
                                 if (selectedFileList.isEmpty()) {
                                     analysis(selectedFilePath, selectedTrackId)
                                 } else {
-                                    batchAnalysis("English")
+                                    batchAnalysis(targetLanguage)
                                 }
                             }
                         },
@@ -2295,7 +2375,7 @@ fun SelectFile(
 
                     }
                 } else {
-                    // 批量处理，现在只能批量处理英语字幕，所以就写死了。
+                    // 批量处理时自动识别字幕轨，字幕语言跟随上方选择的目标语言
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.width(IntrinsicSize.Max).padding(end = 10.dp)
@@ -2313,7 +2393,8 @@ fun SelectFile(
                                 .border(1.dp, Color.Transparent)
                         ) {
                             Text(
-                                text = "英语", fontSize = 12.sp,
+                                text = if (targetLanguage == "japanese") "日语" else "英语",
+                                fontSize = 12.sp,
                             )
                         }
                     }
@@ -2390,9 +2471,15 @@ fun filterWords(
     bncZeroFilter: Boolean,
     frqZeroFilter: Boolean,
     replaceToLemma: Boolean,
-    isBatchMKV: Boolean
+    isBatchMKV: Boolean,
+    isJapanese: Boolean = false
 ): List<Word> {
     val resultList = ArrayList(inputWords)
+
+    // BNC/COCA 是英语语料词频，对日语词条恒为 0。
+    // 若照常套用「过滤 BNC=0」的规则，会把所有日语词条全部删光，
+    // 因此日语下跳过全部词频类过滤。
+    val applyFrequencyFilters = !isJapanese
 
     /**
      * Key 为需要转换为原型的单词，
@@ -2414,16 +2501,16 @@ fun filterWords(
         if (numberFilter && (word.value.toDoubleOrNull() != null)) {
             // 过滤数字
             resultList.remove(word)
-        } else if (bncNumFilter && (word.bnc!! in 1 until bncNum)) {
+        } else if (applyFrequencyFilters && bncNumFilter && (word.bnc!! in 1 until bncNum)) {
             // 过滤最常见的词
             resultList.remove(word)
-        } else if (frqNumFilter && (word.frq!! in 1 until frqNum)) {
+        } else if (applyFrequencyFilters && frqNumFilter && (word.frq!! in 1 until frqNum)) {
             // 过滤最常见的词
             resultList.remove(word)
-        } else if (bncZeroFilter && word.bnc == 0) {
+        } else if (applyFrequencyFilters && bncZeroFilter && word.bnc == 0) {
             // 过滤 BNC 词频为 0 的词
             resultList.remove(word)
-        } else if (frqZeroFilter && word.frq == 0) {
+        } else if (applyFrequencyFilters && frqZeroFilter && word.frq == 0) {
             // 过滤 COCA 词频为 0 的词
             resultList.remove(word)
         }

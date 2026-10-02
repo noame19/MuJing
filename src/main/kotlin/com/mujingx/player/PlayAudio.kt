@@ -53,6 +53,7 @@ fun playAudio(
     volume: Float,
     audioPlayerComponent: AudioPlayerComponent,
     changePlayerState: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
 
     // 取消前一个任务
@@ -65,11 +66,12 @@ fun playAudio(
                     try{
                         if (isWindows()) {
                             val speech = MSTTSpeech()
+                            if (isJapanese) speech.setJapanese()
                             speech.speak(word)
                         } else if (isMacOS()) {
-                            MacTTS().speakAndWait(word)
+                            MacTTS().speakAndWait(word, if (isJapanese) "Kyoko" else null)
                         } else {
-                            UbuntuTTS().speakAndWait(word)
+                            UbuntuTTS().speakAndWait(word, if (isJapanese) "ja" else "en")
                         }
                     }catch (e:Exception){
                         e.printStackTrace()
@@ -119,6 +121,23 @@ fun playAudio(
 }
 
 
+/**
+ * 生成发音缓存文件名中的词条部分。
+ *
+ * 日语词条含汉字与假名，直接作为文件名虽合法，但不同平台的输入法、
+ * 文件系统与打包工具对非 ASCII 名称处理并不一致，且可能与 Windows 保留名冲突。
+ * 这里非 ASCII 一律转写成十六进制形式，例如「食べる」-> "u5403u3079u308b"，
+ * 保证文件名在任何系统上都安全且可逆。
+ */
+private fun audioCacheKey(word: String): String {
+    if (word.all { it.code in 32..126 && it != '/' && it != '\\' }) {
+        return word.lowercase()
+    }
+    return word.lowercase().map { ch ->
+        if (ch.code in 32..126 && ch != '/' && ch != '\\') ch.toString() else "u%04x".format(ch.code)
+    }.joinToString("")
+}
+
 /** 计算单词的发音地址 */
 fun getAudioPath(
     word: String,
@@ -130,13 +149,17 @@ fun getAudioPath(
     if(pronunciation == "local TTS") return ""
     if(pronunciation == "Azure TTS"){
         var audioPath = ""
-        val audioFileName = word.lowercase() + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
+        val audioFileName = audioCacheKey(word) + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
         // 先查询本地有没有
         if (audioSet.contains(audioFileName)) {
             audioPath = File(getAudioDirectory(), audioFileName).absolutePath
         }else {
-            if(azureTTS.subscriptionKey == "") return ""
-            if(azureTTS.region == "") return ""
+            // 没配密钥/区域时不能直接返回空串：空串会让 playAudio 回落到本地
+            // espeak，那是机械的共振峰合成音，和上游默认的有道真人发音差得很远，
+            // 用户会以为发音坏了。降级到有道，与未配置 Azure 时保持一致。
+            if(azureTTS.subscriptionKey.isEmpty() || azureTTS.region.isEmpty()){
+                return youdaoAudioPath(word, audioSet, addToAudioSet, "us")
+            }
 
             // 本地没有就从 Azure 服务器下载
             runBlocking {
@@ -153,61 +176,78 @@ fun getAudioPath(
 
         return audioPath
     }else{
-        val audioDir = getAudioDirectory()
-        var path = ""
-        val type: Any = when (pronunciation) {
-            "us" -> "type=2"
-            "uk" -> "type=1"
-            "jp" -> "le=jap"
-            else -> {
-                println("未知类型$pronunciation")
-                ""
-            }
+        return youdaoAudioPath(word, audioSet, addToAudioSet, pronunciation)
+    }
+
+}
+
+/**
+ * 从有道词典获取单词发音，命中缓存则直接复用，否则下载到本地缓存目录。
+ *
+ * 有道的真人发音是上游的默认行为；Azure 未配置时也降级到这里，
+ * 而不是落到 espeak 那种机械音上。
+ */
+private fun youdaoAudioPath(
+    word: String,
+    audioSet: Set<String>,
+    addToAudioSet: (String) -> Unit,
+    pronunciation: String,
+): String {
+    val azureTTS = AzureTTS(AzureTTSData())
+    val audioDir = getAudioDirectory()
+    var path = ""
+    val type: Any = when (pronunciation) {
+        "us" -> "type=2"
+        "uk" -> "type=1"
+        "jp" -> "le=jap"
+        else -> {
+            println("未知类型$pronunciation")
+            ""
         }
-        val fileName = word.lowercase() + "_" + pronunciation + ".mp3"
-        // 先查询本地有没有
-        if (audioSet.contains(fileName)) {
-            path = File(audioDir, fileName).absolutePath
+    }
+    val fileName = audioCacheKey(word) + "_" + pronunciation + ".mp3"
+    // 先查询本地有没有
+    if (audioSet.contains(fileName)) {
+        path = File(audioDir, fileName).absolutePath
+    }
+    // 没有就从有道服务器下载
+    if (path.isEmpty()) {
+        // 如果单词有空格，查询单词发音会失败,所以要把单词的空格替换成短横。
+        var mutableWord = word
+        if (pronunciation == "us" || pronunciation == "uk") {
+            mutableWord = mutableWord.replace(" ", "-")
         }
-        // 没有就从有道服务器下载
-        if (path.isEmpty()) {
-            // 如果单词有空格，查询单词发音会失败,所以要把单词的空格替换成短横。
-            var mutableWord = word
-            if (pronunciation == "us" || pronunciation == "uk") {
-                mutableWord = mutableWord.replace(" ", "-")
-            }
-            val audioURL = "https://dict.youdao.com/dictvoice?audio=${mutableWord}&${type}"
-            try {
-                val audioBytes = URL(audioURL).readBytes()
-                val file = File(audioDir, fileName)
-                file.writeBytes(audioBytes)
-                path = file.absolutePath
-                addToAudioSet(file.name)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                val ttsFileName = word.lowercase() + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
-                var audioPath: String
-                // 先查询本地有没有
-                if (audioSet.contains(ttsFileName)) {
-                    audioPath = File(getAudioDirectory(), ttsFileName).absolutePath
-                }else {
-                    runBlocking {
-                        val  ttsPath =  azureTTS.textToSpeech(word)
-                        if(!ttsPath.isNullOrEmpty()){
-                            audioPath = ttsPath
-                            addToAudioSet(ttsFileName)
-                        }else{
-                            audioPath = ""
-                        }
+        val audioURL = "https://dict.youdao.com/dictvoice?audio=${mutableWord}&${type}"
+        try {
+            val audioBytes = URL(audioURL).readBytes()
+            val file = File(audioDir, fileName)
+            file.writeBytes(audioBytes)
+            path = file.absolutePath
+            addToAudioSet(file.name)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            val ttsFileName = audioCacheKey(word) + "_Azure_${azureTTS.displayName}_${azureTTS.pronunciationStyle}.mp3"
+            var audioPath: String
+            // 先查询本地有没有
+            if (audioSet.contains(ttsFileName)) {
+                audioPath = File(getAudioDirectory(), ttsFileName).absolutePath
+            }else {
+                runBlocking {
+                    val  ttsPath =  azureTTS.textToSpeech(word)
+                    if(!ttsPath.isNullOrEmpty()){
+                        audioPath = ttsPath
+                        addToAudioSet(ttsFileName)
+                    }else{
+                        audioPath = ""
                     }
                 }
-
-                return audioPath
             }
-        }
 
-        return path
+            return audioPath
+        }
     }
+
+    return path
 
 }
 

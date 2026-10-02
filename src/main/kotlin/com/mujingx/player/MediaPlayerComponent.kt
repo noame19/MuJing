@@ -55,6 +55,30 @@ fun embeddedVLCDiscovery() {
 }
 
 /**
+ * 读取用户偏好的字幕语言。
+ *
+ * VLC 的 --sub-language 决定播放时自动选中哪条字幕轨，
+ * 学日语时用户可在设置中改为 ja，这里在播放器创建时读取。
+ * 读取失败或未配置时回退到英语，保持原有行为。
+ */
+fun preferredSubLanguage(): String {
+    return try {
+        val settingsFile = File(
+            File(System.getProperty("user.home"), ".MuJing"),
+            "AppSettings.json"
+        )
+        if (!settingsFile.exists()) return "en"
+        val text = settingsFile.readText()
+        // 简单取值，避免在此处引入序列化依赖造成加载顺序问题
+        val match = Regex("\"preferredSubLanguage\"\\s*:\\s*\"([^\"]*)\"").find(text)
+        val lang = match?.groupValues?.get(1).orEmpty()
+        if (lang.isEmpty()) "en" else lang
+    } catch (e: Exception) {
+        "en"
+    }
+}
+
+/**
  * 视频播放组件
  */
 fun createMediaPlayerComponent2(): CallbackMediaPlayerComponent {
@@ -65,7 +89,8 @@ fun createMediaPlayerComponent2(): CallbackMediaPlayerComponent {
     embeddedVLCDiscovery()
 
     val args = mutableListOf(
-        "--sub-language=en",// 使用视频播放器播放视频时，自动选择英语字幕
+        // 自动选择字幕轨道的语言。默认英语，可由 preferredSubLanguage 覆盖。
+        "--sub-language=${preferredSubLanguage()}",
         "--avcodec-hw=any",// 使用硬件加速解码
         "--vout=auto",
         "--no-mouse-events",

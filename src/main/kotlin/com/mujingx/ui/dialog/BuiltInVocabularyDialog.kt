@@ -46,7 +46,9 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.mujingx.state.getResourcesFile
+import com.mujingx.ui.components.formatVocabularyName
+import com.mujingx.ui.components.getBuiltInVocabularyDirectories
+import com.mujingx.ui.components.listVocabularyFiles
 import com.mujingx.ui.window.windowBackgroundFlashingOnCloseFixHack
 import java.io.File
 import javax.swing.JOptionPane
@@ -81,51 +83,13 @@ fun BuiltInVocabularyDialog(
                     val stateVertical = rememberScrollState(0)
                     Box(Modifier.fillMaxSize().verticalScroll(stateVertical)){
                         Column (Modifier.padding(10.dp)){
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/大学英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/出国"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/牛津核心词"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/高中英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/北师大版高中英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/人教版英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/外研版英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/新概念英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
-                            VocabularyCategory(
-                                directory = getResourcesFile("vocabulary/商务英语"),
-                                success = { success = true },
-                                openChooseVocabulary = openChooseVocabulary
-                            )
+                            getBuiltInVocabularyDirectories().forEach { directory ->
+                                VocabularyCategory(
+                                    directory = directory,
+                                    success = { success = true },
+                                    openChooseVocabulary = openChooseVocabulary
+                                )
+                            }
                         }
                     }
 
@@ -212,13 +176,8 @@ fun VocabularyCategory(
             color = MaterialTheme.colors.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 17.dp,top = 5.dp))
-        if(directory.isDirectory && !directory.listFiles().isNullOrEmpty() ){
-            val files = directory.listFiles()
-            if(directory.nameWithoutExtension == "人教版英语" ||
-                directory.nameWithoutExtension == "外研版英语" ||
-                directory.nameWithoutExtension == "北师大版高中英语"){
-                files.sortBy{it.nameWithoutExtension.split(" ")[0].toFloat()}
-            }
+        val files = listVocabularyFiles(directory)
+        if(files.isNotEmpty()){
             val listState = rememberLazyGridState()
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(160.dp),
@@ -229,14 +188,7 @@ fun VocabularyCategory(
 
                 items(files){file ->
 
-                    var name = file.nameWithoutExtension
-                    if(directory.nameWithoutExtension == "人教版英语" ||
-                        directory.nameWithoutExtension == "外研版英语"||
-                        directory.nameWithoutExtension == "北师大版高中英语"){
-                        if(name.contains(" ")){
-                            name = name.split(" ")[1]
-                        }
-                    }
+                    val name = formatVocabularyName(file, directory)
 
                     var disPlayName = name
 

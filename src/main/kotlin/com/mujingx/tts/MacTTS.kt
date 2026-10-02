@@ -26,8 +26,13 @@ import java.io.InputStreamReader
 class MacTTS {
     private var process: Process? = null
 
-    fun speakAndWait(text:String) {
-        process = speak(text)
+    /**
+     * @param text 待朗读文本
+     * @param voice macOS `say` 的声音名。英语传 null 使用系统默认，
+     *               日语传 "Kyoko"。
+     */
+    fun speakAndWait(text:String, voice: String? = null) {
+        process = speak(text, voice)
         if (process != null) {
             try {
                 process!!.waitFor()
@@ -37,10 +42,16 @@ class MacTTS {
         }
     }
 
-    private fun speak(text: String): Process? {
+    private fun speak(text: String, voice: String?): Process? {
         process = null
         try {
-            process = Runtime.getRuntime().exec("say \"$text\"")
+            // 用参数数组而非字符串拼接，避免文本中的引号与元字符被 shell 解释
+            val command = if (voice.isNullOrEmpty()) {
+                arrayOf("say", text)
+            } else {
+                arrayOf("say", "-v", voice, text)
+            }
+            process = Runtime.getRuntime().exec(command)
             if (process != null) {
                 // consume the output stream
                 ProcessReader(process!!, false)

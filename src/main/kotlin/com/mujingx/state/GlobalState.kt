@@ -58,7 +58,9 @@ data class GlobalData(
     val bnc:Int = 1000,
     val frq:Int = 1000,
     val maxSentenceLength:Int = 25,
-    val showInputCount:Boolean = true
+    val showInputCount:Boolean = true,
+    /** 视频播放器自动选择字幕轨道的语言，默认英语 */
+    val preferredSubLanguage:String = "en"
 )
 
 /** 全局状态的需要持久化的部分 */
@@ -183,6 +185,12 @@ class GlobalState(globalData: GlobalData) {
      * 显示输入次数
      */
     var showInputCount by mutableStateOf(globalData.showInputCount)
+
+    /**
+     * 视频播放器自动选择字幕轨道的语言，默认英语。
+     * 学日语时设为 "ja"，播放日语视频可自动选中日语字幕轨。
+     */
+    var preferredSubLanguage by mutableStateOf(globalData.preferredSubLanguage)
 }
 @Composable
  fun computeFontSize(textStyle: String): TextUnit {

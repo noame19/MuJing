@@ -25,6 +25,7 @@ import com.matthewn4444.ebml.UnSupportSubtitlesException
 import com.matthewn4444.ebml.subtitles.SSASubtitles
 import com.mujingx.data.Caption
 import com.mujingx.data.Dictionary
+import com.mujingx.data.JapaneseDictionary
 import com.mujingx.data.MutableVocabulary
 import com.mujingx.data.Vocabulary
 import com.mujingx.data.VocabularyType
@@ -495,7 +496,169 @@ fun parseSRT(
 }
 
 /**
- * 解析 ASS 字幕文件
+ * 解析日语文本，抽取词条。
+ *
+ * 与英语链路的区别：
+ *  1. 用 Kuromoji 分词而非 OpenNLP 英语模型，并还原为基本形；
+ *  2. 查 jadic.db（日→中词典）而非 ECDICT；
+ *  3. 不做 lowercase 处理——日语没有大小写。
+ *
+ * @param words 词条到字幕的映射
+ * @param orderList 保持字幕中首次出现的顺序
+ */
+private fun extractJapaneseWords(
+    content: String,
+    dataCaption: Caption,
+    words: MutableMap<String, MutableList<Caption>>,
+    orderList: MutableList<String>
+) {
+    for (form in JapaneseWordSegmenter.tokenizeToBaseForms(content)) {
+        // 只保留确有语义的词，过滤掉纯符号与空白
+        if (form.isBlank() || form.all { !it.isLetterOrDigit() }) continue
+
+        val existing = words[form]
+        if (existing == null) {
+            words[form] = mutableListOf(dataCaption)
+            orderList.add(form)
+        } else if (existing.size < 3 && !existing.contains(dataCaption)) {
+            existing.add(dataCaption)
+        }
+    }
+}
+
+/**
+ * 用日汉词典批量补全词条信息。
+ * 查不到的词直接丢弃，与英语链路保持一致。
+ */
+private fun enrichJapaneseWords(
+    orderList: List<String>,
+    words: Map<String, MutableList<Caption>>,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    setProgressText("从字幕提取出 ${orderList.size} 个词，正在批量查询日汉词典")
+    val results = mutableListOf<Word>()
+
+    for (term in orderList) {
+        val hit = JapaneseDictionary.query(term) ?: continue
+        hit.captions = words[term]?.toMutableList() ?: mutableListOf()
+        results.add(hit)
+    }
+
+    setProgressText("${results.size} 个有效单词")
+    return results
+}
+
+/**
+ * 解析 SRT 字幕中的日语词条。
+ */
+@OptIn(ExperimentalComposeUiApi::class)
+@Throws(IOException::class)
+fun parseJapaneseSRT(
+    pathName: String,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val srtFile = File(pathName)
+    if (hasRichText(srtFile)) {
+        setProgressText("字幕有富文本标签，先移除富文本标签")
+        removeRichText(srtFile)
+    }
+
+    val words: MutableMap<String, MutableList<Caption>> = HashMap()
+    val orderList = mutableListOf<String>()
+
+    try {
+        val file = File(pathName)
+        val encoding = UniversalDetector.detectCharset(file)
+        val charset = if (encoding != null) Charset.forName(encoding) else Charset.defaultCharset()
+
+        setProgressText("正在解析字幕文件")
+        val inputStream: InputStream = FileInputStream(file)
+        val timedTextObject: TimedTextObject = FormatSRT().parseFile(file.name, inputStream, charset)
+
+        setProgressText("正在分词")
+        for (caption in timedTextObject.captions.values) {
+            var content = replaceSpecialCharacter(caption.content)
+            content = removeLocationInfo(content)
+            val dataCaption = Caption(
+                start = caption.start.getTime("hh:mm:ss,ms"),
+                end = caption.end.getTime("hh:mm:ss,ms"),
+                content = content
+            )
+            extractJapaneseWords(content, dataCaption, words, orderList)
+        }
+
+        val validList = enrichJapaneseWords(orderList, words, setProgressText)
+        setProgressText("")
+        return validList
+    } catch (exception: IOException) {
+        JOptionPane.showMessageDialog(null, exception.message)
+    }
+    return listOf()
+}
+
+/**
+ * 解析 MKV 内嵌字幕中的日语词条。
+ *
+ * @param trackId 指定字幕轨道
+ */
+@OptIn(ExperimentalComposeUiApi::class)
+@Throws(IOException::class)
+fun parseJapaneseMKV(
+    pathName: String,
+    trackId: Int,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val words: MutableMap<String, MutableList<Caption>> = HashMap()
+    val orderList = mutableListOf<String>()
+
+    try {
+        val reader = EBMLReader(pathName)
+        setProgressText("正在解析 MKV 文件")
+        if (!reader.readHeader()) {
+            println("This is not an mkv file!")
+            return listOf()
+        }
+        reader.readTracks()
+
+        if (reader.subtitles.isEmpty()) return listOf()
+
+        // 与 parseMKV 一致：先读完所有 cue frame，字幕才会被解析出来
+        for (i in 0 until reader.cuesCount) {
+            reader.readSubtitlesInCueFrame(i)
+        }
+
+        val subtitle = reader.subtitles[trackId] ?: return listOf()
+        val isASS = subtitle is SSASubtitles
+
+        setProgressText("正在分词")
+        for (caption in subtitle.readUnreadSubtitles()) {
+            val captionContent = if (isASS) {
+                caption.formattedVTT.replace("\\N", "\n")
+            } else {
+                caption.stringData
+            }
+
+            var content = replaceSpecialCharacter(captionContent)
+            content = removeLocationInfo(content)
+            val dataCaption = Caption(
+                start = caption.startTime.format().toString(),
+                end = caption.endTime.format(),
+                content = content
+            )
+            extractJapaneseWords(content, dataCaption, words, orderList)
+        }
+
+        val validList = enrichJapaneseWords(orderList, words, setProgressText)
+        setProgressText("")
+        return validList
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return listOf()
+}
+
+/**
+ * 解析 ASS 字幕文件。
  */
 @Throws(IOException::class)
 fun parseASS(
@@ -671,6 +834,31 @@ fun parseMKV(
 
 
 /**
+ * 启发式判断文本是否像日语。
+ *
+ * MKV 容器里的字幕轨常常没有可靠的 languageIetf 标记，只能靠内容判断。
+ * OpenNLP 的语言检测对很短的字幕（几十字的台词）准确率不稳定，
+ * 因此辅以字符集判断：日文必有假名，而汉字中日英共用、不能作为依据。
+ *
+ * 只要出现一定比例的假名即判为日语。
+ */
+fun String.looksJapanese(): Boolean {
+    if (isBlank()) return false
+    var kana = 0
+    var letters = 0
+    for (ch in this) {
+        val code = ch.code
+        if ((0x3041..0x309F).contains(code) || (0x30A0..0x30FF).contains(code)) {
+            kana++
+        }
+        if (ch.isLetter()) letters++
+    }
+    if (letters == 0) return false
+    // 假名占比不足 30% 时不足以判定，汉字为主的英语字幕会误判
+    return kana * 10 >= letters * 3
+}
+
+/**
  * 批量读取 MKV
  */
 @OptIn(ExperimentalComposeUiApi::class)
@@ -691,8 +879,6 @@ fun batchReadMKV(
     }
     val languageDetector: LanguageDetector = LanguageDetectorME(langModel)
 
-    val englishIetfList = listOf("en", "en-US", "en-GB")
-    val english = listOf("en", "eng")
     for (file in selectedFileList) {
         setCurrentTask(file)
         var reader: EBMLReader? = null
@@ -721,12 +907,27 @@ fun batchReadMKV(
             }
 
             var trackID = -1
-            // 轨道名称和轨道 ID 的映射,可能有多个英语字幕
+            // 轨道名称和轨道 ID 的映射,可能有多个目标语言字幕
             val trackMap = mutableMapOf<String,Int>()
+            // IETF 语言码与 Matroska 常见写法：英语与日语
+            val englishIetf = listOf("en", "en-US", "en-GB")
+            val englishLang = listOf("en", "eng")
+            val japaneseIetf = listOf("ja", "ja-JP", "jpn", "jp")
+            val isJapaneseTarget = language.equals("japanese", ignoreCase = true)
             for (i in 0 until reader.subtitles.size) {
                 val subtitles = reader.subtitles[i]
-                if (englishIetfList.contains(subtitles.languageIetf) || english.contains(subtitles.language)) {
-                    val name = if(subtitles.name.isNullOrEmpty()) "English" else subtitles.name
+                val ietf = subtitles.languageIetf?.lowercase().orEmpty()
+                val lang = subtitles.language?.lowercase().orEmpty()
+                val isTargetTrack = if (isJapaneseTarget) {
+                    japaneseIetf.contains(ietf) || japaneseIetf.contains(lang)
+                } else {
+                    englishIetf.contains(ietf) || englishLang.contains(lang)
+                }
+
+                if (isTargetTrack) {
+                    val name = if(subtitles.name.isNullOrEmpty()){
+                        if(isJapaneseTarget) "Japanese" else "English"
+                    } else subtitles.name
                     trackMap[name] = i
                 } else {
                     // 提取一小部分字幕，使用 OpenNLP 的语言检测工具检测字幕的语言
@@ -743,9 +944,18 @@ fun batchReadMKV(
                     subList.forEach { caption ->
                         content += caption.stringData
                     }
-                    val lang = languageDetector.predictLanguage(content)
-                    if (lang.lang == "eng") {
-                        val name = if(subtitles.name.isNullOrEmpty()) "English" else subtitles.name
+                    // 语言检测：英语取 eng；日语用 OpenNLP 的 jpn，
+                    // 若检测不出日文（短句常见），再回退到假名启发式判断。
+                    val detected = languageDetector.predictLanguage(content)
+                    val isDetected = if (isJapaneseTarget) {
+                        detected.lang == "jpn" || content.looksJapanese()
+                    } else {
+                        detected.lang == "eng"
+                    }
+                    if (isDetected) {
+                        val name = if(subtitles.name.isNullOrEmpty()){
+                            if(isJapaneseTarget) "Japanese" else "English"
+                        } else subtitles.name
                         trackMap[name] = i
                     }
                 }
@@ -759,23 +969,32 @@ fun batchReadMKV(
                     break
                 }
             }
-            if(trackID == -1){
+            if(trackID == -1 && trackMap.isNotEmpty()){
                 trackID = trackMap.values.first()
-                logger.info("English 字幕，TrackID: $trackID")
+                logger.info("目标语言字幕，TrackID: $trackID")
             }
 
             if (trackID != -1) {
-                val words = parseVideo(
-                    pathName = file.absolutePath,
-                    enablePhrases = enablePhrases,
-                    trackId = trackID,
-                    setProgressText = { }
-                )
+                val words = if (isJapaneseTarget) {
+                    parseJapaneseMKV(
+                        pathName = file.absolutePath,
+                        trackId = trackID,
+                        setProgressText = { }
+                    )
+                } else {
+                    parseVideo(
+                        pathName = file.absolutePath,
+                        enablePhrases = enablePhrases,
+                        trackId = trackID,
+                        setProgressText = { }
+                    )
+                }
                 orderList.addAll(words)
                 updateTaskState(Pair(file, true))
             } else {
-                errorMessage[file] = "没有找到英语字幕"
-                logger.error("${file.nameWithoutExtension} 没有找到英语字幕")
+                val label = if (isJapaneseTarget) "日语字幕" else "英语字幕"
+                errorMessage[file] = "没有找到$label"
+                logger.error("${file.nameWithoutExtension} 没有找到$label")
                 updateTaskState(Pair(file, false))
                 setCurrentTask(null)
                 continue

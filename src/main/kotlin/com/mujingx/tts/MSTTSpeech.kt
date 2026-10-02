@@ -48,6 +48,19 @@ class MSTTSpeech {
 
 
     /**
+     * 切换到日语发音。
+     * SAPI 用 LCID 指定语言，1041 对应日语 (ja-JP)。
+     */
+    fun setJapanese() {
+        try {
+            Dispatch.put(spVoice, "Language", Variant(1041))
+        } catch (exception: Exception) {
+            println(exception.message)
+            exception.printStackTrace()
+        }
+    }
+
+    /**
      * 播放语言
      * @param text 要转换成语言的文本
      */

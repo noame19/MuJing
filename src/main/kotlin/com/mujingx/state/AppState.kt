@@ -177,7 +177,8 @@ class AppState {
                     global.bncNum,
                     global.frqNum,
                     global.maxSentenceLength,
-                    global.showInputCount
+                    global.showInputCount,
+                    global.preferredSubLanguage
                 )
                 val json = encodeBuilder.encodeToString(globalData)
                 val settings = getGlobalSettingsFile()

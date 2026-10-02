@@ -50,6 +50,11 @@ dependencies {
     implementation("com.formdev:flatlaf:3.6.1")
     implementation("com.formdev:flatlaf-extras:2.6")
     implementation("org.apache.opennlp:opennlp-tools:1.9.4")
+
+    // 日语分词。Kuromoji 为纯 JVM 实现，词典（IPADIC 派生）已内嵌在 jar 中，
+    // 无需在构建机安装 Python 或编译 C++，适合直接打进 AppImage / dmg / msi。
+    // JapaneseBaseFormFilter 可还原基本形，对应本项目的 getWordLemma 语义。
+    implementation("org.apache.lucene:lucene-analysis-kuromoji:9.11.1")
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation(files("lib/ebml-reader-0.1.1.jar"))
     implementation(files("lib/subtitleConvert-1.0.3.jar"))
@@ -206,9 +211,57 @@ val decompressDictionary by tasks.registering {
     }
 }
 
+// 日→中词典 jadic.db：日语功能依赖它，缺失时调用生成脚本构建。
+// 脚本只依赖 Python 标准库；可选依赖 pykakasi 用于生成罗马字，
+// 缺失时 romaji 字段留空，不影响其他功能。
+//
+// 注意：词典为可选增强，构建期缺少 Python 时跳过而非中断，
+// 以免英语用户在未安装 Python 的机器上无法构建。
+val buildJapaneseDictionary by tasks.registering {
+    group = "build"
+    description = "Generate Japanese (ja-zh) dictionary database if missing"
+    doLast {
+        val dictFile = layout.projectDirectory.dir("resources/common/dictionary/jadic.db").asFile
+        if (dictFile.exists()) {
+            println("日语词典已存在，跳过生成")
+            return@doLast
+        }
+
+        val script = layout.projectDirectory.dir("tools/japanese/build_vocabulary.py").asFile
+        // Windows 上命令名是 python，其余平台是 python3
+        val candidates = if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
+            listOf("python", "python3", "py")
+        } else {
+            listOf("python3", "python")
+        }
+
+        var executed = false
+        for (command in candidates) {
+            try {
+                val process = ProcessBuilder(command, script.absolutePath)
+                    .redirectErrorStream(true)
+                    .start()
+                process.inputStream.bufferedReader().forEachLine { println(it) }
+                if (process.waitFor() == 0 && dictFile.exists()) {
+                    executed = true
+                    break
+                }
+            } catch (e: IOException) {
+                // 该命令不存在，尝试下一个
+            }
+        }
+
+        if (!executed) {
+            println("警告：未能生成日语词典 jadic.db（日语查词功能将不可用）。")
+            println("可手动执行：python3 tools/japanese/build_vocabulary.py")
+        }
+    }
+}
+
 tasks.named("compileKotlin") {
     // 移除模型下载依赖，只保留 ffmpeg 准备
     dependsOn("prepareFfmpeg")
+    dependsOn(buildJapaneseDictionary)
 }
 
 tasks.register("prepareFfmpeg") {

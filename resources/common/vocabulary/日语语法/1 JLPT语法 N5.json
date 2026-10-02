@@ -1,0 +1,454 @@
+{
+    "name": "JLPT语法 N5",
+    "type": "DOCUMENT",
+    "language": "japanese",
+    "level": "N5",
+    "size": 20,
+    "grammarList": [
+        {
+            "id": "N5-1",
+            "level": "N5",
+            "patterns": [
+                "〜が"
+            ],
+            "meaning": "but; however",
+            "formation": "Clause A + が + Clause B",
+            "examples": [
+                {
+                    "ja": "この本は高いですが、面白いです。",
+                    "en": "This book is expensive, but interesting."
+                },
+                {
+                    "ja": "日本語が好きですが、難しいです。",
+                    "en": "I like Japanese, but it's difficult."
+                }
+            ],
+            "tags": [
+                "conjunction"
+            ]
+        },
+        {
+            "id": "N5-2",
+            "level": "N5",
+            "patterns": [
+                "〜がいます",
+                "〜があります"
+            ],
+            "meaning": "there is/are (animate or inanimate)",
+            "formation": "Noun + が + います/あります",
+            "examples": [
+                {
+                    "ja": "公園に猫がいます。",
+                    "en": "There is a cat in the park."
+                },
+                {
+                    "ja": "机の上に本があります。",
+                    "en": "There is a book on the desk."
+                }
+            ],
+            "tags": [
+                "existence"
+            ]
+        },
+        {
+            "id": "N5-3",
+            "level": "N5",
+            "patterns": [
+                "〜から"
+            ],
+            "meaning": "because; since",
+            "formation": "Sentence + から + Result",
+            "examples": [
+                {
+                    "ja": "雨が降っているから、出かけません。",
+                    "en": "Because it's raining, I won't go out."
+                },
+                {
+                    "ja": "眠いから、早く寝ます。",
+                    "en": "Because I'm sleepy, I'll go to bed early."
+                }
+            ],
+            "tags": [
+                "reason"
+            ]
+        },
+        {
+            "id": "N5-4",
+            "level": "N5",
+            "patterns": [
+                "〜が好きです",
+                "〜が嫌いです"
+            ],
+            "meaning": "like / dislike",
+            "formation": "Noun/Verb-noun + が + 好きです/嫌いです",
+            "examples": [
+                {
+                    "ja": "私は猫が好きです。",
+                    "en": "I like cats."
+                },
+                {
+                    "ja": "彼は野菜が嫌いです。",
+                    "en": "He dislikes vegetables."
+                }
+            ],
+            "tags": [
+                "preference"
+            ]
+        },
+        {
+            "id": "N5-5",
+            "level": "N5",
+            "patterns": [
+                "〜たい"
+            ],
+            "meaning": "want to do",
+            "formation": "Verb-stem + たい",
+            "examples": [
+                {
+                    "ja": "日本に行きたいです。",
+                    "en": "I want to go to Japan."
+                },
+                {
+                    "ja": "水が飲みたいです。",
+                    "en": "I want to drink water."
+                }
+            ],
+            "tags": [
+                "desire"
+            ]
+        },
+        {
+            "id": "N5-6",
+            "level": "N5",
+            "patterns": [
+                "〜たことがあります"
+            ],
+            "meaning": "have done before; experienced",
+            "formation": "Verb-ta + ことがあります",
+            "examples": [
+                {
+                    "ja": "日本に行ったことがあります。",
+                    "en": "I have been to Japan before."
+                },
+                {
+                    "ja": "寿司を食べたことがありません。",
+                    "en": "I have never eaten sushi."
+                }
+            ],
+            "tags": [
+                "experience"
+            ]
+        },
+        {
+            "id": "N5-7",
+            "level": "N5",
+            "patterns": [
+                "〜で"
+            ],
+            "meaning": "marks the place of action or the means of doing something",
+            "formation": "Place/Means + で + Verb",
+            "examples": [
+                {
+                    "ja": "学校で勉強します。",
+                    "en": "I study at school."
+                },
+                {
+                    "ja": "バスで帰ります。",
+                    "en": "I return by bus."
+                }
+            ],
+            "tags": [
+                "particle"
+            ]
+        },
+        {
+            "id": "N5-8",
+            "level": "N5",
+            "patterns": [
+                "〜ている"
+            ],
+            "meaning": "is/am/are doing (progressive) or resultant state",
+            "formation": "Verb-te + いる",
+            "examples": [
+                {
+                    "ja": "今、ご飯を食べています。",
+                    "en": "I am eating now."
+                },
+                {
+                    "ja": "電気がついています。",
+                    "en": "The light is on."
+                }
+            ],
+            "tags": [
+                "progressive"
+            ]
+        },
+        {
+            "id": "N5-9",
+            "level": "N5",
+            "patterns": [
+                "〜てください"
+            ],
+            "meaning": "please do (for me)",
+            "formation": "Verb-te + ください",
+            "examples": [
+                {
+                    "ja": "窓を開けてください。",
+                    "en": "Please open the window."
+                },
+                {
+                    "ja": "ここに名前を書いてください。",
+                    "en": "Please write your name here."
+                }
+            ],
+            "tags": [
+                "request"
+            ]
+        },
+        {
+            "id": "N5-10",
+            "level": "N5",
+            "patterns": [
+                "〜でした"
+            ],
+            "meaning": "was/were (polite past of です)",
+            "formation": "Noun/Na-adjective + でした",
+            "examples": [
+                {
+                    "ja": "昨日は日曜日でした。",
+                    "en": "Yesterday was Sunday."
+                },
+                {
+                    "ja": "昔、ここは静かでした。",
+                    "en": "This place used to be quiet."
+                }
+            ],
+            "tags": [
+                "past",
+                "polite"
+            ]
+        },
+        {
+            "id": "N5-11",
+            "level": "N5",
+            "patterns": [
+                "〜ではありません"
+            ],
+            "meaning": "is not (polite negative)",
+            "formation": "Noun/Na-adjective + ではありません",
+            "examples": [
+                {
+                    "ja": "私は学生ではありません。",
+                    "en": "I am not a student."
+                },
+                {
+                    "ja": "今日は寒くありません。",
+                    "en": "Today is not cold."
+                }
+            ],
+            "tags": [
+                "negative",
+                "polite"
+            ]
+        },
+        {
+            "id": "N5-12",
+            "level": "N5",
+            "patterns": [
+                "〜てはいけません"
+            ],
+            "meaning": "must not do",
+            "formation": "Verb-te + はいけません",
+            "examples": [
+                {
+                    "ja": "ここで写真を撮ってはいけません。",
+                    "en": "You must not take pictures here."
+                },
+                {
+                    "ja": "嘘をついてはいけません。",
+                    "en": "You must not lie."
+                }
+            ],
+            "tags": [
+                "prohibition"
+            ]
+        },
+        {
+            "id": "N5-13",
+            "level": "N5",
+            "patterns": [
+                "〜てもいいです"
+            ],
+            "meaning": "may do; it's okay to do",
+            "formation": "Verb-te + もいいです",
+            "examples": [
+                {
+                    "ja": "写真を撮ってもいいですか。",
+                    "en": "May I take a picture?"
+                },
+                {
+                    "ja": "ここで食べてもいいです。",
+                    "en": "It's okay to eat here."
+                }
+            ],
+            "tags": [
+                "permission"
+            ]
+        },
+        {
+            "id": "N5-14",
+            "level": "N5",
+            "patterns": [
+                "〜と"
+            ],
+            "meaning": "and; with; together with",
+            "formation": "Noun/Verb-plain + と + Noun/Verb",
+            "examples": [
+                {
+                    "ja": "友達と映画を見ます。",
+                    "en": "I watch a movie with my friend."
+                },
+                {
+                    "ja": "春になると、桜が咲きます。",
+                    "en": "When spring comes, cherry blossoms bloom."
+                }
+            ],
+            "tags": [
+                "conjunction"
+            ]
+        },
+        {
+            "id": "N5-15",
+            "level": "N5",
+            "patterns": [
+                "〜なくてもいいです"
+            ],
+            "meaning": "don't have to; need not",
+            "formation": "Verb-negative + くてもいいです",
+            "examples": [
+                {
+                    "ja": "明日は早く来なくてもいいです。",
+                    "en": "You don't have to come early tomorrow."
+                },
+                {
+                    "ja": "帽子をかぶらなくてもいいです。",
+                    "en": "You don't have to wear a hat."
+                }
+            ],
+            "tags": [
+                "permission"
+            ]
+        },
+        {
+            "id": "N5-16",
+            "level": "N5",
+            "patterns": [
+                "〜なければなりません",
+                "〜なくてはいけません"
+            ],
+            "meaning": "must do; have to do",
+            "formation": "Verb-negative + ければなりません / くてはいけません",
+            "examples": [
+                {
+                    "ja": "明日までにレポートを出さなければなりません。",
+                    "en": "I must submit the report by tomorrow."
+                },
+                {
+                    "ja": "薬を飲まなくてはいけません。",
+                    "en": "I have to take medicine."
+                }
+            ],
+            "tags": [
+                "obligation"
+            ]
+        },
+        {
+            "id": "N5-17",
+            "level": "N5",
+            "patterns": [
+                "〜に"
+            ],
+            "meaning": "marks time, destination, or indirect target",
+            "formation": "Noun/Time + に + Verb",
+            "examples": [
+                {
+                    "ja": "7時に起きます。",
+                    "en": "I wake up at 7 o'clock."
+                },
+                {
+                    "ja": "日本に行きます。",
+                    "en": "I go to Japan."
+                }
+            ],
+            "tags": [
+                "particle"
+            ]
+        },
+        {
+            "id": "N5-18",
+            "level": "N5",
+            "patterns": [
+                "〜ましょう"
+            ],
+            "meaning": "let's do; shall we do",
+            "formation": "Verb-stem + ましょう",
+            "examples": [
+                {
+                    "ja": "一緒に行きましょう。",
+                    "en": "Let's go together."
+                },
+                {
+                    "ja": "週末に映画を見ましょう。",
+                    "en": "Let's watch a movie this weekend."
+                }
+            ],
+            "tags": [
+                "invitation"
+            ]
+        },
+        {
+            "id": "N5-19",
+            "level": "N5",
+            "patterns": [
+                "〜ませんか"
+            ],
+            "meaning": "shall we?; won't you?",
+            "formation": "Verb-negative + ませんか",
+            "examples": [
+                {
+                    "ja": "一緒に食べませんか。",
+                    "en": "Won't you eat with me?"
+                },
+                {
+                    "ja": "明日、公園を散歩しませんか。",
+                    "en": "Shall we take a walk in the park tomorrow?"
+                }
+            ],
+            "tags": [
+                "invitation"
+            ]
+        },
+        {
+            "id": "N5-20",
+            "level": "N5",
+            "patterns": [
+                "〜を"
+            ],
+            "meaning": "marks the direct object of a verb",
+            "formation": "Noun + を + Verb",
+            "examples": [
+                {
+                    "ja": "本を読みます。",
+                    "en": "I read a book."
+                },
+                {
+                    "ja": "コーヒーを飲みます。",
+                    "en": "I drink coffee."
+                }
+            ],
+            "tags": [
+                "particle"
+            ]
+        }
+    ]
+}

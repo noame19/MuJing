@@ -26,6 +26,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
@@ -36,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.mujingx.state.getResourcesFile
 import java.io.File
 
 
@@ -62,79 +63,20 @@ fun BuiltInVocabularyMenu(
         Row(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.width(width).fillMaxHeight()){
-            Column(Modifier.width(240.dp).height(400.dp)){
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/大学英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/大学英语")
-                    }
-                )
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/出国"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/出国")
-                    }
-                )
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/牛津核心词"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/牛津核心词")
-                    }
-                )
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/北师大版高中英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/北师大版高中英语")
-                    }
-                )
-
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/人教版英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/人教版英语")
-                    }
-                )
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/外研版英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/外研版英语")
-                    }
-                )
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/新概念英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/新概念英语")
-                    }
-                )
-
-                VocabularyDirectory(
-                    directory = getResourcesFile("vocabulary/商务英语"),
-                    selectedDirectory = selectedDirectory,
-                    onClick = {
-                        showList = true
-                        selectedDirectory = getResourcesFile("vocabulary/商务英语")
-                    }
-                )
-
+            Column(
+                modifier = Modifier.width(240.dp).height(400.dp)
+                    .verticalScroll(rememberScrollState())
+            ){
+                getBuiltInVocabularyDirectories().forEach { directory ->
+                    VocabularyDirectory(
+                        directory = directory,
+                        selectedDirectory = selectedDirectory,
+                        onClick = {
+                            showList = true
+                            selectedDirectory = directory
+                        }
+                    )
+                }
             }
 
             if(showList){
@@ -182,15 +124,8 @@ fun VocabularyList(
     directory: File,
     selectedFile: (File) -> Unit
 ) {
-    if (directory.isDirectory && !directory.listFiles().isNullOrEmpty()) {
-        val files = directory.listFiles()
-        if (directory.nameWithoutExtension == "人教版英语" ||
-            directory.nameWithoutExtension == "外研版英语" ||
-            directory.nameWithoutExtension == "北师大版高中英语"
-        ) {
-            files!!.sortBy { it.nameWithoutExtension.split(" ")[0].toFloat() }
-        }
-
+    val files = listVocabularyFiles(directory)
+    if (files.isNotEmpty()) {
         Box(Modifier.width(200.dp).height(400.dp)){
             val listState = rememberLazyListState()
             LazyColumn(
@@ -200,8 +135,8 @@ fun VocabularyList(
                     .height(400.dp),
                 state = listState
             ) {
-                items(files!!) { file ->
-                    val name = formatName(file, directory)
+                items(files) { file ->
+                    val name = formatVocabularyName(file, directory)
                     DropdownMenuItem(onClick = { selectedFile(file) }) {
                         Text(
                             text = name,
@@ -222,18 +157,4 @@ fun VocabularyList(
 
 
     }
-}
-
-private fun formatName(file: File, directory: File): String {
-    var name = file.nameWithoutExtension
-    if (directory.nameWithoutExtension == "人教版英语" ||
-        directory.nameWithoutExtension == "外研版英语" ||
-        directory.nameWithoutExtension == "北师大版高中英语"
-    ) {
-        if (name.contains(" ")) {
-            name = name.split(" ")[1]
-        }
-
-    }
-    return name
 }

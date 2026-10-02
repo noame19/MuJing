@@ -19,6 +19,7 @@
 
 package com.mujingx.ui.dialog
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -55,6 +56,7 @@ import com.mujingx.ui.flatlaf.updateFlatLaf
 import com.mujingx.ui.window.windowBackgroundFlashingOnCloseFixHack
 import com.mujingx.ui.wordscreen.*
 import com.mujingx.ui.util.rememberMonospace
+import com.mujingx.ui.util.JapaneseGrammarMatcher
 import java.awt.Toolkit
 
 
@@ -762,12 +764,23 @@ fun AudioSettingsPage(wordScreenState: WordScreenState) {
     }
 }
 
+/** 视频字幕轨道的可选语言。值为 VLC --sub-language 的语言代码。 */
+private val subtitleLanguageOptions = listOf(
+    "en" to "英语",
+    "ja" to "日语",
+    "zh" to "中文",
+    "ko" to "韩语"
+)
+
 @OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun OtherSettings(appState: AppState) {
+    var showGrammarLibrary by remember { mutableStateOf(false) }
     Box(Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter){
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp,end = 50.dp),
+        Column(modifier = Modifier.fillMaxWidth().padding(top = 20.dp,end = 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally){
+        Row(modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center){
             Text("显示输入次数")
@@ -779,6 +792,89 @@ fun OtherSettings(appState: AppState) {
                     appState.saveGlobalState()
                 }
             )
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center){
+            Text("视频默认字幕语言")
+            Spacer(Modifier.width(20.dp))
+            var expanded by remember{ mutableStateOf(false) }
+            val border = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+            val current = appState.global.preferredSubLanguage
+            Box{
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .width(180.dp).height(40.dp).padding(start = 12.dp, end = 8.dp)
+                        .border(border = border)
+                        .clickable { expanded = !expanded }
+                ){
+                    Text(
+                        text = subtitleLanguageOptions.firstOrNull { it.first == current }?.second ?: current,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Icon(
+                        Icons.Default.ExpandMore,
+                        contentDescription = "Localized description",
+                        tint = if (MaterialTheme.colors.isLight) Color.DarkGray else MaterialTheme.colors.onBackground,
+                        modifier = Modifier.size(32.dp,32.dp)
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.width(180.dp)
+                ){
+                    subtitleLanguageOptions.forEach { (code, label) ->
+                        DropdownMenuItem(
+                            onClick = {
+                                appState.global.preferredSubLanguage = code
+                                expanded = false
+                                appState.saveGlobalState()
+                            },
+                            modifier = Modifier.width(180.dp).height(40.dp)
+                        ){
+                            Text(
+                                text = label,
+                                color = if (appState.global.preferredSubLanguage == code)
+                                    MaterialTheme.colors.primary
+                                else
+                                    MaterialTheme.colors.onBackground
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = "重启播放器后生效",
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
+                style = MaterialTheme.typography.caption
+            )
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // 语法库入口。仅在语法数据可用时展示，避免出现打不开的空窗口。
+        if (JapaneseGrammarMatcher.isAvailable) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center){
+                Text("日语语法库")
+                Spacer(Modifier.width(20.dp))
+                OutlinedButton(onClick = { showGrammarLibrary = true }) {
+                    Text("打开（${JapaneseGrammarMatcher.size} 条）")
+                }
+            }
+
+            if (showGrammarLibrary) {
+                GrammarLibraryDialog(onClose = { showGrammarLibrary = false })
+            }
+        }
         }
     }
 }

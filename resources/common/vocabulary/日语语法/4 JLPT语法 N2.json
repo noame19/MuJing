@@ -1,0 +1,463 @@
+{
+    "name": "JLPT语法 N2",
+    "type": "DOCUMENT",
+    "language": "japanese",
+    "level": "N2",
+    "size": 20,
+    "grammarList": [
+        {
+            "id": "N2-1",
+            "level": "N2",
+            "patterns": [
+                "〜かねない"
+            ],
+            "meaning": "might; there is a risk that",
+            "formation": "Verb-stem + かねない",
+            "examples": [
+                {
+                    "ja": "その話は誤解を招きかねない。",
+                    "en": "That story might cause misunderstanding."
+                },
+                {
+                    "ja": "遅れたら、怒られかねない。",
+                    "en": "If I'm late, I might get scolded."
+                }
+            ],
+            "tags": [
+                "risk",
+                "possibility"
+            ]
+        },
+        {
+            "id": "N2-2",
+            "level": "N2",
+            "patterns": [
+                "〜かのようだ"
+            ],
+            "meaning": "as if; just like",
+            "formation": "Verb-plain / i-adjective / na-adjective + かのようだ",
+            "examples": [
+                {
+                    "ja": "彼はまるで専門家かのように説明した。",
+                    "en": "He explained as if he were an expert."
+                },
+                {
+                    "ja": "夢を見ているかのようだ。",
+                    "en": "It's as if I'm dreaming."
+                }
+            ],
+            "tags": [
+                "metaphor",
+                "appearance"
+            ]
+        },
+        {
+            "id": "N2-3",
+            "level": "N2",
+            "patterns": [
+                "〜ずにはいられない"
+            ],
+            "meaning": "cannot help but; can't resist",
+            "formation": "Verb-negative (ない) + ずにはいられない",
+            "examples": [
+                {
+                    "ja": "面白くて、笑わずにはいられない。",
+                    "en": "It's so funny that I can't help laughing."
+                },
+                {
+                    "ja": "彼の話を信じずにはいられなかった。",
+                    "en": "I couldn't help but believe his story."
+                }
+            ],
+            "tags": [
+                "emotion",
+                "compulsion"
+            ]
+        },
+        {
+            "id": "N2-4",
+            "level": "N2",
+            "patterns": [
+                "〜にわたって"
+            ],
+            "meaning": "throughout; over; spanning",
+            "formation": "Noun + にわたって",
+            "examples": [
+                {
+                    "ja": "3年にわたって研究を続けた。",
+                    "en": "I continued the research for three years."
+                },
+                {
+                    "ja": "全国にわたって調査を行った。",
+                    "en": "We conducted a survey across the whole country."
+                }
+            ],
+            "tags": [
+                "span",
+                "range"
+            ]
+        },
+        {
+            "id": "N2-5",
+            "level": "N2",
+            "patterns": [
+                "〜に沿って"
+            ],
+            "meaning": "along; in line with; following",
+            "formation": "Noun + に沿って",
+            "examples": [
+                {
+                    "ja": "海岸に沿って走る。",
+                    "en": "Run along the coast."
+                },
+                {
+                    "ja": "計画に沿って進める。",
+                    "en": "Proceed in line with the plan."
+                }
+            ],
+            "tags": [
+                "direction",
+                "conformity"
+            ]
+        },
+        {
+            "id": "N2-6",
+            "level": "N2",
+            "patterns": [
+                "〜に応じて"
+            ],
+            "meaning": "according to; in proportion to; depending on",
+            "formation": "Noun + に応じて",
+            "examples": [
+                {
+                    "ja": "相手に応じて話し方を変える。",
+                    "en": "Change the way you speak depending on the other person."
+                },
+                {
+                    "ja": "収入に応じて支出を決める。",
+                    "en": "Decide expenses according to income."
+                }
+            ],
+            "tags": [
+                "proportion",
+                "adaptation"
+            ]
+        },
+        {
+            "id": "N2-7",
+            "level": "N2",
+            "patterns": [
+                "〜に加えて"
+            ],
+            "meaning": "in addition to",
+            "formation": "Noun + に加えて",
+            "examples": [
+                {
+                    "ja": "英語に加えて、フランス語も勉強している。",
+                    "en": "In addition to English, I also study French."
+                },
+                {
+                    "ja": "値上げに加えて、サービスも悪化した。",
+                    "en": "In addition to the price increase, service also deteriorated."
+                }
+            ],
+            "tags": [
+                "addition"
+            ]
+        },
+        {
+            "id": "N2-8",
+            "level": "N2",
+            "patterns": [
+                "〜に基づいて"
+            ],
+            "meaning": "based on; in accordance with",
+            "formation": "Noun + に基づいて",
+            "examples": [
+                {
+                    "ja": "データに基づいて判断する。",
+                    "en": "Judge based on data."
+                },
+                {
+                    "ja": "実際の経験に基づいて書いた。",
+                    "en": "I wrote it based on actual experience."
+                }
+            ],
+            "tags": [
+                "basis"
+            ]
+        },
+        {
+            "id": "N2-9",
+            "level": "N2",
+            "patterns": [
+                "〜に際して"
+            ],
+            "meaning": "on the occasion of; at the time of",
+            "formation": "Noun + に際して",
+            "examples": [
+                {
+                    "ja": "出発に際して、一言ご挨拶させていただきます。",
+                    "en": "On the occasion of our departure, please allow me to say a few words."
+                },
+                {
+                    "ja": "入社に際して、誓約書を提出した。",
+                    "en": "I submitted a pledge when joining the company."
+                }
+            ],
+            "tags": [
+                "formal",
+                "timing"
+            ]
+        },
+        {
+            "id": "N2-10",
+            "level": "N2",
+            "patterns": [
+                "〜に至って"
+            ],
+            "meaning": "when it comes to; at the point of",
+            "formation": "Noun + に至って",
+            "examples": [
+                {
+                    "ja": "辞職に至った経緯を説明する。",
+                    "en": "Explain the circumstances that led to the resignation."
+                },
+                {
+                    "ja": "今回の事件に至って、ようやく問題の深刻さが分かった。",
+                    "en": "It was only with this incident that I finally understood the seriousness of the problem."
+                }
+            ],
+            "tags": [
+                "advanced-timing",
+                "formal"
+            ]
+        },
+        {
+            "id": "N2-11",
+            "level": "N2",
+            "patterns": [
+                "〜に代わって"
+            ],
+            "meaning": "in place of; instead of; on behalf of",
+            "formation": "Noun + に代わって",
+            "examples": [
+                {
+                    "ja": "社長に代わって挨拶する。",
+                    "en": "Give a speech on behalf of the president."
+                },
+                {
+                    "ja": "彼に代わって、私が出席した。",
+                    "en": "I attended in his place."
+                }
+            ],
+            "tags": [
+                "substitution"
+            ]
+        },
+        {
+            "id": "N2-12",
+            "level": "N2",
+            "patterns": [
+                "〜に伴って"
+            ],
+            "meaning": "as; in accordance with; along with",
+            "formation": "Noun + に伴って",
+            "examples": [
+                {
+                    "ja": "都市化に伴って、緑が減っている。",
+                    "en": "As urbanization progresses, greenery is decreasing."
+                },
+                {
+                    "ja": "人口の増加に伴って、問題も増えた。",
+                    "en": "Along with the increase in population, problems also increased."
+                }
+            ],
+            "tags": [
+                "accompaniment"
+            ]
+        },
+        {
+            "id": "N2-13",
+            "level": "N2",
+            "patterns": [
+                "〜に反して"
+            ],
+            "meaning": "contrary to; against",
+            "formation": "Noun + に反して",
+            "examples": [
+                {
+                    "ja": "予想に反して、試験は簡単だった。",
+                    "en": "Contrary to expectations, the exam was easy."
+                },
+                {
+                    "ja": "親の期待に反して、芸術家になった。",
+                    "en": "Against my parents' expectations, I became an artist."
+                }
+            ],
+            "tags": [
+                "contrast"
+            ]
+        },
+        {
+            "id": "N2-14",
+            "level": "N2",
+            "patterns": [
+                "〜をきっかけに"
+            ],
+            "meaning": "triggered by; taking the opportunity of",
+            "formation": "Noun + をきっかけに",
+            "examples": [
+                {
+                    "ja": "留学をきっかけに、日本語が好きになった。",
+                    "en": "Studying abroad was the trigger that made me love Japanese."
+                },
+                {
+                    "ja": "この本をきっかけに、歴史を勉強し始めた。",
+                    "en": "This book was the opportunity for me to start studying history."
+                }
+            ],
+            "tags": [
+                "opportunity",
+                "trigger"
+            ]
+        },
+        {
+            "id": "N2-15",
+            "level": "N2",
+            "patterns": [
+                "〜をめぐって"
+            ],
+            "meaning": "concerning; regarding; around",
+            "formation": "Noun + をめぐって",
+            "examples": [
+                {
+                    "ja": "環境問題をめぐって議論が続いている。",
+                    "en": "Discussion continues regarding environmental issues."
+                },
+                {
+                    "ja": "遺産をめぐって争いが起きた。",
+                    "en": "A dispute arose over the inheritance."
+                }
+            ],
+            "tags": [
+                "topic",
+                "controversy"
+            ]
+        },
+        {
+            "id": "N2-16",
+            "level": "N2",
+            "patterns": [
+                "〜を禁じえない"
+            ],
+            "meaning": "cannot help feeling; unable to restrain",
+            "formation": "Noun + を禁じえない",
+            "examples": [
+                {
+                    "ja": "その結果には驚きを禁じえない。",
+                    "en": "I cannot help but be surprised by that result."
+                },
+                {
+                    "ja": "彼の努力には感動を禁じえない。",
+                    "en": "I cannot help being moved by his efforts."
+                }
+            ],
+            "tags": [
+                "emotion",
+                "formal"
+            ]
+        },
+        {
+            "id": "N2-17",
+            "level": "N2",
+            "patterns": [
+                "〜を除いて"
+            ],
+            "meaning": "except for; excluding",
+            "formation": "Noun + を除いて",
+            "examples": [
+                {
+                    "ja": "日曜日を除いて、毎日開店している。",
+                    "en": "We are open every day except Sunday."
+                },
+                {
+                    "ja": "彼を除いて、全員参加した。",
+                    "en": "Everyone participated except him."
+                }
+            ],
+            "tags": [
+                "exception"
+            ]
+        },
+        {
+            "id": "N2-18",
+            "level": "N2",
+            "patterns": [
+                "〜を通して"
+            ],
+            "meaning": "through; by way of; throughout",
+            "formation": "Noun + を通して",
+            "examples": [
+                {
+                    "ja": "仕事を通して多くを学んだ。",
+                    "en": "I learned a lot through work."
+                },
+                {
+                    "ja": "試験を通して、実力が分かる。",
+                    "en": "You can understand your ability through the exam."
+                }
+            ],
+            "tags": [
+                "means",
+                "span"
+            ]
+        },
+        {
+            "id": "N2-19",
+            "level": "N2",
+            "patterns": [
+                "〜を通じて"
+            ],
+            "meaning": "through; by means of; throughout",
+            "formation": "Noun + を通じて",
+            "examples": [
+                {
+                    "ja": "SNSを通じて知り合った。",
+                    "en": "We met through social media."
+                },
+                {
+                    "ja": "一年を通じて暖かい気候だ。",
+                    "en": "The climate is warm throughout the year."
+                }
+            ],
+            "tags": [
+                "means",
+                "span"
+            ]
+        },
+        {
+            "id": "N2-20",
+            "level": "N2",
+            "patterns": [
+                "〜を余儀なくされる"
+            ],
+            "meaning": "be forced to; be compelled to",
+            "formation": "Noun + を余儀なくされる",
+            "examples": [
+                {
+                    "ja": "悪天候で中止を余儀なくされた。",
+                    "en": "We were forced to cancel due to bad weather."
+                },
+                {
+                    "ja": "予算削減で人員削減を余儀なくされた。",
+                    "en": "We were forced to reduce staff due to budget cuts."
+                }
+            ],
+            "tags": [
+                "compulsion",
+                "formal"
+            ]
+        }
+    ]
+}
