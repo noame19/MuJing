@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import org.slf4j.LoggerFactory
 import com.mujingx.state.GlobalState
 import org.slf4j.Logger
+import java.io.File
 
 
 val IDEADarkThemeOnBackground = Color(133, 144, 151)
@@ -114,17 +115,25 @@ fun isSystemDarkMode(): Boolean {
             }
         }
         System.getProperty("os.name").contains("Linux", ignoreCase = true) -> {
-            // 还没有在Linux上测试
-            val command = arrayOf("gsettings", "get", "org.gnome.desktop.interface", "gtk-theme")
-            try {
-                val process = Runtime.getRuntime().exec(command)
-                process.inputStream.bufferedReader().use { reader ->
-                    val output = reader.readText().trim()
-                    output.contains("dark", ignoreCase = true)
+            // KDE 与 GNOME 把主题存在完全不同的地方，读错来源会恒定判成浅色。
+            // 实测 KDE Plasma 上 gsettings 读 org.gnome.desktop.interface
+            // 拿到的是 GNOME 遗留的 'Breeze'，与应用实际使用的
+            // ~/.config/kdeglobals 里的 ColorScheme=BreezeDark 无关。
+            val kdeColorScheme = readKdeColorScheme()
+            if (kdeColorScheme != null) {
+                kdeColorScheme.contains("dark", ignoreCase = true)
+            } else {
+                val command = arrayOf("gsettings", "get", "org.gnome.desktop.interface", "gtk-theme")
+                try {
+                    val process = Runtime.getRuntime().exec(command)
+                    process.inputStream.bufferedReader().use { reader ->
+                        val output = reader.readText().trim()
+                        output.contains("dark", ignoreCase = true)
+                    }
+                } catch (e: Exception) {
+                    logError(e, logger)
+                    false
                 }
-            } catch (e: Exception) {
-                logError(e, logger)
-                false
             }
         }
         else -> false
