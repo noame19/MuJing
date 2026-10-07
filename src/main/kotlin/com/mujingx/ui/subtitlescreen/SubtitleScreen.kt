@@ -376,12 +376,15 @@ fun SubtitleScreen(
 
     /** 播放单词发音 */
     val playAudio:(String) -> Unit = { word ->
+        val isJapanese = wordScreenState.vocabulary.language
+            .equals("japanese", true)
         val audioPath = getAudioPath(
             word = word,
             audioSet = audioSet,
             addToAudioSet = {audioSet.add(it)},
             pronunciation = pronunciation,
             azureTTS = azureTTS,
+            isJapanese = isJapanese,
         )
         playAudio(
             word,
@@ -390,6 +393,7 @@ fun SubtitleScreen(
             globalState.audioVolume,
             audioPlayerComponent,
             changePlayerState = { },
+            isJapanese = isJapanese,
         )
     }
 

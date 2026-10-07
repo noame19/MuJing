@@ -601,12 +601,15 @@ fun VideoPlayer(
 
     /** 播放单词发音 */
     val playAudio:(String) -> Unit = { word ->
+        // state.vocabulary 可为空（纯视频播放时未关联词库），故用 ?. 安全取值
+        val isJapanese = state.vocabulary?.language.equals("japanese", true)
         val audioPath = getAudioPath(
             word = word,
             audioSet = audioSet,
             addToAudioSet = {audioSet.add(it)},
             pronunciation = pronunciation,
             azureTTS = azureTTS,
+            isJapanese = isJapanese,
         )
         playAudio(
             word,
@@ -615,6 +618,7 @@ fun VideoPlayer(
             audioVolume,
             audioPlayerComponent,
             changePlayerState = { },
+            isJapanese = isJapanese,
         )
     }
 

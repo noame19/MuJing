@@ -104,6 +104,7 @@ fun AudioButton(
                 volume,
                 audioPlayerComponent,
                 changePlayerState = setIsPlaying,
+                isJapanese = isJapanese,
                 )
         }
         Column(
@@ -218,6 +219,8 @@ fun AudioButton(
                 volume,
                 audioPlayerComponent,
                 changePlayerState = { isPlaying = it },
+                isJapanese = wordScreenState.vocabulary.language
+                    .equals("japanese", true),
             )
         }
 

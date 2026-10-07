@@ -1090,6 +1090,8 @@ fun MainContent(
                                             audioPlayerComponent = audioPlayerComponent,
                                             changePlayerState = { isPlaying -> isPlayingAudio = isPlaying },
 //                                        setIsAutoPlay = {}
+                                            isJapanese = wordScreenState.vocabulary.language
+                                                .equals("japanese", true),
                                         )
                                     }
 
@@ -1143,6 +1145,8 @@ fun MainContent(
                                             audioPlayerComponent = audioPlayerComponent,
                                             changePlayerState = { isPlaying -> isPlayingAudio = isPlaying },
 //                                        setIsAutoPlay = {}
+                                            isJapanese = wordScreenState.vocabulary.language
+                                                .equals("japanese", true),
                                         )
                                     }
 
