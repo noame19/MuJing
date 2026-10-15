@@ -274,7 +274,8 @@ CREATE TABLE jmdict (word TEXT NOT NULL, reading TEXT DEFAULT '', translation TE
 ## 7. 构建与验证
 
 - **所有编译验证在 GitHub Actions 进行**，不在本机装 Gradle/JDK 构建链
-- 触发方式：`gh workflow run Build-AppImage.yml --repo noame19/MuJing --ref master`
+- 触发方式：`gh workflow run Build-AppImage.yml --repo noame19/MuJing --ref japanese-support-dev`
+  （日语开发支线，见 §9；非日语改动可用 `--ref master`）
 - 产物：AppImage / MSI / DMG，从对应 run 的 artifact 下载
 - 提交前不必本地编译；推送后看 CI 结果
 
@@ -297,3 +298,25 @@ gh run download <run-id> --repo noame19/MuJing --name MuJing-linux-appimage-x86_
   **不要**用字符范围正则判断语言
 - 改动英语既有路径时须回归验证：日语分支不得影响英语词库的显示与发音
 - `resources/` 下的词库 JSON 由脚本生成，**不手工编辑**
+
+---
+
+## 9. 分支与提交流程
+
+- **日常开发一律在 `japanese-support-dev` 分支**，禁止直接向 `master` 提交
+- 合并顺序：`japanese-support-dev`（开发）→ `feature/japanese-support`
+  （日语稳定支线）→ `master`（发布）；每一步都先验证再合并，主线只接受
+  来自支线的合并
+- 禁止直接改主线再回头同步支线：主线出问题会波及发布产物
+- 合并前至少确认：① 词库结构校验通过（`size == len(wordList)`、字段齐全、
+  无脏假名/罗马字）② 英语路径回归正常（日语改动不得影响英语词库）③ CI 通过
+  （GitHub Actions，见 §7）
+
+```bash
+git checkout japanese-support-dev          # 日常开发都在这里
+gh workflow run Build-AppImage.yml --repo noame19/MuJing --ref japanese-support-dev
+# 验证无误后，先并入稳定支线
+git checkout feature/japanese-support && git merge --no-ff japanese-support-dev
+# 使用者确认后，再并入主线
+git checkout master && git merge --no-ff feature/japanese-support
+```
