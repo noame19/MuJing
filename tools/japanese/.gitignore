@@ -1,0 +1,5 @@
+# 词典数据源体积大（JMdict 约 111MB），不入库，用 fetch_dict_data.py 重新下载
+data/
+.venv/
+__pycache__/
+*.pyc
