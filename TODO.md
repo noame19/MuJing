@@ -35,6 +35,18 @@
   （行きます、歩いて），JMdict 只有辞書形，还原后才匹配得上
   （标准日本语未匹配条目 591 → 245，找回的都是动词/形容词；
   `行きます` → 辞書形 `行く`，活用按辞書形生成）
+- 分拍罗马字统一为一份实现：新增 `tools/japanese/japanese_romaji.py`，
+  `build_vocabulary.py` 与 `enrich_vocabulary.py` 共用（旧版 build 用
+  pykakasi 产出 `kakkou`、被 enrich 覆盖为 `ka-k-ko-u`；pykakasi 依赖已移除）
+- `build_vocabulary.py` 参数化：`--categories`（只生成指定分类）、
+  `--no-dict`（不重写 jadic.db）、`--enrich`（生成后立即增强，
+  顺序由脚本保证，不再依赖手工两步操作）
+- な形容词活用由 3 形补到 8 形：`辞書形:だ` `な` `に` 之外增加
+  `ない形:ではない` `て形:で` `過去形:だった` `ば形:なら` `意志形:だろう`
+  （全部 100% 规则的语法派生；1592 条记录的 exchange 得到补全）
+- 视频词库的日语分词已实现（核实，无需再做）：`lucene-analysis-kuromoji`
+  依赖 + `player/JapaneseWordSegmenter.kt`（Kuromoji 分词、词形还原）
+  + `GenerateVocabulary.kt` 的 `extractJapaneseWords()`
 
 ## 待办
 
@@ -68,31 +80,37 @@
         我们只能照抄；`しいんと` 的中文释义被 jadic 串成「场面/场景」（`しいん` 条目有误）
 - [ ] 少数 N1 同音异形词仍会挑错条目（源词条在 JMdict 里没有对应汉字形，
       只能在同音词里猜）：`依` `共` `於` `僅` `供` `し`。
-      需要更强信号（词频/优先级）才能解决，jmdict-simplified 未带 `<pri>` 标签
+      已用 JMdict 词条的 `common` 标志做同分时的优先项，但这几个词的
+      同音候选里没有 `common` 条目，需要词频/优先级数据才能解决
+      （jmdict-simplified 不带 `<pri>` 标签）
 
 ### P2 — 展示与内容
 
-- [ ] `definition` 目前是英文释义。若要「日语释义 + 中文」，
-      需另找国語辞典数据源（JMdict 只有英文 gloss）
-- [ ] 多词性是否分行显示：现为「动词·一段词、动词性助动词、后缀」一行，
-      英语的 cancel 是 `n.` / `vt.` / `vi.` 分行
-- [ ] 中文释义未按义项对齐：jadic 给的是平铺列表，无法与 JMdict 的
-      义项一一对应，目前整体列出
-- [ ] な形容词活用为自建的 3 形（だ/な/に）—— 官方 conjo.csv 对
-      adj-na 只有「辞書形 だ」一条规则，其余是按语法规则补的
+结论（2026-10 核查后决定不改，均为有意保留）：
+
+- `definition` 保持英文释义（JMdict gloss）。要做「日语释义」需引入
+  国語辞典数据源（JMdict 只有英文 gloss），而界面已同时给出中文释义
+  （`translation`），英文释义只作补充；引入新数据源是独立任务，
+  且会把 `definition` 从现在可直接用的英文换成需要再校对的内容
+- 多词性**无需**分行：`definition` 已按义项分行、每行带词性前缀
+  （与英语 `n.` / `vt.` / `vi.` 完全同构），`pos` 字段另有整词词性汇总
+  （英语词库该字段为空，日语因为能拿到权威词性才填）；
+  `WordScreen.kt` 的 `rows` 也按 `\n` 计算，多行本来就支持
+- 中文释义保持平铺：jadic 给的是 (词形, 读音) 下的平铺列表，
+  与 JMdict 义项无法可靠对齐，强行对齐会引入错配
+- な形容词活用已由 3 形补到 8 形（见「已完成」）
 
 ### P3 — 管线与工程
 
-- [ ] 明确 romaji 的权威来源：`build_vocabulary.py` 用 pykakasi 产出
-      `kakkou`，`enrich_vocabulary.py` 覆盖为 `ka-k-ko-u`。
-      两者取其一，避免下游困惑
-- [ ] 考虑把增强步骤并入 `build_vocabulary.py`，减少一次手动执行。
-      注意 `enrich_vocabulary.py` 的输入就是它自己的输出，
-      **必须先重跑 `build_vocabulary.py` 生成基础词库再增强一次**
-      （否则同音异形词消歧的线索被上一轮结果污染；脚本已加误用警告）
-- [ ] pi-lens 对 Kotlin 文件的自动格式化与项目风格不一致
-      （仓库无 ktlint/spotless 配置），目前以 stash 规避。
-      需要决定是否引入 ktlint 配置，或关闭该自动格式化
+- [x] romaji 权威来源统一：`tools/japanese/japanese_romaji.py` 为唯一实现，
+  两个脚本共用；`build_vocabulary.py` 不再依赖 pykakasi
+- [x] 增强步骤并入 `build_vocabulary.py`：`--enrich` 在生成之后立即调用
+  `enrich_vocabulary.py`（顺序由脚本保证，避免在已增强文件上再跑一次
+  导致同音异形词消歧被上一轮结果污染）
+- [x] 代码风格落地为仓库根的 `.editorconfig`（4 空格缩进、UTF-8、LF、
+  末尾单个换行、Markdown 保留行尾空格）。**未**引入 ktlint/spotless：
+  构建全部在 GitHub Actions 云端进行，为格式加一个 Gradle 插件会扩大
+  构建失败面；编辑器自动格式化改以 `.editorconfig` 为准
 
 ### P4 — 后续语言与功能
 
@@ -100,8 +118,9 @@
       （`resources/common/vocabulary/TOPIK한국어/` + `KoreanDictionary`）
 - [ ] 音调（アクセント）展示：NHK 词典不可分发，
       需另找开放许可的音调数据源
-- [ ] 视频词库生成接入日语分词（SudachiPy / MeCab）——
-      当前 OpenNLP 英语模型对日语无效
+- [x] 视频词库生成接入日语分词：已由 `lucene-analysis-kuromoji` +
+      `player/JapaneseWordSegmenter.kt` + `GenerateVocabulary.kt`
+      的 `extractJapaneseWords()` 实现（核查确认，不必再改）
 
 ## 已知的坑
 

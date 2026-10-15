@@ -5,7 +5,8 @@
 1. `tools/japanese/build_vocabulary.py` —— 拉取分级、释义，产出基础词库
 2. `tools/japanese/enrich_vocabulary.py` —— 以 JMdict 补全词性、分拍罗马字、活用形
 
-重新生成方式见各脚本头部说明。
+两步顺序不可颠倒；也可用 `python3 tools/japanese/build_vocabulary.py --enrich`
+一次完成（脚本会先重建基础词库再增强）。重新生成方式见各脚本头部说明。
 
 ---
 
@@ -40,12 +41,12 @@
 该项目的日→简中释义为其自建内容，其底层 JMdict 数据由
 Electronic Dictionary Research and Development Group (EDRDG) 提供。
 
-### 4. 罗马字读音 — PyKakasi
+### 4. 罗马字读音 — 本项目自建
 
-- 项目：<https://github.com/ikki-la/pykakasi>
-- 许可：GPL-3.0-or-later
-- 使用方式：仅在**构建期**作为命令行工具调用生成罗马字，
-  不链接进 MuJing 应用。MuJing 本体同为 GPL-3.0，许可兼容。
+分拍罗马字（かっこう → ka-k-ko-u）由本仓库的
+`tools/japanese/japanese_romaji.py` 生成，不依赖第三方罗马字转换库，
+故此处无需第三方署名。早期版本曾使用 PyKakasi（GPL-3.0-or-later），
+现已移除该依赖。
 
 ### 5. 词性、义项与活用形 — JMdict / JMdictDB（EDRDG）
 

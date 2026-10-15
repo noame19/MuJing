@@ -53,8 +53,9 @@ repo/
 │
 ├── tools/                           构建期脚本（不参与应用运行）
 │   └── japanese/                    日语词库相关
-│       ├── build_vocabulary.py      生成 JLPT / 教材词库
-│       └── enrich_vocabulary.py     用 JMdict 补全词性、罗马字、活用
+│       ├── build_vocabulary.py      生成 JLPT / 教材词库（--enrich 可顺带增强）
+│       ├── enrich_vocabulary.py     用 JMdict 补全词性、罗马字、活用
+│       └── japanese_romaji.py       分拍罗马字（上面两个脚本共用同一实现）
 │
 ├── dict/                            英语词典原始包（ecdict.7z）
 ├── lib/                             第三方 jar（VLC、字幕转换等）
@@ -172,10 +173,14 @@ resources/common/vocabulary/
 
 ```text
 tools/japanese/build_vocabulary.py     拉取 OpenJLPT + Yori Dict，产出基础词库
-        ↓  resources/common/vocabulary/JLPT日语/*.json
+        ↓  resources/common/vocabulary/<分类>/*.json
 tools/japanese/enrich_vocabulary.py    以 JMdict + JMdictDB 补全词性/罗马字/活用
         ↓  覆盖同目录 JSON
 ```
+
+顺序不可颠倒：`enrich_vocabulary.py` 的输入就是它自己要写的文件，同音异形词
+消歧会读词条原有的释义当线索；在已增强的文件上再跑一次会自我强化错误结果
+（`run_level` 会检测并警告）。要重跑就先重建基础词库再增强。
 
 ### 运行
 
@@ -183,9 +188,25 @@ tools/japanese/enrich_vocabulary.py    以 JMdict + JMdictDB 补全词性/罗马
 # 数据源体积大（JMdict 约 111MB），不入库，按需下载到 tools/japanese/data/
 python3 tools/japanese/fetch_dict_data.py
 
+# 方式一：重建基础词库 + 立即增强（推荐，顺序由脚本保证）
+python3 tools/japanese/build_vocabulary.py --enrich
+
+# 方式二：分两步（--enrich 的等价展开）
 python3 tools/japanese/build_vocabulary.py     # 基础词库
 python3 tools/japanese/enrich_vocabulary.py    # 补全词性/罗马字/活用
+
+# 只重建其中一个分类（离线可跑，不碰词典；jadic.db 已在仓库里）
+python3 tools/japanese/build_vocabulary.py --categories jlpt --no-dict
+python3 tools/japanese/enrich_vocabulary.py --category JLPT日语 --all --write
 ```
+
+可用分类（`--categories` / `--category`）：`jlpt`（JLPT日语）、`standard`
+（标准日本语）、`minna`（みんなの日本語）、`anki`（JLPT精选）、`grammar`
+（日语语法；只有句型卡片，无需增强）。
+
+分拍罗马字由 `tools/japanese/japanese_romaji.py` 统一提供，两个脚本共用，
+不再各自生成、互相覆盖（旧版 build 用 pykakasi 产出 `kakkou`、enrich 覆盖为
+`ka-k-ko-u`，现已统一为后者）。
 
 脚本依赖放在 `tools/japanese/.venv/`，与仓库其他部分隔离。
 `tools/japanese/data/`、`.venv/`、`__pycache__/` 已在 `.gitignore` 中排除。
@@ -262,7 +283,10 @@ gh run download <run-id> --repo noame19/MuJing --name MuJing-linux-appimage-x86_
 ## 8. 编码约定
 
 - 注释与文档用中文，与既有代码一致
-- 缩进 4 空格（Kotlin 与 Python 均如此）
+- 缩进 4 空格（Kotlin 与 Python 均如此），统一记录在仓库根的
+  `.editorconfig`：UTF-8、LF、文件末尾单个换行、行尾不留空格（Markdown
+  的行尾双空格除外）。编辑器/格式化工具（IDE、pi-lens、ruff format）以该
+  文件为准，改动风格请同步更新 `.editorconfig` 与本节
 - 日语相关分支一律以 `vocabulary.language` 或 `Word` 字段为判断依据，
   **不要**用字符范围正则判断语言
 - 改动英语既有路径时须回归验证：日语分支不得影响英语词库的显示与发音

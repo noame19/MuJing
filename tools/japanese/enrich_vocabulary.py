@@ -2,7 +2,8 @@
 
 在 build_vocabulary.py 产出的基础词库之上，补全：
   - pos        词性（中文全称，如「动词·一段词」「い形容词」）
-  - romaji     分拍罗马字（かっこう → ka-k-ko-u）
+  - romaji     分拍罗马字（かっこう → ka-k-ko-u；实现见
+               tools/japanese/japanese_romaji.py，与 build_vocabulary.py 共用）
   - exchange   动词/形容词活用（辞書形:食べる/て形:食べて/…）
   - definition 英文释义（按义项分条，带词性前缀）
   - translation 中文释义（按 (词形, 读音) 精确匹配，避免同音异形词串味）
@@ -57,6 +58,13 @@ import os
 import re
 import sqlite3
 import sys
+
+# 分拍罗马字（モーラ拍）转换与 build_vocabulary.py 共用同一实现，
+# 见 tools/japanese/japanese_romaji.py
+_HERE_DIR = os.path.dirname(os.path.abspath(__file__))
+if _HERE_DIR not in sys.path:
+    sys.path.insert(0, _HERE_DIR)
+from japanese_romaji import romaji  # noqa: E402
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(_HERE, 'data')
@@ -153,153 +161,9 @@ def deinflect(text):
 
 
 
-# ══════════════════════════════════════════════════════════════════
-# 一、分拍罗马字
-#
-# 规则（按拍/モーラ，连字符分隔）：
-#   - 拗音（きゃ/しゅ/ちょ…）算 1 拍，合并为 kya / shu / cho
-#   - 促音「っ」单独占 1 拍，写作后一拍的辅音（かっこう → ka-k-ko-u）
-#   - 长音「ー」单独占 1 拍，写作前一拍的元音（アワー → a-wa-a）
-#   - 拨音「ん」单独占 1 拍，写作 n
-#
-# 促音按「每拍一段」方案，故 かっこう = ka-k-ko-u（4 段 = 4 拍），
-# 而非教材常见的 kakkou 或 ka-kko-u。
-# ══════════════════════════════════════════════════════════════════
-
-BASE = {
-    'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
-    'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
-    'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
-    'た': 'ta', 'ち': 'chi', 'つ': 'tsu', 'て': 'te', 'と': 'to',
-    'な': 'na', 'に': 'ni', 'ぬ': 'nu', 'ね': 'ne', 'の': 'no',
-    'は': 'ha', 'ひ': 'hi', 'ふ': 'fu', 'へ': 'he', 'ほ': 'ho',
-    'ま': 'ma', 'み': 'mi', 'む': 'mu', 'め': 'me', 'も': 'mo',
-    'や': 'ya', 'ゆ': 'yu', 'よ': 'yo',
-    'ら': 'ra', 'り': 'ri', 'る': 'ru', 'れ': 're', 'ろ': 'ro',
-    'わ': 'wa', 'ゐ': 'i', 'ゑ': 'e', 'を': 'o', 'ん': 'n',
-    'が': 'ga', 'ぎ': 'gi', 'ぐ': 'gu', 'げ': 'ge', 'ご': 'go',
-    'ざ': 'za', 'じ': 'ji', 'ず': 'zu', 'ぜ': 'ze', 'ぞ': 'zo',
-    'だ': 'da', 'ぢ': 'ji', 'づ': 'zu', 'で': 'de', 'ど': 'do',
-    'ば': 'ba', 'び': 'bi', 'ぶ': 'bu', 'べ': 'be', 'ぼ': 'bo',
-    'ぱ': 'pa', 'ぴ': 'pi', 'ぷ': 'pu', 'ぺ': 'pe', 'ぽ': 'po',
-    'ゔ': 'vu',
-    'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
-}
-
-YOON = {
-    'きゃ': 'kya', 'きゅ': 'kyu', 'きょ': 'kyo',
-    'しゃ': 'sha', 'しゅ': 'shu', 'しょ': 'sho',
-    'ちゃ': 'cha', 'ちゅ': 'chu', 'ちょ': 'cho',
-    'にゃ': 'nya', 'にゅ': 'nyu', 'にょ': 'nyo',
-    'ひゃ': 'hya', 'ひゅ': 'hyu', 'ひょ': 'hyo',
-    'みゃ': 'mya', 'みゅ': 'myu', 'みょ': 'myo',
-    'りゃ': 'rya', 'りゅ': 'ryu', 'りょ': 'ryo',
-    'ぎゃ': 'gya', 'ぎゅ': 'gyu', 'ぎょ': 'gyo',
-    'じゃ': 'ja', 'じゅ': 'ju', 'じょ': 'jo',
-    'びゃ': 'bya', 'びゅ': 'byu', 'びょ': 'byo',
-    'ぴゃ': 'pya', 'ぴゅ': 'pyu', 'ぴょ': 'pyo',
-    'ふぁ': 'fa', 'ふぃ': 'fi', 'ふぇ': 'fe', 'ふぉ': 'fo', 'ふゅ': 'fyu',
-    'てぃ': 'ti', 'でぃ': 'di', 'とぅ': 'tu', 'どぅ': 'du',
-    'しぇ': 'she', 'じぇ': 'je', 'ちぇ': 'che',
-    'うぇ': 'we', 'うぃ': 'wi', 'うぉ': 'wo',
-    'ゔぁ': 'va', 'ゔぃ': 'vi', 'ゔぇ': 've', 'ゔぉ': 'vo',
-    'くぁ': 'kwa', 'ぐぁ': 'gwa',
-    'つぁ': 'tsa', 'つぃ': 'tsi', 'つぇ': 'tse', 'つぉ': 'tso',
-    'すぃ': 'si',
-}
-
-SOKUON = 'っ'
-CHOON = 'ー'
-SKIP = '・、。「」（）()[]　 '
-VOWELS = set('aiueo')
-
-_KATA2HIRA = {chr(i): chr(i - 0x60) for i in range(0x30A1, 0x30FF)}
-_KATA2HIRA[CHOON] = CHOON
-_KATA2HIRA['・'] = '・'
-
-
-def _vowel_of(romaji_text):
-    for ch in reversed(romaji_text):
-        if ch in VOWELS:
-            return ch
-    return 'a' if romaji_text else ''
-
-
-def _consonant_of(romaji_text):
-    for ch in romaji_text:
-        if ch not in VOWELS:
-            return ch
-    return ''
-
-
-def _sokuon_marker(next_romaji):
-    """促音 っ 的占位字母。
-
-    Hepburn 规定 っち 写作 tchi（如 マッチ → ma-t-chi），
-    故 ch 开头时用 t，而非 chi 的首字母 c。
-
-    词尾的 っ（如「あっ」）没有后续辅音可借，用 ' 表示喉塞音，
-    以保持「一段 = 一拍」的一致性（あっ → a-'）。
-    """
-    if not next_romaji:
-        return "'"
-    if next_romaji.startswith('ch'):
-        return 't'
-    return _consonant_of(next_romaji) or "'"
-
-
-def to_morae(kana):
-    """把假名串切成拍列表 [(拍文本, 罗马字)]，未识别字符原样保留。"""
-    if not kana:
-        return []
-    hira = ''.join(_KATA2HIRA.get(c) or c for c in kana)
-    out, i = [], 0
-    while i < len(hira):
-        c = hira[i]
-        if c in SKIP:
-            i += 1
-            continue
-        if i + 1 < len(hira) and hira[i:i + 2] in YOON:
-            out.append((hira[i:i + 2], YOON[hira[i:i + 2]]))
-            i += 2
-            continue
-        if c == SOKUON:
-            nxt = ''
-            j = i + 1
-            while j < len(hira):
-                if j + 1 < len(hira) and hira[j:j + 2] in YOON:
-                    nxt = YOON[hira[j:j + 2]]
-                    break
-                if hira[j] in BASE:
-                    nxt = BASE[hira[j]]
-                    break
-                j += 1
-            out.append((SOKUON, _sokuon_marker(nxt)))
-            i += 1
-            continue
-        if c == CHOON:
-            out.append((CHOON, _vowel_of(out[-1][1] if out else '')))
-            i += 1
-            continue
-        if c in BASE:
-            out.append((c, BASE[c]))
-            i += 1
-            continue
-        out.append((c, c))
-        i += 1
-    return out
-
-
-def romaji(kana):
-    """分拍罗马字，如 かっこう → ka-k-ko-u。"""
-    return '-'.join(r for _, r in to_morae(kana) if r)
-
-
-def mora_count(kana):
-    return len(to_morae(kana))
-
-
-# ══════════════════════════════════════════════════════════════════
+# 分拍罗马字（モーラ拍）转换见文件头部的 japanese_romaji 导入：
+# 与 build_vocabulary.py 共用同一份实现，避免两边各自生成、互相覆盖
+# （曾出现 build 出 kakkou、本脚本覆盖为 ka-k-ko-u 的冲突）。
 # 二、活用生成
 #
 # 规则全部来自 JMdictDB 的 conjo.csv，不做启发式推导。
@@ -354,11 +218,16 @@ KURU = {'辞書形': '{w}る', 'ます形': '{w}ます', 'ない形': '{w}ない
         '過去形': '{w}た', 'ば形': '{w}れば', '意志形': '{w}よう', '命令形': 'こい',
         '可能形': '{w}られる', '受身形': '{w}られる', '使役形': '{w}させる'}
 
-# な形容词：官方 conjo.csv 只有「辞書形 だ」一条，缺 な/に。
-# 这 3 形是 100% 规则的语法派生（な形容词无例外词），不属于词条级的
-# 活用分类猜测（帰る/走る 那类风险），故在官方表之外补全。
+# な形容词：官方 conjo.csv 只有「辞書形 だ」一条，缺 な/に 及其余规则派生形。
+# 这些形都是 100% 规则的语法派生（な形容词无例外词），不属于词条级的
+# 活用分类猜测（帰る/走る 那类风险），故在官方表之外补全，与 い形容词
+# （活用全部来自 conjo.csv）在界面上呈现同一组形。
 # 动词一律不用此方式 —— 动词活用全部来自 conjo.csv。
-NA_ADJ = [('辞書形', 'だ'), ('連体形', 'な'), ('連用形', 'に')]
+NA_ADJ = [
+    ('辞書形', 'だ'), ('連体形', 'な'), ('連用形', 'に'),
+    ('ない形', 'ではない'), ('て形', 'で'), ('過去形', 'だった'),
+    ('ば形', 'なら'), ('意志形', 'だろう'),
+]
 
 
 def _suru(word):

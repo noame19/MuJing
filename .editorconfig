@@ -1,0 +1,43 @@
+# 幕境（MuJing）代码风格约定
+#
+# 本文件是编辑器/格式化工具（IDE、pi-lens、ruff format 等）的统一依据，
+# 与 AGENTS.md §8「编码约定」保持一致：
+#   - 注释与文档用中文
+#   - Kotlin 与 Python 一律 4 空格缩进（不用 Tab）
+#   - 文本文件统一 UTF-8 + LF，文件末尾保留且仅保留一个换行
+# 修改本文件前请先确认 AGENTS.md §8 是否需要同步更新。
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+# Gradle / Kotlin（src/main/kotlin 与 build.gradle.kts 均为 4 空格）
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = off
+
+# Python 构建脚本（tools/japanese/*.py）
+[*.py]
+indent_size = 4
+
+# 词库 JSON 由脚本以 indent=4 生成，勿改缩进，否则 diff 全变
+[*.json]
+indent_size = 4
+insert_final_newline = true
+
+# YAML / GitHub Actions
+[*.{yml,yaml}]
+indent_size = 2
+
+# Markdown 允许行尾双空格（硬换行），不清理
+[*.md]
+trim_trailing_whitespace = false
+
+# 构建产物与数据文件不做风格检查
+[*.{db,7z,zip,jar,png,jpg,jpeg,ico,icns,svg}]
+insert_final_newline = false

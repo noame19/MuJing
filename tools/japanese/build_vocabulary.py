@@ -18,14 +18,23 @@
    [词条, 读音假名, 定义标签, 规则, 分数, 释义列表, 序号, 词条标签]
 
 用法：
-    python3 tools/japanese/build_vocabulary.py
+    python3 tools/japanese/build_vocabulary.py              # 生成全部基础词库
+    python3 tools/japanese/build_vocabulary.py --categories jlpt --no-dict
+    python3 tools/japanese/build_vocabulary.py --enrich     # 生成后立即增强
+
+    选项：
+      --categories jlpt,standard,minna,anki,grammar  只生成指定分类
+      --no-dict       跳过重写 resources/common/dictionary/jadic.db
+      --enrich        生成后调用 enrich_vocabulary.py 补全词性/活用/释义
+      -h, --help      显示帮助
+
+增强步骤也可以单独执行（但必须紧跟在本脚本之后）：
+    python3 tools/japanese/enrich_vocabulary.py --all --write
 
 可选依赖：
-    pykakasi  用于生成罗马字读音。缺失时 romaji 字段留空，其余功能不受影响。
-    （pykakasi 为 GPL-3.0-or-later，仅作为构建期工具被调用，
-      不链接进应用；应用本身同为 GPL-3.0，许可兼容。）
-
-    pip install pykakasi
+    无。romaji 字段为分拍罗马字（かっこう → ka-k-ko-u），由
+    tools/japanese/japanese_romaji.py 生成 —— 与 enrich_vocabulary.py
+    共用同一实现，两者不会互相覆盖成不同写法。
 """
 
 import json
@@ -33,11 +42,18 @@ import os
 import re
 import sqlite3
 import ssl
+import subprocess
 import sys
 import urllib.request
 import zipfile
 from collections import defaultdict
 from io import BytesIO
+
+# 分拍罗马字（モーラ拍）的实现与 enrich_vocabulary.py 共用
+_JP_DIR = os.path.dirname(os.path.abspath(__file__))
+if _JP_DIR not in sys.path:
+    sys.path.insert(0, _JP_DIR)
+from japanese_romaji import romaji as split_romaji  # noqa: E402
 
 # ---------------------------------------------------------------- 配置
 
@@ -162,19 +178,6 @@ def load_yori_zh_cn():
     return index
 
 
-def load_romaji_converter():
-    """返回 kana -> romaji 转换函数；依赖缺失时返回 None。"""
-    try:
-        from pykakasi import kakasi
-    except ImportError:
-        log("未安装 pykakasi，跳过罗马字生成（可选依赖）")
-        return None
-
-    conv = kakasi()
-    log("已加载 pykakasi，将生成罗马字读音")
-    return lambda kana: conv.convert(kana)[0]["hepburn"] if kana else ""
-
-
 # ---------------------------------------------------------------- 词条构建
 
 def pick_chinese_glosses(term, kana, yori_index):
@@ -200,7 +203,7 @@ def pick_chinese_glosses(term, kana, yori_index):
     return ordered[:MAX_GLOSSES]
 
 
-def build_word(entry, level, yori_index, to_romaji, romaji_cache):
+def build_word(entry, level, yori_index):
     term = (entry.get("word") or "").strip()
     if not term:
         return None
@@ -213,15 +216,7 @@ def build_word(entry, level, yori_index, to_romaji, romaji_cache):
     chinese = pick_chinese_glosses(term, kana, yori_index)
     translation = "\n".join(chinese)
 
-    # 罗马字依赖可选组件 pykakasi。若本次生成时它不可用，
-    # 复用上一轮已生成的读音，避免把仓库里已有的数据清空。
-    cache_key = (term, kana)
-    if to_romaji and kana:
-        romaji = to_romaji(kana)
-        if romaji:
-            romaji_cache[cache_key] = romaji
-    else:
-        romaji = romaji_cache.get(cache_key, "")
+    roman = split_romaji(kana) if kana else ""
 
     return {
         "value": term,
@@ -238,7 +233,7 @@ def build_word(entry, level, yori_index, to_romaji, romaji_cache):
         "frq": 0,
         "exchange": "",
         "kana": kana,
-        "romaji": romaji,
+        "romaji": roman,
         "level": level,
         "externalCaptions": [],
         "captions": [],
@@ -369,7 +364,7 @@ def make_word(term, kana, chinese, english, level, romaji="", pos=""):
     }
 
 
-def build_standard_japanese(yori_index, to_romaji):
+def build_standard_japanese(yori_index):
     """
     新标准日本语词表。
 
@@ -426,7 +421,7 @@ def build_standard_japanese(yori_index, to_romaji):
             if term in seen:
                 continue
             seen.add(term)
-            roman = to_romaji(kana) if (to_romaji and kana) else ""
+            roman = split_romaji(kana) if kana else ""
             label = "标准日本语" if book == "未分册" else f"标准日本语-{book}"
             words.append(make_word(term, kana, chinese, "", label, roman, pos))
         path, count = write_vocabulary(STD_OUTPUT_DIR, f"标准日本语 {book}", words, index)
@@ -435,7 +430,7 @@ def build_standard_japanese(yori_index, to_romaji):
     log(f"标准日本语合计 {total} 词")
 
 
-def build_minna_no_nihongo(yori_index, to_romaji):
+def build_minna_no_nihongo(yori_index):
     """みんなの日本語 初級 I & II，按课次生成。"""
     import yaml  # 可选依赖，仅生成该词表时需要
 
@@ -464,7 +459,7 @@ def build_minna_no_nihongo(yori_index, to_romaji):
                 english = meaning
 
             chinese = pick_chinese_glosses(term, kana, yori_index)
-            roman = entry.get("romaji") or (to_romaji(kana) if (to_romaji and kana) else "")
+            roman = split_romaji(kana) if kana else ""
             words.append(
                 make_word(term, kana, "\n".join(chinese), english,
                           "みんなの日本語-初級", roman)
@@ -479,7 +474,7 @@ def build_minna_no_nihongo(yori_index, to_romaji):
     log(f"みんなの日本語 初级合计 {total} 词，输出目录 {MINNA_OUTPUT_DIR}")
 
 
-def build_anki_jlpt(yori_index, to_romaji):
+def build_anki_jlpt(yori_index):
     """JLPT Anki 精选词表（CSV）。"""
     import csv
     import io
@@ -500,7 +495,7 @@ def build_anki_jlpt(yori_index, to_romaji):
             kana = (row.get("reading") or "").strip()
             english = (row.get("meaning") or "").strip()
             chinese = pick_chinese_glosses(term, kana, yori_index)
-            roman = to_romaji(kana) if (to_romaji and kana) else ""
+            roman = split_romaji(kana) if kana else ""
             words.append(
                 make_word(term, kana, "\n".join(chinese), english, f"JLPT精选-{level}", roman)
             )
@@ -579,38 +574,21 @@ def build_grammar():
 
 # ---------------------------------------------------------------- 主流程
 
-def load_existing_romaji():
-    """读取已生成词库中的罗马字，供缺少 pykakasi 时复用。"""
-    cache = {}
-    if not os.path.isdir(OUTPUT_DIR):
-        return cache
-    for name in os.listdir(OUTPUT_DIR):
-        if not name.endswith(".json"):
-            continue
-        try:
-            with open(os.path.join(OUTPUT_DIR, name), encoding="utf-8") as fh:
-                data = json.load(fh)
-            for word in data.get("wordList", []):
-                # 以「词条 + 读音」为键：同一个词条可能出现在多个等级且读音不同，
-                # 只用词条作键会让后出现的读音覆盖先前的，导致罗马字张冠李戴。
-                key = (word["value"], word.get("kana") or "")
-                if word.get("romaji"):
-                    cache[key] = word["romaji"]
-        except (OSError, ValueError):
-            continue
-    if cache:
-        log(f"已从现有词库复用 {len(cache)} 条罗马字")
-    return cache
+# 可生成的分类：jlpt=JLPT日语，其余为教材/语法类
+CATEGORIES = ("jlpt", "standard", "minna", "anki", "grammar")
+
+# 分类 -> enrich_vocabulary.py 的 --category 名；语法库没有词条，无需增强
+ENRICH_CATEGORY = {
+    "jlpt": "JLPT日语",
+    "standard": "标准日本语",
+    "minna": "みんなの日本語",
+    "anki": "JLPT精选",
+}
 
 
-def main():
+def generate_jlpt(yori_index):
+    """生成 JLPT N5-N1 五个基础词库，返回词条总数。"""
     openjlpt = load_openjlpt()
-    yori_index = load_yori_zh_cn()
-    to_romaji = load_romaji_converter()
-    romaji_cache = load_existing_romaji()
-
-    # 先生成词典，再生成词库，两者共用同一份 Yori 数据
-    build_dictionary_db(yori_index)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     total_words = 0
@@ -621,7 +599,7 @@ def main():
         words = []
         seen = set()
         for entry in entries:
-            word = build_word(entry, level, yori_index, to_romaji, romaji_cache)
+            word = build_word(entry, level, yori_index)
             if word is None:
                 continue
             # 同一等级内去重，保持首次出现顺序
@@ -652,28 +630,114 @@ def main():
         )
         total_words += len(words)
 
-    log(f"完成，共 {total_words} 词，输出目录 {OUTPUT_DIR}")
+    log(f"JLPT 日语完成，共 {total_words} 词，输出目录 {OUTPUT_DIR}")
+    return total_words
 
-    # 扩展词表。各自失败只记录并跳过，不影响已生成的词库。
-    try:
-        build_standard_japanese(yori_index, to_romaji)
-    except Exception as exc:  # noqa: BLE001
-        log(f"跳过标准日本语词表：{exc}")
 
+def generate_category(name, yori_index):
+    """按分类生成基础词库。失败只记录并跳过，不影响其他分类。"""
     try:
-        build_minna_no_nihongo(yori_index, to_romaji)
+        if name == "jlpt":
+            generate_jlpt(yori_index)
+        elif name == "standard":
+            build_standard_japanese(yori_index)
+        elif name == "minna":
+            build_minna_no_nihongo(yori_index)
+        elif name == "anki":
+            build_anki_jlpt(yori_index)
+        elif name == "grammar":
+            build_grammar()
     except Exception as exc:  # noqa: BLE001
-        log(f"跳过みんなの日本語词表：{exc}（需要 pyyaml：pip install pyyaml）")
+        hint = "（需要 pyyaml：pip install pyyaml）" if name == "minna" else ""
+        log(f"跳过 {name} 词表：{exc}{hint}")
 
-    try:
-        build_anki_jlpt(yori_index, to_romaji)
-    except Exception as exc:  # noqa: BLE001
-        log(f"跳过 JLPT 精选词表：{exc}")
 
+def run_enrich(category):
+    """对本轮生成的分类调用 enrich_vocabulary.py（--all --write）。
+
+    基础词库刚生成完就增强，可避免 enrich 读到自己上一轮的输出、
+    把上轮的 JMdict 释义当成消歧线索（见 enrich_vocabulary.py 文档）。
+    """
+    script = os.path.join(_JP_DIR, "enrich_vocabulary.py")
+    cmd = [sys.executable, script, "--category", category, "--all", "--write"]
+    log(f"增强 {category}：python3 tools/japanese/enrich_vocabulary.py "
+        f"--category {category} --all --write")
     try:
-        build_grammar()
+        subprocess.run(cmd, check=True)
     except Exception as exc:  # noqa: BLE001
-        log(f"跳过语法库：{exc}")
+        log(f"跳过增强 {category}：{exc}")
+
+
+USAGE = """用法：python3 tools/japanese/build_vocabulary.py [选项]
+
+  --categories jlpt,standard,minna,anki,grammar  只生成指定分类（默认全部）
+  --no-dict       跳过重写 resources/common/dictionary/jadic.db
+  --enrich        生成后立即调用 enrich_vocabulary.py 增强（语法库跳过）
+  -h, --help      显示本帮助
+
+注意：--enrich 只对本次生成的基础词库有效。若单独运行
+      enrich_vocabulary.py，务必先用本脚本重建基础词库再增强。
+"""
+
+
+def parse_args(argv):
+    """解析命令行参数，返回 (分类列表, 是否增强, 是否重建词典)。"""
+    categories = list(CATEGORIES)
+    enrich = False
+    with_dict = True
+    i = 0
+    while i < len(argv):
+        arg = argv[i]
+        if arg in ("-h", "--help"):
+            print(USAGE)
+            return None
+        if arg == "--enrich":
+            enrich = True
+        elif arg == "--no-dict":
+            with_dict = False
+        elif arg.startswith("--categories"):
+            if "=" in arg:
+                value = arg.split("=", 1)[1]
+            else:
+                i += 1
+                value = argv[i] if i < len(argv) else ""
+            categories = [c.strip() for c in value.split(",") if c.strip()]
+            unknown = [c for c in categories if c not in CATEGORIES]
+            if unknown:
+                log(f"未知分类：{', '.join(unknown)}；可选 {'/'.join(CATEGORIES)}")
+                return None
+        else:
+            log(f"未知参数：{arg}")
+            print(USAGE)
+            return None
+        i += 1
+    return categories, enrich, with_dict
+
+
+def main(argv=None):
+    parsed = parse_args(sys.argv[1:] if argv is None else argv)
+    if parsed is None:
+        return 1
+    categories, enrich, with_dict = parsed
+
+    yori_index = None
+    if with_dict or any(name != "grammar" for name in categories):
+        yori_index = load_yori_zh_cn()
+
+    if with_dict:
+        # 先生成词典，再生成词库，两者共用同一份 Yori 数据
+        build_dictionary_db(yori_index)
+
+    for name in categories:
+        generate_category(name, yori_index)
+
+    if enrich:
+        for name in categories:
+            category = ENRICH_CATEGORY.get(name)
+            if category is None:
+                log("语法库没有词条，无需增强")
+                continue
+            run_enrich(category)
 
     return 0
 
