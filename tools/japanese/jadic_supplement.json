@@ -5,9 +5,12 @@
     "键为 (word, reading)，与 jadic.db 的 (word, reading) 约定一致；",
     "reading 为空串表示假名词条目（与 jadic.db 相同）。",
     "仅在 jadic 查不到释义时使用（enrich_vocabulary.py 的 chinese_for 末级兜底）。",
+    "带 \"force\": true 的条目会**覆盖** jadic 的结果，只用于 jadic 本身有错的词",
+    "（例：しいんと 被 Yori Dict 错误地解释成「场面/场景」）；覆盖需在注释里写明依据。",
     "上游数据源覆盖变好后，本表应随之缩减；新增请注明依据（JMdict 义项 / 教材释义）。"
   ],
   "entries": [
+    {"word": "しいんと", "reading": "しいんと", "force": true, "translation": "鸦雀无声\n寂静无声\n静悄悄", "note": "jadic 的 しいん 条目（Yori Dict）误收为「场面/场景/景象」，与 JMdict 的 silently 不符，故覆盖"},
     {"word": "伯母さん", "reading": "おばさん", "translation": "伯母\n婶婶\n姑姑\n阿姨"},
     {"word": "叔母さん", "reading": "おばさん", "translation": "婶婶\n伯母\n姑姑\n阿姨"},
     {"word": "伯父さん", "reading": "おじさん", "translation": "伯父\n叔叔\n舅舅\n大叔"},

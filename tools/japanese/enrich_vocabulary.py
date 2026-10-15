@@ -25,8 +25,10 @@
   - JMdict (scriptin/jmdict-simplified)    品词标记、义项、英文释义
   - JMdictDB conjo.csv (EDRDG / Jim Breen)  动词/形容词活用表（1137 条规则）
   - resources/common/dictionary/jadic.db   中文释义（源自 Yori Dict）
-  - tools/japanese/jadic_supplement.json   人工校订的中文释义，只在 jadic
-                                           未收录时使用（末级兜底）
+  - tools/japanese/jadic_supplement.json   人工校订的中文释义：默认只在
+                                           jadic 未收录时兜底；带
+                                           `"force": true` 的条目优先于
+                                           jadic（用于 jadic 本身解释错的词）
 
 同音异形词隔离：按 (汉字形, 假名) 精确匹配，再以该汉字形查 jadic。
 例如 かっこう 只取「格好」，不会把「滑降（滑雪）」「郭公（布谷鸟）」混进来。
@@ -620,27 +622,44 @@ def pick_kana(value, raw_kana, ent):
 _SUPPLEMENT_CACHE = None
 
 
-def load_supplement():
-    """读人工校订表 jadic_supplement.json，返回 {(词形, 读音): [释义…]}。
+def _supplement_tables():
+    """读人工校订表 jadic_supplement.json，解析成两张 {(词形, 读音): [释义…]}。
+
+    - force=True 的条目进「覆盖表」：优先于 jadic 使用，只用于 jadic 本身
+      解释错的词（例：しいんと 被 Yori Dict 串成「场面/场景」）
+    - 其余条目进「兜底表」：只在 jadic 查不到时使用
 
     键与 jadic.db 的 (word, reading) 约定一致（假名词读音为空串）。
-    该表只在 jadic 查不到释义时使用（见 chinese_for 的末级兜底）；
-    文件缺失或损坏时返回空表，不影响其余流程。
+    文件缺失或损坏时返回两张空表，不影响其余流程。
     """
     global _SUPPLEMENT_CACHE
     if _SUPPLEMENT_CACHE is None:
-        _SUPPLEMENT_CACHE = {}
+        force, fallback = {}, {}
         try:
             with open(SUPPLEMENT, encoding='utf-8') as fp:
                 data = json.load(fp)
         except (OSError, ValueError):
+            _SUPPLEMENT_CACHE = (force, fallback)
             return _SUPPLEMENT_CACHE
         for e in data.get('entries', []):
             word = (e.get('word') or '').strip()
             trans = [x.strip() for x in (e.get('translation') or '').split('\n') if x.strip()]
-            if word and trans:
-                _SUPPLEMENT_CACHE[(word, (e.get('reading') or '').strip())] = trans
+            if not (word and trans):
+                continue
+            table = force if e.get('force') else fallback
+            table[(word, (e.get('reading') or '').strip())] = trans
+        _SUPPLEMENT_CACHE = (force, fallback)
     return _SUPPLEMENT_CACHE
+
+
+def load_supplement():
+    """兜底表：只在 jadic 查不到释义时使用（见 chinese_for 末级兜底）。"""
+    return _supplement_tables()[1]
+
+
+def load_supplement_force():
+    """覆盖表：优先于 jadic 使用（见 chinese_for 开头）。"""
+    return _supplement_tables()[0]
 
 
 def chinese_for(con, forms, readings):
@@ -648,7 +667,14 @@ def chinese_for(con, forms, readings):
 
     jadic 的存储约定：汉字词带 reading，假名词的 reading 为空字符串。
     forms/readings 是候选列表，逐个组合尝试。
+    人工校订表里 force=True 的条目优先返回（jadic 本身解释错的词）。
     """
+    force = load_supplement_force()
+    for f in forms:
+        for r in list(readings) + ['']:
+            hit = force.get((f, r))
+            if hit:
+                return list(hit)
     tries = []
     for f in forms:
         for r in readings:
