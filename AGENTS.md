@@ -304,9 +304,8 @@ gh run download <run-id> --repo noame19/MuJing --name MuJing-linux-appimage-x86_
 ## 9. 分支与提交流程
 
 - **日常开发一律在 `japanese-support-dev` 分支**，禁止直接向 `master` 提交
-- 合并顺序：`japanese-support-dev`（开发）→ `feature/japanese-support`
-  （日语稳定支线）→ `master`（发布）；每一步都先验证再合并，主线只接受
-  来自支线的合并
+- 验证通过并经使用者确认后，`japanese-support-dev` 直接合并到 `master`
+  （历史遗留的 `feature/japanese-support` 已删除，不再维护中间层）
 - 禁止直接改主线再回头同步支线：主线出问题会波及发布产物
 - 合并前至少确认：① 词库结构校验通过（`size == len(wordList)`、字段齐全、
   无脏假名/罗马字）② 英语路径回归正常（日语改动不得影响英语词库）③ CI 通过
@@ -315,8 +314,6 @@ gh run download <run-id> --repo noame19/MuJing --name MuJing-linux-appimage-x86_
 ```bash
 git checkout japanese-support-dev          # 日常开发都在这里
 gh workflow run Build-AppImage.yml --repo noame19/MuJing --ref japanese-support-dev
-# 验证无误后，先并入稳定支线
-git checkout feature/japanese-support && git merge --no-ff japanese-support-dev
-# 使用者确认后，再并入主线
-git checkout master && git merge --no-ff feature/japanese-support
+# 验证无误、使用者确认后并入主线
+git checkout master && git merge --no-ff japanese-support-dev && git push origin master
 ```
