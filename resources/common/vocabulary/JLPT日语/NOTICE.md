@@ -1,7 +1,11 @@
 # 日语词库数据来源与许可
 
-本目录下的 `1 N5.json` ~ `5 N1.json` 由 `tools/japanese/build_vocabulary.py`
-自动生成，请勿手工编辑。重新生成方式见该脚本头部说明。
+本目录下的 `1 N5.json` ~ `5 N1.json` 由以下两个脚本依次生成，请勿手工编辑：
+
+1. `tools/japanese/build_vocabulary.py` —— 拉取分级、释义，产出基础词库
+2. `tools/japanese/enrich_vocabulary.py` —— 以 JMdict 补全词性、分拍罗马字、活用形
+
+重新生成方式见各脚本头部说明。
 
 ---
 
@@ -43,6 +47,22 @@ Electronic Dictionary Research and Development Group (EDRDG) 提供。
 - 使用方式：仅在**构建期**作为命令行工具调用生成罗马字，
   不链接进 MuJing 应用。MuJing 本体同为 GPL-3.0，许可兼容。
 
+### 5. 词性、义项与活用形 — JMdict / JMdictDB（EDRDG）
+
+由 `tools/japanese/enrich_vocabulary.py` 使用，为每个词条补全 `pos`
+（词性）、`definition`（英文释义，按义项分条）与 `exchange`（动词、形容词活用）。
+
+- 项目：<https://www.edrdg.org/jmdict/j_jmdict.html>（JMdict）
+- 项目：<https://www.edrdg.org/edrdg/>（JMdictDB，提供活用规则表 `conjo.csv`）
+- 取用内容：JMdict 的**日文与英文**部分（品词标记、义项、英文释义）；
+  JMdictDB 的活用规则表 `conj.csv` / `conjo.csv` / `conotes.csv` / `kwpos.csv`
+- 许可：Creative Commons Attribution-ShareAlike 4.0 International
+- 使用方式：仅在**构建期**下载并生成词库，不随应用分发原始词典文件
+
+> **授权边界**：EDRDG 仅授权 JMdict 的日文与英文部分。德/荷/俄/法等译文
+> 由各自编译器持有独立版权，不得分发。本目录只取日→英部分，合规。
+> 详见 <https://www.edrdg.org/edrdg/licence.html>。
+
 ---
 
 ## 未使用的数据源及原因
@@ -71,10 +91,10 @@ Electronic Dictionary Research and Development Group (EDRDG) 提供。
 
 本词库的等级分级与英文释义来自 OpenJLPT (CC BY-SA 4.0)，
 其等级清单源自 Jonathan Waller 的 JLPT 词表 (CC BY)。
-中文释义来自 Yori Dict (CC BY-SA 4.0)，其底层词典数据由
-EDRDG (CC BY-SA 4.0) 提供。
+中文释义来自 Yori Dict (CC BY-SA 4.0)。
+词性与活用形来自 JMdict / JMdictDB。
 
-本产品使用 EDRDG 提供的 JMdict 词典数据，
+上述词典数据均由 EDRDG (CC BY-SA 4.0) 提供，
 依据 CC BY-SA 4.0 授权。
 ```
 
