@@ -24,7 +24,9 @@
 数据源（均为权威词典，不做规则推测）：
   - JMdict (scriptin/jmdict-simplified)    品词标记、义项、英文释义
   - JMdictDB conjo.csv (EDRDG / Jim Breen)  动词/形容词活用表（1137 条规则）
-  - resources/common/dictionary/jadic.db   中文释义
+  - resources/common/dictionary/jadic.db   中文释义（源自 Yori Dict）
+  - tools/japanese/jadic_supplement.json   人工校订的中文释义，只在 jadic
+                                           未收录时使用（末级兜底）
 
 同音异形词隔离：按 (汉字形, 假名) 精确匹配，再以该汉字形查 jadic。
 例如 かっこう 只取「格好」，不会把「滑降（滑雪）」「郭公（布谷鸟）」混进来。
@@ -71,6 +73,9 @@ DATA = os.path.join(_HERE, 'data')
 # 仓库根：本文件位于 <repo>/tools/japanese/，上两级即仓库根
 REPO = os.path.abspath(os.path.join(_HERE, '..', '..'))
 JMDICT = os.path.join(DATA, 'jmdict-eng-3.6.2.json')
+# 人工校订的中文释义：补 jadic.db（Yori Dict）没有收录的词，
+# 仅在 jadic 查不到时使用，见 chinese_for 的末级兜底
+SUPPLEMENT = os.path.join(_HERE, 'jadic_supplement.json')
 JADIC = os.path.join(REPO, 'resources', 'common', 'dictionary', 'jadic.db')
 VOCAB_ROOT = os.path.join(REPO, 'resources', 'common', 'vocabulary')
 VOCAB_DIR = os.path.join(VOCAB_ROOT, 'JLPT日语')
@@ -612,6 +617,32 @@ def pick_kana(value, raw_kana, ent):
     return ''
 
 
+_SUPPLEMENT_CACHE = None
+
+
+def load_supplement():
+    """读人工校订表 jadic_supplement.json，返回 {(词形, 读音): [释义…]}。
+
+    键与 jadic.db 的 (word, reading) 约定一致（假名词读音为空串）。
+    该表只在 jadic 查不到释义时使用（见 chinese_for 的末级兜底）；
+    文件缺失或损坏时返回空表，不影响其余流程。
+    """
+    global _SUPPLEMENT_CACHE
+    if _SUPPLEMENT_CACHE is None:
+        _SUPPLEMENT_CACHE = {}
+        try:
+            with open(SUPPLEMENT, encoding='utf-8') as fp:
+                data = json.load(fp)
+        except (OSError, ValueError):
+            return _SUPPLEMENT_CACHE
+        for e in data.get('entries', []):
+            word = (e.get('word') or '').strip()
+            trans = [x.strip() for x in (e.get('translation') or '').split('\n') if x.strip()]
+            if word and trans:
+                _SUPPLEMENT_CACHE[(word, (e.get('reading') or '').strip())] = trans
+    return _SUPPLEMENT_CACHE
+
+
 def chinese_for(con, forms, readings):
     """按 (词形, 假名) 精确取中文释义，避免同音异形词串味。
 
@@ -654,6 +685,15 @@ def chinese_for(con, forms, readings):
                 out += [x.strip() for x in t.split('\n') if x.strip()]
             if out:
                 break
+    # 末级兜底：jadic（Yori Dict）根本没有收录的词（行う、お祭り 等），
+    # 用人工校订表补齐；宁可查不到，也不用同音异形词猜
+    if not out:
+        supp = load_supplement()
+        for w in forms:
+            for r in list(readings) + ['']:
+                hit = supp.get((w, r))
+                if hit:
+                    return list(hit)
     return list(dict.fromkeys(out))
 
 
@@ -663,14 +703,26 @@ def _source_only_entry(word, kana):
     典型是 OpenJLPT 收的收尾助词词组（ゆっくりと / 一段と / やたらに）与
     假名写法与 JMdict 不一致的词（ぺん / おまちください / しいんと）。
     这类词条没有 JMdict 的词性与活用，但释义仍在，丢掉才是真的损失。
+    中文释义缺失时再查人工校订表（jadic_supplement.json）。
     """
+    trans = (word.get('translation') or '').strip()
+    if not trans:
+        supp = load_supplement()
+        for w in [word['value']] + _split_alt(word['value']):
+            for r in [kana, '']:
+                hit = supp.get((w, r))
+                if hit:
+                    trans = '\n'.join(hit)
+                    break
+            if trans:
+                break
     return {
         'value': word['value'],
         'kana': kana,
         'romaji': romaji(kana),
         'pos': (word.get('pos') or '').strip(),
         'definition': (word.get('definition') or '').strip(),
-        'translation': (word.get('translation') or '').strip(),
+        'translation': trans,
         'exchange': '',
         'level': word.get('level', ''),
         '_source_only': True,

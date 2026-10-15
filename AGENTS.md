@@ -219,6 +219,12 @@ python3 tools/japanese/enrich_vocabulary.py --category JLPT日语 --all --write
 | [Yori Dict](https://github.com/YoriJP/yori-dict) | 中文释义 | CC BY-SA 4.0 |
 | [JMdict](https://www.edrdg.org/jmdict/) | 词性、义项 | CC BY-SA 4.0（仅日/英部分） |
 | [JMdictDB](https://www.edrdg.org/) `conjo.csv` | 动词/形容词活用表 | CC BY-SA 4.0 |
+| `tools/japanese/jadic_supplement.json` | 人工校订的中文释义 | 本项目自撰（CC BY-SA 4.0） |
+
+`jadic_supplement.json` 只在 `jadic.db` 查不到释义时兜底使用（`chinese_for`
+末级），补的是 Yori Dict 根本没有收录的词（`行う` `お祭り` `おまちください`
+`ぺん` 等）。它**不用来猜**同音异形词——查不到就留空，宁可缺也不写错。
+上游覆盖变好后应逐步删除其中的条目。
 
 新增数据源时必须同步更新 `NOTICE.md` 与本节表格。**许可不明或禁止再分发的资料
 一律不得引入**（详见 `docs/JAPANESE_SUPPORT_PLAN.md` §2 的排除清单）。

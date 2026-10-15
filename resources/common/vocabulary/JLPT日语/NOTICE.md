@@ -99,6 +99,10 @@ Electronic Dictionary Research and Development Group (EDRDG) 提供。
 依据 CC BY-SA 4.0 授权。
 ```
 
+注：少数 Yori Dict 未收录的词，其中文释义取自本项目自撰的
+`tools/japanese/jadic_supplement.json`（同以 CC BY-SA 4.0 授权），
+不涉及第三方署名。
+
 EDRDG 原始许可要求：软件包内应随附许可与文档副本，或提供其链接；
 若应用提供屏幕上的词典展示，需在界面上作出致谢。
 详见 <https://www.edrdg.org/edrdg/licence.html>。
