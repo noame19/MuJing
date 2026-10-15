@@ -883,81 +883,45 @@ fun Table(
 }
 
 
+/**
+ * 把 exchange 字段渲染成可读文本。
+ *
+ * 两种编码共用本函数：
+ *   - 英语：单字母码对应固定槽位，如 d:cancelled/p:cancelled/i:cancelling/3:cancels
+ *   - 日语：自描述的「标签:值」对，如 辞書形:食べる/ます形:食べます/て形:食べて
+ *
+ * 标签不是英语单字母码时按通用形式渲染，因此无需调用方传语言。
+ */
 fun displayExchange(exchangeStr: String): String {
-    var str = ""
-    val exchanges = exchangeStr.split("/")
-    var preterite = ""
-    var pastParticiple = ""
-    var presentParticiple = ""
-    var third = ""
-    var er = ""
-    var est = ""
-    var plural = ""
-    var lemma = ""
-
-    exchanges.forEach { exchange ->
-        val pair = exchange.split(":")
-        when (pair[0]) {
-            "p" -> {
-                preterite = pair[1]
-            }
-
-            "d" -> {
-                pastParticiple = pair[1]
-            }
-
-            "i" -> {
-                presentParticiple = pair[1]
-            }
-
-            "3" -> {
-                third = pair[1]
-            }
-
-            "r" -> {
-                er = pair[1]
-            }
-
-            "t" -> {
-                est = pair[1]
-            }
-
-            "s" -> {
-                plural = pair[1]
-            }
-
-            "0" -> {
-                lemma = pair[1]
-            }
-
+    val pairs = exchangeStr.split("/").mapNotNull { item ->
+        val i = item.indexOf(':')
+        if (i <= 0) {
+            null
+        } else {
+            item.substring(0, i).trim() to item.substring(i + 1).trim()
         }
+    }.filter { it.second.isNotEmpty() }
+
+    // 日语等语言：标签为中文活用名（辞書形/ます形/…），直接按「标签 值」输出
+    if (pairs.isNotEmpty() && pairs.none { it.first in ENGLISH_EXCHANGE_CODES }) {
+        return pairs.joinToString("") { (label, value) -> "$label $value；" }
     }
-    if (lemma.isNotEmpty()) {
-        str += "原型 $lemma；"
+
+    val m = pairs.toMap()
+    return buildString {
+        m["0"]?.let { append("原型 $it；") }
+        m["p"]?.let { append("过去式 $it；") }
+        m["d"]?.let { append("过去分词 $it；") }
+        m["i"]?.let { append("现在分词 $it；") }
+        m["3"]?.let { append("第三人称单数 $it；") }
+        m["r"]?.let { append("比较级 $it；") }
+        m["t"]?.let { append("最高级 $it；") }
+        m["s"]?.let { append("复数 $it；") }
     }
-    if (preterite.isNotEmpty()) {
-        str += "过去式 $preterite；"
-    }
-    if (pastParticiple.isNotEmpty()) {
-        str += "过去分词 $pastParticiple；"
-    }
-    if (presentParticiple.isNotEmpty()) {
-        str += "现在分词 $presentParticiple；"
-    }
-    if (third.isNotEmpty()) {
-        str += "第三人称单数 $third；"
-    }
-    if (er.isNotEmpty()) {
-        str += "比较级 $er；"
-    }
-    if (est.isNotEmpty()) {
-        str += "最高级 $est；"
-    }
-    if (plural.isNotEmpty()) {
-        str += "复数 $plural；"
-    }
-    return str
 }
+
+/** 英语 exchange 的单字母码：原型/过去式/过去分词/现在分词/三单/比较级/最高级/复数 */
+private val ENGLISH_EXCHANGE_CODES = setOf("0", "p", "d", "i", "3", "r", "t", "s")
 
 fun displayCaptions(word: Word, vocabularyType: VocabularyType): String {
     var captions = ""

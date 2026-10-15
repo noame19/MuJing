@@ -357,7 +357,8 @@ fun SettingTextStyle(
                     isPlaying = false,
                     searching = false,
                     morphologyVisible = true,
-                    fontSize = state.global.detailFontSize
+                    fontSize = state.global.detailFontSize,
+                    language = wordScreenState.vocabulary.language
                 )
                 Definition(
                     word = currentWord,

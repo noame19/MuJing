@@ -69,7 +69,8 @@ fun SearchResultInfo(
         isPlaying = false,
         searching = true,
         morphologyVisible = true,
-        fontSize = appState.global.detailFontSize
+        fontSize = appState.global.detailFontSize,
+        language = wordScreenState.vocabulary.language
     )
     Spacer(Modifier.height(8.dp))
     Divider()

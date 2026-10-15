@@ -1586,7 +1586,8 @@ fun MainContent(
                 isChangeVideoBounds = wordScreenState.isChangeVideoBounds,
                 searching = false,
                 morphologyVisible = wordScreenState.morphologyVisible,
-                fontSize = appState.global.detailFontSize
+                fontSize = appState.global.detailFontSize,
+                language = wordScreenState.vocabulary.language
             )
             Definition(
                 word = currentWord,
@@ -2076,6 +2077,80 @@ fun VocabularyEmpty(
 }
 
 /**
+ * 日语词型组件。
+ *
+ * 日语 exchange 为自描述格式「标签:值」，条目用 / 分隔，例如：
+ *   辞書形:食べる/ます形:食べます/ない形:食べない/て形:食べて/過去形:食べた
+ *
+ * 英语那套单字母码（p/d/i/3/r/t/s/0）对应固定的八个变形槽位；
+ * 日语既无对应槽位、数量也不固定（一段词可达 11 个活用形），故单独渲染：
+ * 按「标签 值」成对输出，不预设槽位，日后新增活用形无需改 UI。
+ */
+@Composable
+fun JapaneseMorphology(
+    word: Word,
+    isPlaying: Boolean,
+    isChangeVideoBounds: Boolean = false,
+    searching: Boolean,
+    morphologyVisible: Boolean,
+    fontSize: TextUnit
+) {
+    val items = parseJapaneseExchange(word.exchange)
+    if (morphologyVisible && (isChangeVideoBounds || !isPlaying) && items.isNotEmpty()) {
+        Column {
+            SelectionContainer {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.height(IntrinsicSize.Max)
+                        .width(if (searching) 600.dp else 554.dp)
+                        .padding(start = if (searching) 0.dp else 50.dp)
+                ) {
+                    val textColor = MaterialTheme.colors.onBackground
+                    val labelStyle = SpanStyle(color = textColor, fontSize = fontSize)
+                    val valueStyle = SpanStyle(
+                        color = MaterialTheme.colors.primary,
+                        fontSize = fontSize
+                    )
+                    Text(
+                        buildAnnotatedString {
+                            items.forEachIndexed { index, pair ->
+                                if (index > 0) {
+                                    withStyle(style = labelStyle) { append("; ") }
+                                }
+                                withStyle(style = labelStyle) {
+                                    append(pair.first)
+                                    append(" ")
+                                }
+                                withStyle(style = valueStyle) { append(pair.second) }
+                            }
+                        }
+                    )
+                }
+            }
+            if (!searching) {
+                Divider(Modifier.padding(start = 50.dp))
+            }
+        }
+    }
+}
+
+/**
+ * 解析「标签:值/标签:值」形式的日语活用串。
+ *
+ * 值中不会出现 / 或 :（由生成脚本保证），故按首个冒号切分即可。
+ * 格式不符的条目直接跳过，避免异常串导致整行不显示。
+ */
+private fun parseJapaneseExchange(exchange: String): List<Pair<String, String>> =
+    exchange.split("/").mapNotNull { item ->
+        val i = item.indexOf(':')
+        if (i <= 0) {
+            null
+        } else {
+            item.substring(0, i).trim() to item.substring(i + 1).trim()
+        }
+    }
+
+/**
  * 词型组件
  */
 @Composable
@@ -2085,9 +2160,21 @@ fun Morphology(
     isChangeVideoBounds:Boolean = false,
     searching: Boolean,
     morphologyVisible: Boolean,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    language: String = "english"
 ) {
-    if (morphologyVisible &&(isChangeVideoBounds || !isPlaying )) {
+    // 日语活用与英语变形不同构（无固定槽位、数量也不同），单独渲染。
+    // 英语路径保持原样，这里只多一层语言分派。
+    if (language.equals("japanese", true)) {
+        JapaneseMorphology(
+            word = word,
+            isPlaying = isPlaying,
+            isChangeVideoBounds = isChangeVideoBounds,
+            searching = searching,
+            morphologyVisible = morphologyVisible,
+            fontSize = fontSize
+        )
+    } else if (morphologyVisible &&(isChangeVideoBounds || !isPlaying )) {
         val exchanges = word.exchange.split("/")
         var preterite = ""
         var pastParticiple = ""
