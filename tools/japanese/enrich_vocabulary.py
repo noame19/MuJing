@@ -1,4 +1,4 @@
-"""MuJing 日语词库增强（JLPT N5–N1）。
+"""MuJing 日语词库增强（JLPT N5–N1 + 教材类分类）。
 
 在 build_vocabulary.py 产出的基础词库之上，补全：
   - pos        词性（中文全称，如「动词·一段词」「い形容词」）
@@ -12,6 +12,14 @@
 除查不到 JMdict 条目的词条会保留源数据外，本脚本不丢词：源词库里的每一条
 都会出现在产物里（见 _source_only_entry）。
 
+分类（--category，默认 JLPT日语）：
+  - JLPT日语      释义以 JMdict 为准逐条重写（原有英文释义只当消歧线索）
+  - 标准日本语     词形/假名来自教材，只补空：词性由 [名]/[动3] 括号码换为
+                  中文全称、补分拍罗马字与活用、补英文释义（原先为空）
+  - みんなの日本語  同上，补词性/活用，中文释义缺失时补
+  - JLPT精选      同上
+  含 ～ 或斜杠并列写法的「句型/量词卡片」不是单词，原样跳过（is_pattern_card）。
+
 数据源（均为权威词典，不做规则推测）：
   - JMdict (scriptin/jmdict-simplified)    品词标记、义项、英文释义
   - JMdictDB conjo.csv (EDRDG / Jim Breen)  动词/形容词活用表（1137 条规则）
@@ -22,13 +30,16 @@
 
 用法：
     python3 tools/japanese/build_vocabulary.py     # 先生成基础词库（务必先跑）
-    python3 tools/japanese/enrich_vocabulary.py --all --write   # 再增强
+    python3 tools/japanese/enrich_vocabulary.py --all --write   # 再增强 JLPT日语
+    python3 tools/japanese/enrich_vocabulary.py --category 标准日本语 --all --write
 
 ⚠ 运行顺序：本脚本的输入就是 resources/common/vocabulary/JLPT日语/*.json，
 而它在同音异形词消歧时会读词条原有的 definition（源英文释义）当线索。
 若在已增强过的文件上再跑一次，线索就变成上一轮的 JMdict 释义，会自我强化
 错误结果（如 はい → 「名词. medal…」）。因此**必须先重跑 build_vocabulary.py
 生成基础词库，再跑本脚本一次**。run_level 会检测到这种误用并警告。
+教材分类（标准日本语等）没有这个限制：它们的 definition/translation 原样保留，
+不吃 JMdict 释义，故可反复跑。
 
 单独预览（不写入）：
     python3 tools/japanese/enrich_vocabulary.py            # 预览 N4
@@ -40,6 +51,7 @@
 """
 
 import csv
+import glob
 import json
 import os
 import re
@@ -52,9 +64,93 @@ DATA = os.path.join(_HERE, 'data')
 REPO = os.path.abspath(os.path.join(_HERE, '..', '..'))
 JMDICT = os.path.join(DATA, 'jmdict-eng-3.6.2.json')
 JADIC = os.path.join(REPO, 'resources', 'common', 'dictionary', 'jadic.db')
-VOCAB_DIR = os.path.join(REPO, 'resources', 'common', 'vocabulary', 'JLPT日语')
+VOCAB_ROOT = os.path.join(REPO, 'resources', 'common', 'vocabulary')
+VOCAB_DIR = os.path.join(VOCAB_ROOT, 'JLPT日语')
 LEVELS = [('1 N5.json', 'N5'), ('2 N4.json', 'N4'), ('3 N3.json', 'N3'),
           ('4 N2.json', 'N2'), ('5 N1.json', 'N1')]
+
+# 可增强的日语分类。JLPT日语 的释义以 JMdict 为准、逐级重写；其余三类
+# 的词形/假名来自各自教材，只做「补空」与「对齐工程标准」——
+# 词性、分拍罗马字、活用一律按 JMdict 补齐（标准日本语原先只有 [名] 这类
+# 括号码、且无活用），释义与中文只在缺失时补，不覆盖教材原有内容。
+# files 留空表示按目录内文件排序取用（文件名前缀即册序/课序）。
+CATEGORIES = {
+    'JLPT日语': {'files': LEVELS, 'keep_source': False},
+    '标准日本语': {'files': None, 'keep_source': True},
+    'みんなの日本語': {'files': None, 'keep_source': True},
+    'JLPT精选': {'files': None, 'keep_source': True},
+}
+# 词形或假名含以下记号的是「句型/量词卡片」（～円 / お～ / 何～／～歳），
+# 不是单个词，JMdict 里没有对应条目，增强时原样跳过。
+_PATTERN = re.compile(r'[～~/／;；()（）\[\]［］・\s]')
+
+
+def is_pattern_card(word):
+    """句型/量词卡片（含 ～ 、斜杠并列写法、括注、空白）不做增强。"""
+    return bool(_PATTERN.search(word.get('value', ''))
+                or _PATTERN.search(word.get('kana', '')))
+
+
+# 教材词库（标准日本语 / みんなの日本語）把动词收成 ます形、て形、た形，
+# JMdict 里只有辞書形，不还原就完全匹配不上（动词的词性、活用、释义全拿不到）。
+# 还原只产生「候选」，一律交给 JMdict 判定：查不到的候选自然落空，
+# 不会像同音词猜测那样引入错误条目。
+_POLITE_SUFFIX = ('ませんでした', 'ましょう', 'ません', 'ました', 'ます')
+_TE_SUFFIX = {'って': ('う', 'つ', 'る'), 'んで': ('ぬ', 'ぶ', 'む'),
+              'いて': ('く',), 'いで': ('ぐ',), 'して': ('す',),
+              'きて': ('くる',)}
+_TA_SUFFIX = {'った': ('う', 'つ', 'る'), 'んだ': ('ぬ', 'ぶ', 'む'),
+              'いた': ('く',), 'いだ': ('ぐ',), 'した': ('す',),
+              'きた': ('くる',), 'かった': ('い',)}
+_COPULA = ('ですか', 'でした', 'です', 'だった', 'だ')
+_GODAN_MASU = {'い': 'う', 'き': 'く', 'ぎ': 'ぐ', 'し': 'す', 'ち': 'つ',
+               'に': 'ぬ', 'び': 'ぶ', 'み': 'む', 'り': 'る'}
+
+
+def deinflect(text):
+    """教材词库的活用形 → 辞書形候选（行きます → 行く、歩いて → 歩く）。
+
+    き/し 结尾既可能是五段（行く）也可能是一段（起きる），两种候选都给出，
+    由 JMdict 判定。本就不是词条的句子（お元気ですか）会返回空列表。
+    """
+    t0 = text.strip()
+    stripped = t0.rstrip('。．.！!？?、,')
+    cands = [stripped] if stripped and stripped != t0 else []
+    t = stripped or t0
+    # ます形：行きます → 行く / 起きます → 起きる / します → する
+    for suf in _POLITE_SUFFIX:
+        if t.endswith(suf) and len(t) > len(suf):
+            stem = t[:-len(suf)]
+            if stem == 'し':                       # します → する（サ変）
+                return cands + ['する']
+            if stem == 'き':                       # きます → くる
+                return cands + ['くる']
+            if stem == '来':
+                return cands + ['来る']
+            if stem.endswith('し'):                # 勉強します → 勉強する
+                cands.append(stem + 'る')
+                # する 名词也可能是 名词+vs 词条（勉強、コピー），
+                # JMdict 里查不到「勉強する」但查得到「勉強」。
+                cands.append(stem[:-1])
+            elif stem.endswith('来'):              # 持って来ます → 持って来る
+                cands.append(stem[:-1] + '来る')
+            tail = stem[-1]
+            if tail in _GODAN_MASU:
+                cands.append(stem[:-1] + _GODAN_MASU[tail])
+            cands.append(stem + 'る')
+            break
+    # て形/た形：歩いて → 歩く、読んだ → 読む、楽しかった → 楽しい
+    for table in (_TE_SUFFIX, _TA_SUFFIX):
+        for suf, tails in table.items():
+            if t.endswith(suf) and len(t) > len(suf):
+                stem = t[:-len(suf)]
+                cands += [stem + x for x in tails]
+    # 结尾助动词：元気です → 元気、学生だった → 学生
+    for suf in _COPULA:
+        if t.endswith(suf) and len(t) > len(suf):
+            cands.append(t[:-len(suf)])
+    return list(dict.fromkeys(c for c in cands if c and c != t0))
+
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -603,6 +699,29 @@ def pick_entry(value, kana, hint, exact, by_kana, by_kanji):
     return None
 
 
+def _pick_deinflected(v_alts, k_alts, hint, exact, by_kana, by_kanji):
+    """在词形还原的候选里挑 JMdict 条目。
+
+    候选是规则猜出来的（起きます → 起く / 起きる），必须由 JMdict 判定：
+    优先级为「(汉字,假名) 精确对上」>「汉字形存在」>「读音存在」，
+    同级再比常用词与源释义重合度。这样 起きます 会取 起きる（一段）而不是
+    同音的 奥，貸します 会取 貸す 而不是 貸する。
+    """
+    hits = []
+    for i, av in enumerate(v_alts):
+        ak = k_alts[i] if i < len(k_alts) else ''
+        if ak and (av, ak) in exact:
+            hits.append((2, exact[(av, ak)]))
+        elif av in by_kanji:
+            hits.append((1, _best(by_kanji[av], hint)))
+        elif ak and ak in by_kana:
+            hits.append((0, _best(by_kana[ak], hint)))
+    if not hits:
+        return None
+    rank = max(r for r, _ in hits)
+    return _best([e for r, e in hits if r == rank], hint)
+
+
 def pick_kana(value, raw_kana, ent):
     """定出词条的显示读音。
 
@@ -689,12 +808,37 @@ def _source_only_entry(word, kana):
     }
 
 
-def build_entry(word, exact, by_kana, by_kanji, con):
+def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     value = word['value']
     raw_kana = (word.get('kana') or '').strip()
-    ent = pick_entry(value, raw_kana or value, word.get('definition', ''),
-                     exact, by_kana, by_kanji)
-    kana = pick_kana(value, raw_kana, ent)
+    hint = word.get('definition', '')
+    ent = pick_entry(value, raw_kana or value, hint, exact, by_kana, by_kanji)
+    # 教材分类（标准日本语/みんなの日本語/JLPT精选）的假名已是纯假名，原样沿用；
+    # JLPT日语 的假名常带编者注，一律按 JMdict 校正。
+    kana = raw_kana if (keep_source and is_kana_text(raw_kana)) \
+        else pick_kana(value, raw_kana, ent)
+    # 教材词库把动词收成 ます形/て形（行きます、歩いて），JMdict 里只有辞書形，
+    # 不还原就完全匹配不上（动词的词性、活用、释义全拿不到）。还原出的辞書形
+    # 同时用作活用基准形与中文释义的候选词形。
+    dict_value = dict_kana = ''
+    if ent is None and keep_source:
+        v_alts = deinflect(value)
+        k_alts = deinflect(kana) if kana else []
+        hit = _pick_deinflected(v_alts, k_alts, hint, exact, by_kana, by_kanji)
+        if hit:
+            ent = hit
+            # 辞書形（与假名一一对齐，起きます → 起きる / おきる）
+            for i, av in enumerate(v_alts):
+                if hit.get('kanji') and av in hit['kanji']:
+                    dict_value = av
+                    dict_kana = k_alts[i] if i < len(k_alts) else ''
+                    break
+            if not dict_value:
+                for i, av in enumerate(v_alts):
+                    if av in hit['kana']:
+                        dict_value = av
+                        dict_kana = k_alts[i] if i < len(k_alts) else ''
+                        break
     if ent is None:
         return _source_only_entry(word, kana)
 
@@ -719,15 +863,17 @@ def build_entry(word, exact, by_kana, by_kanji, con):
     forms = list(dict.fromkeys(
         [value] + _split_alt(value)
         + ([value[:-2]] if value.endswith('する') else [])
+        + ([dict_value] if dict_value else [])
         + list(ent['kanji']) + list(ent['kana']) + _particle_stems(value)))
     readings = list(dict.fromkeys(
-        [r for r in ([kana] + _split_alt(kana) + list(ent['kana'])
-                     + _particle_stems(kana)) if r]))
+        [r for r in ([kana] + _split_alt(kana) + ([dict_kana] if dict_kana else [])
+                     + list(ent['kana']) + _particle_stems(kana)) if r]))
     cn = chinese_for(con, forms, readings or forms)
 
     # 活用基准形：并列写法取第一个（作る/造る → 作る），否则活用形里的「/」
-    # 会被界面当成条目分隔符；する动词补上 する。
-    base_parts = _split_alt(_clean_value(value)) or [value]
+    # 会被界面当成条目分隔符；する动词补上 する。教材分类的 ます形/て形
+    # 一律换成还原出的辞書形（行きます → 行く）。
+    base_parts = _split_alt(_clean_value(dict_value or value)) or [value]
     base = base_parts[0]
     # 尾助词不是词的一部分：能与 JMdict 条目对上时，活用基准形也用词干，
     # 否则会按写全的词去活用（よると → 辞書形:よるる、やたらに → やたらにだ）。
@@ -741,13 +887,22 @@ def build_entry(word, exact, by_kana, by_kanji, con):
     if conjugatable(codes):
         ex = '/'.join(f'{n}:{f}' for n, f in display_forms(base, codes))
 
+    # 教材分类不覆盖原有内容：词性用 JMdict 的中文全称补/换（原先只有
+    # [名]/[动3] 这类括号码），释义与中文只在缺失时补。
+    src_pos = (word.get('pos') or '').strip()
+    src_def = (word.get('definition') or '').strip()
+    src_cn = (word.get('translation') or '').strip()
+    pos_text = '、'.join(names) if names else (src_pos if keep_source else '')
+    def_text = src_def if (keep_source and src_def) else '\n'.join(en_lines)
+    cn_text = src_cn if (keep_source and src_cn) else '\n'.join(cn)
+
     return {
         'value': value,
         'kana': kana,
         'romaji': romaji(kana),
-        'pos': '、'.join(names),
-        'definition': '\n'.join(en_lines),
-        'translation': '\n'.join(cn),
+        'pos': pos_text,
+        'definition': def_text,
+        'translation': cn_text,
         'exchange': ex,
         'level': word.get('level', ''),
     }
@@ -763,7 +918,7 @@ def to_vocabulary(entries, name, level, tag):
             'pos': e['pos'], 'collins': 0, 'oxford': False,
             'tag': tag, 'bnc': 0, 'frq': 0,
             'exchange': e['exchange'], 'kana': e['kana'], 'romaji': e['romaji'],
-            'level': level, 'externalCaptions': [], 'captions': [],
+            'level': e.get('level') or level, 'externalCaptions': [], 'captions': [],
         })
     return {
         'name': name, 'type': 'DOCUMENT', 'language': 'japanese',
@@ -780,10 +935,13 @@ def _write_json(path, obj):
         raise RuntimeError(f"无法写入 {path}：{e}") from e
 
 
-def run_level(filename, level, out_dir):
-    exact, by_kana, by_kanji = load_jmdict()
+def run_level(filename, level, out_dir, category='JLPT日语', indexes=None):
+    cat = CATEGORIES[category]
+    keep_source = cat['keep_source']
+    src_dir = os.path.join(VOCAB_ROOT, category)
+    exact, by_kana, by_kanji = indexes or load_jmdict()
     con = sqlite3.connect(JADIC)
-    src = _read_json(os.path.join(VOCAB_DIR, filename))
+    src = _read_json(os.path.join(src_dir, filename))
     # 误用检测：输入若已带「中文词性 + . 」前缀，说明是在增强产物上再跑，
     # 同音异形词消歧的线索已被污染（详见模块 docstring 的运行顺序）。
     padded = sum(1 for w in src['wordList']
@@ -791,9 +949,16 @@ def run_level(filename, level, out_dir):
     if padded > len(src['wordList']) * 0.5:
         print(f"  ⚠ {filename} 看起来已经是增强后的文件（{padded}/{len(src['wordList'])} 条）"
               f"，请先重跑 build_vocabulary.py 再增强，否则同音异形词会挑错条目。")
-    entries, kept = [], []
+    entries, kept, skipped = [], [], 0
     for w in src['wordList']:
-        e = build_entry(w, exact, by_kana, by_kanji, con)
+        # 句型/量词卡片（～円、お～、何～／～歳）不是单词，保持原样。
+        if keep_source and is_pattern_card(w):
+            skipped += 1
+            e = dict(w)
+            e['level'] = w.get('level', level)
+            entries.append(e)
+            continue
+        e = build_entry(w, exact, by_kana, by_kanji, con, keep_source)
         if e.pop('_source_only', False):
             kept.append(w['value'])
         e['level'] = w.get('level', level)
@@ -801,7 +966,8 @@ def run_level(filename, level, out_dir):
     con.close()
     total = len(src['wordList'])
     print(f"  {level}: {len(entries)}/{total} 词全部保留"
-          f"（{len(kept)} 条无 JMdict 条目，按源数据保留）")
+          f"（{len(kept)} 条无 JMdict 条目，按源数据保留）"
+          + (f"，跳过 {skipped} 条句型卡片" if skipped else ""))
     if out_dir:
         # 保留源词库的名称与 tag：UI 上显示的名称不应被本脚本改写。
         # 就地写入时沿用原文件名，另存时用带标记的新文件名。
@@ -809,8 +975,8 @@ def run_level(filename, level, out_dir):
         src_tag = next((w['tag'] for w in src['wordList'] if w.get('tag')),
                        'jlpt-' + level.lower())
         vocab = to_vocabulary(entries, src_name, level, src_tag)
-        in_place = os.path.abspath(out_dir) == os.path.abspath(VOCAB_DIR)
-        out_name = filename if in_place else f'JLPT-{level}-增强版.json'
+        in_place = os.path.abspath(out_dir) == os.path.abspath(src_dir)
+        out_name = filename if in_place else f'{category}-{level}-增强版.json'
         path = os.path.join(out_dir, out_name)
         _write_json(path, vocab)
         print(f"      → {path}")
@@ -837,8 +1003,20 @@ def preview(entries):
 
 
 def _parse_args(argv):
-    """解析命令行：--all 处理全部级别；--write 覆盖写回；--out 另存目录。"""
-    opts = {'all': '--all' in argv, 'write': '--write' in argv, 'out': None}
+    """解析命令行。
+
+    --category <名称>  处理哪个日语分类（默认 JLPT日语）
+    --all              处理该分类下全部文件（默认只预览第一个/ N4）
+    --write            就地覆盖写回
+    --out <目录>       另存到指定目录
+    """
+    opts = {'all': '--all' in argv, 'write': '--write' in argv, 'out': None,
+            'category': 'JLPT日语'}
+    if '--category' in argv:
+        i = argv.index('--category')
+        if i + 1 >= len(argv):
+            raise SystemExit('--category 需要一个分类名')
+        opts['category'] = argv[i + 1]
     if '--out' in argv:
         i = argv.index('--out')
         if i + 1 >= len(argv):
@@ -847,9 +1025,28 @@ def _parse_args(argv):
     return opts
 
 
+def _category_files(category):
+    """取某分类下的文件列表 [(文件名, 级别名)]，按文件名排序（前缀即册序/课序）。"""
+    cat = CATEGORIES[category]
+    if cat['files'] is not None:
+        return cat['files']
+    d = os.path.join(VOCAB_ROOT, category)
+    names = sorted(os.path.basename(p) for p in glob.glob(os.path.join(d, '*.json')))
+    return [(n, os.path.splitext(n)[0]) for n in names]
+
+
 if __name__ == '__main__':
     opts = _parse_args(sys.argv)
-    targets = LEVELS if opts['all'] else [('2 N4.json', 'N4')]
+    category = opts['category']
+    if category not in CATEGORIES:
+        raise SystemExit(f"未知分类 {category}，可选：{'、'.join(CATEGORIES)}")
+    files = _category_files(category)
+    if opts['all']:
+        targets = files
+    elif category == 'JLPT日语':
+        targets = [('2 N4.json', 'N4')]     # 历史默认：预览 N4
+    else:
+        targets = files[:1]
 
     if opts['out']:
         out_dir = os.path.abspath(opts['out'])
@@ -858,15 +1055,17 @@ if __name__ == '__main__':
         except OSError as e:
             raise SystemExit(f"无法创建输出目录 {out_dir}：{e}") from e
     elif opts['write']:
-        out_dir = VOCAB_DIR          # 就地覆盖，脚本产出的词库不手工编辑
+        out_dir = os.path.join(VOCAB_ROOT, category)   # 就地覆盖，脚本产出不手工编辑
     else:
         out_dir = None               # 只预览
 
     if out_dir is None:
         print('（预览模式，不写入。加 --write 覆盖写回，或 --out <目录> 另存）\n')
 
+    # JMdict 索引只建一次，供该分类下所有文件复用（115MB，逐文件重建太慢）。
+    indexes = load_jmdict()
     for fn, lv in targets:
-        entries, kept = run_level(fn, lv, out_dir)
+        entries, kept = run_level(fn, lv, out_dir, category, indexes)
         if kept:
             print(f"     无 JMdict 条目（已按源数据保留）: {kept}")
         if out_dir is None and not opts['all']:
