@@ -205,11 +205,7 @@ def build_word(entry, level, yori_index, to_romaji, romaji_cache):
     if not term:
         return None
 
-    kana = (entry.get("reading") or "").strip()
-
-    # OpenJLPT 的 reading 对纯假名词条常为空，回退用词条本身
-    if not kana:
-        kana = term if is_kana(term) else ""
+    kana = clean_reading(entry.get("reading"), term)
 
     meanings = [m for m in (entry.get("meanings") or []) if isinstance(m, str) and m.strip()]
     definition = "\n".join(meanings)
@@ -258,6 +254,34 @@ def is_kana(text):
         if not (0x3041 <= code <= 0x309F or 0x30A0 <= code <= 0x30FF):
             return False
     return True
+
+
+_KANA_ONLY = re.compile(r'^[\u3041-\u309F\u30A0-\u30FF]+$')
+
+
+def clean_reading(raw, term):
+    """清洗 OpenJLPT 的 reading 字段，返回单个可用的假名读音（不合格则空串）。
+
+    源数据把几种东西混写进了 reading 字段：
+
+      - 整串括注，其实是编者注而非读音：うん /「（感）」、じゅうたん /「（カーペット）」
+      - 半包括号，括号只是排版，内容属于读音：暖かい /「あたたか(い)」
+      - 空格/斜杠分隔的多读音：十 /「じゅう とお」、何 /「なん/なに」
+      - 个别乱码：賛成 /「Uӣ[い」、とん /「（1000」
+
+    规则：整串被括号包住的一律丢弃；否则去掉括号字符本身，按空白/斜杠/顿号
+    切分后取第一个纯假名候选；都不合格时，词形本身是假名就用词形。
+    """
+    s = (raw or '').strip()
+    if re.fullmatch(r'[（(][^）)]*[）)]', s):
+        s = ''
+    else:
+        s = re.sub(r'[()（）]', '', s)
+    for part in re.split(r'[\s/／、,]+', s):
+        part = part.strip()
+        if part and _KANA_ONLY.match(part):
+            return part
+    return term if is_kana(term) else ''
 
 
 # ---------------------------------------------------------------- 词典数据库

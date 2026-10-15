@@ -6,6 +6,11 @@
   - exchange   动词/形容词活用（辞書形:食べる/て形:食べて/…）
   - definition 英文释义（按义项分条，带词性前缀）
   - translation 中文释义（按 (词形, 读音) 精确匹配，避免同音异形词串味）
+  - kana       校正源词库里被写歪的读音（编者注、乱码、多读音混排），
+               以 JMdict 条目为准（见 pick_kana）
+
+除查不到 JMdict 条目的词条会保留源数据外，本脚本不丢词：源词库里的每一条
+都会出现在产物里（见 _source_only_entry）。
 
 数据源（均为权威词典，不做规则推测）：
   - JMdict (scriptin/jmdict-simplified)    品词标记、义项、英文释义
@@ -16,9 +21,18 @@
 例如 かっこう 只取「格好」，不会把「滑降（滑雪）」「郭公（布谷鸟）」混进来。
 
 用法：
-    python3 tools/japanese/enrich_vocabulary.py            # 预览 N4（不写入）
+    python3 tools/japanese/build_vocabulary.py     # 先生成基础词库（务必先跑）
+    python3 tools/japanese/enrich_vocabulary.py --all --write   # 再增强
+
+⚠ 运行顺序：本脚本的输入就是 resources/common/vocabulary/JLPT日语/*.json，
+而它在同音异形词消歧时会读词条原有的 definition（源英文释义）当线索。
+若在已增强过的文件上再跑一次，线索就变成上一轮的 JMdict 释义，会自我强化
+错误结果（如 はい → 「名词. medal…」）。因此**必须先重跑 build_vocabulary.py
+生成基础词库，再跑本脚本一次**。run_level 会检测到这种误用并警告。
+
+单独预览（不写入）：
+    python3 tools/japanese/enrich_vocabulary.py            # 预览 N4
     python3 tools/japanese/enrich_vocabulary.py --all      # 预览全部 5 个级别
-    python3 tools/japanese/enrich_vocabulary.py --all --write   # 覆盖写回词库
     python3 tools/japanese/enrich_vocabulary.py --all --out <目录>  # 另存到指定目录
 
 首次运行前需先下载数据源（约 111MB，不入库）：
@@ -236,7 +250,7 @@ DISPLAY = ['辞書形', 'ます形', 'ない形', '過去形', 'て形', 'ば形
 # サ変：conjo.csv 对 vs 只有「辞書形」一条，其余按送假名规则补全
 SURU = [('辞書形', '{s}する'), ('ます形', '{s}します'), ('ない形', '{s}しない'),
         ('て形', '{s}して'), ('過去形', '{s}した'), ('ば形', '{s}すれば'),
-        ('意志形', '{s}しよう'), ('命令形', '{s}しろ'), ('可能形', 'できます'),
+        ('意志形', '{s}しよう'), ('命令形', '{s}しろ'), ('可能形', '{s}できる'),
         ('受身形', '{s}される'), ('使役形', '{s}させる')]
 
 # カ変：来 的读音 く/き/こ 不规则，逐形写死。stem 已去掉结尾「る」
@@ -419,7 +433,7 @@ def load_jmdict():
 
 def _split_alt(text):
     """拆分并列写法（けれど/けれども → [けれど, けれども]）。"""
-    parts = [p.strip() for p in re.split(r'[/／]', text or '') if p.strip()]
+    parts = [p.strip() for p in re.split(r'[/／、,]', text or '') if p.strip()]
     return parts
 
 
@@ -431,7 +445,44 @@ def _clean_kana(kana):
       - かねもち/おかねもち → 两个候选      （斜杠并列）
     """
     s = re.sub(r'[()（）]', '', kana or '')
-    return [p.strip() for p in re.split(r'[\s/／]+', s) if p.strip()]
+    return [p.strip() for p in re.split(r'[\s/／、,]+', s) if p.strip()]
+
+
+def is_kana_text(text):
+    """判断字符串是否由平假名/片假名构成（含长音符、中点）。"""
+    if not text:
+        return False
+    for ch in text:
+        code = ord(ch)
+        if not (0x3041 <= code <= 0x309F or 0x30A0 <= code <= 0x30FF):
+            return False
+    return True
+
+
+# 词库里常把助词连着副词一起收（ゆっくりと / 一段と / やたらに），
+# 匹配 JMdict 时允许去掉尾部的 と / に。
+_TRAILING_PARTICLES = ('と', 'に')
+
+
+def _kana_variants(kana):
+    """读音的等价写法：本身，以及去掉尾部助词后的形式。"""
+    out = [kana]
+    for p in _TRAILING_PARTICLES:
+        if kana.endswith(p) and len(kana) > 1:
+            out.append(kana[:-1])
+    return out
+
+
+def _particle_stems(text):
+    """词形去掉尾部助词后的写法（尾助词是语法成分，不是词的一部分）。
+
+    仅取长度 > 2 的形式，避免把 こと → こ 这类噪声当作词干。
+    """
+    out = []
+    for part in _split_alt(_clean_value(text)):
+        if len(part) > 2 and part.endswith(_TRAILING_PARTICLES):
+            out.append(part[:-1])
+    return out
 
 
 def _clean_value(value):
@@ -443,7 +494,7 @@ def _clean_value(value):
     return re.sub(r'\s*[（(][^)）]*[)）]\s*$', '', v).strip() or v.strip()
 
 
-def _match_candidates(value, kana):
+def _match_candidates(value, kana, strip=False):
     """生成 (词形, 假名) 匹配候选，覆盖词库里几种非常规写法。
 
       - 案内 / あんないする        → 假名带 する，去掉后为 あんない
@@ -451,6 +502,9 @@ def _match_candidates(value, kana):
       - お金持ち / かねもち/おかねもち  → 假名有并列，逐个试
       - あたたか(い)              → 去括号后为 あたたかい
       - あげる (=やる) / あげる     → 词形的括注是编者注，要去掉
+
+    strip=True 时再额外尝试去掉尾部助词 と/に（ゆっくりと → ゆっくり），
+    只在基本候选全都查不到时才启用，避免把 こと→こ 这类噪声拉进候选池。
 
     する 的剥离对词形与假名两边都做，因为词库把两种写法混用。
     """
@@ -468,7 +522,47 @@ def _match_candidates(value, kana):
     for v in dict.fromkeys(vals2):
         for k in dict.fromkeys(ks2):
             out.append((v, k))
+    if strip:
+        # 尾助词是语法成分，不是词的一部分：剥它的时候，词形与假名必须一起剥。
+        # 若各自独立相剥再取笛卡尔积，会造出 (一段と, いちだん) 这种错配，
+        # 把 一団/いちだん 这类同音异义词拉进候选池。
+        seen = set(out)
+        for v in dict.fromkeys(vals):
+            if len(v) <= 2 or not v.endswith(_TRAILING_PARTICLES):
+                continue
+            for k in dict.fromkeys(ks):
+                pair = (v[:-1], k[:-1])
+                if len(k) > 2 and k[-1] == v[-1] and pair not in seen:
+                    seen.add(pair)
+                    out.append(pair)
     return out
+
+
+_EN_STOPWORDS = {
+    'a', 'an', 'the', 'of', 'to', 'and', 'or', 'in', 'on', 'at', 'by', 'as',
+    'is', 'are', 'was', 'were', 'be', 'been', 'being', 'it', 'its', 'i', 's',
+    'with', 'from', 'you', 'your', 'etc', 'e', 'g', 'esp', 'usu',
+}
+
+
+def _best(pool, hint):
+    """池中多条时，用源英文释义给最贴近的一条打分。
+
+    按整词（而非子串）比对，并滤掉纯虚词：早先用子串匹配时，報（information）
+    会因为含 for 而白得一分；而像 this/that/so/no 这类词在简短释义里是
+    有效信号（この 的释义就是 this），故不滤。
+    """
+    if len(pool) == 1:
+        return pool[0]
+    hint_words = {w for w in re.findall(r'[a-z]+', (hint or '').lower())
+                  if w not in _EN_STOPWORDS}
+    best, best_score = pool[0], -1
+    for c in pool:
+        gloss = ' '.join(g for _, gl in c['senses'] for g in gl).lower()
+        score = len(hint_words & set(re.findall(r'[a-z]+', gloss)))
+        if score > best_score:
+            best, best_score = c, score
+    return best
 
 
 def pick_entry(value, kana, hint, exact, by_kana, by_kanji):
@@ -476,39 +570,52 @@ def pick_entry(value, kana, hint, exact, by_kana, by_kanji):
 
     汉字形优先按 (汉字, 假名) 精确匹配；假名形（同音异形词有歧义）
     用词库原有的英文释义打分挑最贴近的。假名不可用（词库里有乱码）时，
-    退回只用汉字形匹配。
+    退回只用汉字形匹配。基本候选都落空后，才尝试去掉尾部助词的写法。
     """
-    cands = _match_candidates(value, kana)
-    for v, k in cands:
+    base = _match_candidates(value, kana)
+    stripped = _match_candidates(value, kana, strip=True)
+    # 去尾助词后的写法（ゆっくりと → ゆっくり、一段と → 一段）同样值得先试
+    # 精确匹配：能对上(汉字, 假名)时，比在候选池里按释义打分可靠得多。
+    for v, k in base + stripped:
         if v != k and (v, k) in exact:
             return exact[(v, k)]
-    pool, seen = [], set()
 
-    def _add(entries):
-        for ent in entries:
-            if id(ent) not in seen:
-                seen.add(id(ent))
-                pool.append(ent)
+    for cands in (base, stripped):
+        pool, seen = [], set()
+        for v, k in cands:
+            for ent in by_kana.get(k, []) + by_kana.get(v, []):
+                if id(ent) not in seen:
+                    seen.add(id(ent))
+                    pool.append(ent)
+        if pool:
+            return _best(pool, hint)
 
-    for v, k in cands:
-        _add(by_kana.get(k, []))
-        _add(by_kana.get(v, []))
-    if not pool:
-        # 假名不可用（如 賛成 的 kana 是乱码）时只用汉字形
-        for v, _ in cands:
-            _add(by_kanji.get(v, []))
-    if not pool:
-        return None
-    if len(pool) == 1:
-        return pool[0]
-    hint_words = set(re.findall(r'[a-z]+', (hint or '').lower()))
-    best, best_score = pool[0], -1
-    for c in pool:
-        gloss = ' '.join(g for _, gl in c['senses'] for g in gl).lower()
-        score = sum(1 for w in hint_words if w and w in gloss)
-        if score > best_score:
-            best, best_score = c, score
-    return best
+    # 假名不可用（如 賛成 的 kana 是乱码）时只用汉字形
+    for v, _ in stripped:
+        if v in by_kanji:
+            return _best(by_kanji[v], hint)
+    return None
+
+
+def pick_kana(value, raw_kana, ent):
+    """定出词条的显示读音。
+
+    以 JMdict 条目为准：源词库的读音只有在能被 JMdict 条目确认时才采用
+    （否则会把写进 reading 字段的编者注当读音，如
+    じゅうたん →「カーペット」、しいんと →「する」）；确认不了就用
+    JMdict 的主读音；连 JMdict 条目都没有时，才退回源词库的假名写法。
+    """
+    cands = _clean_kana(raw_kana) + _clean_kana(_clean_value(value))
+    ent_kana = list(ent['kana']) if ent else []
+    if ent_kana:
+        for c in cands:
+            if any(v in ent_kana for v in _kana_variants(c)):
+                return c
+        return ent_kana[0]
+    for c in cands:
+        if is_kana_text(c):
+            return c
+    return ''
 
 
 def chinese_for(con, forms, readings):
@@ -539,12 +646,34 @@ def chinese_for(con, forms, readings):
     return list(dict.fromkeys(out))
 
 
+def _source_only_entry(word, kana):
+    """JMdict 里查不到对应条目时，保留源词库内容，绝不静默丢词。
+
+    典型是 OpenJLPT 收的收尾助词词组（ゆっくりと / 一段と / やたらに）与
+    假名写法与 JMdict 不一致的词（ぺん / おまちください / しいんと）。
+    这类词条没有 JMdict 的词性与活用，但释义仍在，丢掉才是真的损失。
+    """
+    return {
+        'value': word['value'],
+        'kana': kana,
+        'romaji': romaji(kana),
+        'pos': (word.get('pos') or '').strip(),
+        'definition': (word.get('definition') or '').strip(),
+        'translation': (word.get('translation') or '').strip(),
+        'exchange': '',
+        'level': word.get('level', ''),
+        '_source_only': True,
+    }
+
+
 def build_entry(word, exact, by_kana, by_kanji, con):
     value = word['value']
-    kana = (word.get('kana') or '').strip() or value
-    ent = pick_entry(value, kana, word.get('definition', ''), exact, by_kana, by_kanji)
+    raw_kana = (word.get('kana') or '').strip()
+    ent = pick_entry(value, raw_kana or value, word.get('definition', ''),
+                     exact, by_kana, by_kanji)
+    kana = pick_kana(value, raw_kana, ent)
     if ent is None:
-        return None
+        return _source_only_entry(word, kana)
 
     codes = []
     for pos, _ in ent['senses']:
@@ -561,17 +690,28 @@ def build_entry(word, exact, by_kana, by_kanji, con):
 
     # 中文释义：候选词形包括词条写法、去 する 的写法、JMdict 给出的汉字形；
     # 读音同样取候选并集，以覆盖并列写法与假名为空的词条。
-    forms = list(dict.fromkeys([value] + _split_alt(value) + list(ent['kanji'])))
-    if value.endswith('する'):
-        forms.append(value[:-2])
+    # 中文释义：候选词形按「可靠度」排序——源写法、JMdict 给出的汉字形与读音，
+    # 最后才是去尾助词的猜测（尾助词剥出来的写法容易撞上同音异义词，
+    # 如 いやに → いや →「否」，所以放最后）。
+    forms = list(dict.fromkeys(
+        [value] + _split_alt(value)
+        + ([value[:-2]] if value.endswith('する') else [])
+        + list(ent['kanji']) + list(ent['kana']) + _particle_stems(value)))
     readings = list(dict.fromkeys(
-        [r for r in ([kana] + _split_alt(kana) + list(ent['kana'])) if r]))
+        [r for r in ([kana] + _split_alt(kana) + list(ent['kana'])
+                     + _particle_stems(kana)) if r]))
     cn = chinese_for(con, forms, readings or forms)
 
     # 活用基准形：并列写法取第一个（作る/造る → 作る），否则活用形里的「/」
     # 会被界面当成条目分隔符；する动词补上 する。
     base_parts = _split_alt(_clean_value(value)) or [value]
     base = base_parts[0]
+    # 尾助词不是词的一部分：能与 JMdict 条目对上时，活用基准形也用词干，
+    # 否则会按写全的词去活用（よると → 辞書形:よるる、やたらに → やたらにだ）。
+    if len(base) > 2 and base.endswith(_TRAILING_PARTICLES):
+        stem = base[:-1]
+        if stem in ent['kanji'] or stem in ent['kana'] or kana[:-1] in ent['kana']:
+            base = stem
     if kana.endswith('する') and not base.endswith('する'):
         base = base + 'する'
     ex = ''
@@ -621,18 +761,24 @@ def run_level(filename, level, out_dir):
     exact, by_kana, by_kanji = load_jmdict()
     con = sqlite3.connect(JADIC)
     src = _read_json(os.path.join(VOCAB_DIR, filename))
-    entries, miss = [], []
+    # 误用检测：输入若已带「中文词性 + . 」前缀，说明是在增强产物上再跑，
+    # 同音异形词消歧的线索已被污染（详见模块 docstring 的运行顺序）。
+    padded = sum(1 for w in src['wordList']
+                 if re.match(r'^[\u4e00-\u9fff、]+\. ', (w.get('definition') or '').split('\n')[0]))
+    if padded > len(src['wordList']) * 0.5:
+        print(f"  ⚠ {filename} 看起来已经是增强后的文件（{padded}/{len(src['wordList'])} 条）"
+              f"，请先重跑 build_vocabulary.py 再增强，否则同音异形词会挑错条目。")
+    entries, kept = [], []
     for w in src['wordList']:
         e = build_entry(w, exact, by_kana, by_kanji, con)
-        if e is None:
-            miss.append(w['value'])
-            continue
+        if e.pop('_source_only', False):
+            kept.append(w['value'])
         e['level'] = w.get('level', level)
         entries.append(e)
     con.close()
     total = len(src['wordList'])
-    print(f"  {level}: 匹配 {len(entries)}/{total} ({len(entries) * 100 // total}%)"
-          f"  未匹配 {len(miss)}")
+    print(f"  {level}: {len(entries)}/{total} 词全部保留"
+          f"（{len(kept)} 条无 JMdict 条目，按源数据保留）")
     if out_dir:
         # 保留源词库的名称与 tag：UI 上显示的名称不应被本脚本改写。
         # 就地写入时沿用原文件名，另存时用带标记的新文件名。
@@ -645,7 +791,7 @@ def run_level(filename, level, out_dir):
         path = os.path.join(out_dir, out_name)
         _write_json(path, vocab)
         print(f"      → {path}")
-    return entries, miss
+    return entries, kept
 
 
 def preview(entries):
@@ -697,8 +843,8 @@ if __name__ == '__main__':
         print('（预览模式，不写入。加 --write 覆盖写回，或 --out <目录> 另存）\n')
 
     for fn, lv in targets:
-        entries, miss = run_level(fn, lv, out_dir)
-        if miss:
-            print(f"     未匹配: {miss}")
+        entries, kept = run_level(fn, lv, out_dir)
+        if kept:
+            print(f"     无 JMdict 条目（已按源数据保留）: {kept}")
         if out_dir is None and not opts['all']:
             preview(entries)
