@@ -421,7 +421,10 @@ def load_jmdict():
                 senses.append((pos, gl))
         if not senses:
             continue
-        ent = {'kanji': kanji, 'kana': kana, 'senses': senses}
+        common = (any(k.get('common') for k in e.get('kana', []))
+                  or any(k.get('common') for k in e.get('kanji', [])))
+        ent = {'kanji': kanji, 'kana': kana, 'senses': senses,
+               'common': common}
         for k in kanji:
             for r in kana:
                 exact.setdefault((k, r), ent)
@@ -550,18 +553,21 @@ def _best(pool, hint):
 
     按整词（而非子串）比对，并滤掉纯虚词：早先用子串匹配时，報（information）
     会因为含 for 而白得一分；而像 this/that/so/no 这类词在简短释义里是
-    有效信号（この 的释义就是 this），故不滤。
+    有效信号（この 的释义就是 this），故不滤。释义分数相同时，优先 JMdict
+    标为 common（高频词）的条目：同音异形词里只有常用词才值得进 JLPT 词库，
+    如 し 应取「死」而不是「屍」。
     """
     if len(pool) == 1:
         return pool[0]
     hint_words = {w for w in re.findall(r'[a-z]+', (hint or '').lower())
                   if w not in _EN_STOPWORDS}
-    best, best_score = pool[0], -1
+    best, best_key = pool[0], None
     for c in pool:
         gloss = ' '.join(g for _, gl in c['senses'] for g in gl).lower()
         score = len(hint_words & set(re.findall(r'[a-z]+', gloss)))
-        if score > best_score:
-            best, best_score = c, score
+        key = (score, 1 if c.get('common') else 0)
+        if best_key is None or key > best_key:
+            best, best_key = c, key
     return best
 
 
@@ -643,6 +649,23 @@ def chinese_for(con, forms, readings):
             out += [x.strip() for x in t.split('\n') if x.strip()]
         if out:
             break
+    # 二级兜底：只认汉字形，不比读音。jadic 里一个汉字词只收部分读音
+    # （私 有 わたし/あたし 却没有 わたくし，勘 有 かん 却没有 かんじる），
+    # 精确匹配会漏掉这些；按汉字形取不会串到同音异形词上。
+    if not out:
+        for w in forms:
+            if not w:
+                continue
+            try:
+                rows = con.execute(
+                    'select translation from jmdict where word=? limit 1',
+                    (w,)).fetchall()
+            except sqlite3.Error:
+                return out
+            for (t,) in rows:
+                out += [x.strip() for x in t.split('\n') if x.strip()]
+            if out:
+                break
     return list(dict.fromkeys(out))
 
 
