@@ -662,6 +662,21 @@ def load_supplement_force():
     return _supplement_tables()[0]
 
 
+def supplement_translation(value, kana):
+    """查人工校订表（jadic_supplement.json），命中返回多行中文，否则返回空串。
+
+    先按 (词形, 读音) 查，再按 (词形, 空读音) 查；词形本身带斜杠并列写法时
+    再拆成各写法各查一遍（与 _source_only_entry 的查表口径一致）。
+    句型/量词卡片（is_pattern_card）不走增强流程，它们的释义也靠这个函数补。
+    """
+    for w in [value] + _split_alt(value):
+        for r in [kana, '']:
+            hit = load_supplement().get((w, r))
+            if hit:
+                return '\n'.join(hit)
+    return ''
+
+
 def chinese_for(con, forms, readings):
     """按 (词形, 假名) 精确取中文释义，避免同音异形词串味。
 
@@ -733,19 +748,11 @@ def _source_only_entry(word, kana):
     """
     trans = (word.get('translation') or '').strip()
     if not trans:
-        supp = load_supplement()
-        for w in [word['value']] + _split_alt(word['value']):
-            for r in [kana, '']:
-                hit = supp.get((w, r))
-                if hit:
-                    trans = '\n'.join(hit)
-                    break
-            if trans:
-                break
+        trans = supplement_translation(word['value'], kana)
     return {
         'value': word['value'],
         'kana': kana,
-        'romaji': romaji(kana),
+        'romaji': romaji(kana) if is_kana_text(kana) else '',
         'pos': (word.get('pos') or '').strip(),
         'definition': (word.get('definition') or '').strip(),
         'translation': trans,
@@ -846,7 +853,7 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     return {
         'value': value,
         'kana': kana,
-        'romaji': romaji(kana),
+        'romaji': romaji(kana) if is_kana_text(kana) else '',
         'pos': pos_text,
         'definition': def_text,
         'translation': cn_text,
@@ -903,6 +910,11 @@ def run_level(filename, level, out_dir, category='JLPT日语', indexes=None):
             skipped += 1
             e = dict(w)
             e['level'] = w.get('level', level)
+            # 卡片（句型/量词）不做词性活用增强，但中文释义仍可查人工校订表补齐
+            # （例：－階 / －本 / 建て —— 源数据只有英文释义）。
+            if not (e.get('translation') or '').strip():
+                e['translation'] = supplement_translation(
+                    e.get('value', ''), e.get('kana', ''))
             entries.append(e)
             continue
         e = build_entry(w, exact, by_kana, by_kanji, con, keep_source)

@@ -7,80 +7,2106 @@
     "仅在 jadic 查不到释义时使用（enrich_vocabulary.py 的 chinese_for 末级兜底）。",
     "带 \"force\": true 的条目会**覆盖** jadic 的结果，只用于 jadic 本身有错的词",
     "（例：しいんと 被 Yori Dict 错误地解释成「场面/场景」）；覆盖需在注释里写明依据。",
-    "上游数据源覆盖变好后，本表应随之缩减；新增请注明依据（JMdict 义项 / 教材释义）。"
+    "上游数据源覆盖变好后，本表应随之缩减；新增请注明依据（JMdict 义项 / 教材释义）。",
+    "「みんなの日本語」「JLPT精选」里缺中文释义的实词、量词、专有名词与问候句，依据教材英文释义人工译为中文（句型/用法卡片保留教材英文说明，不在此表）",
+    "本批另有 5 条以 reading=\"\" 收录（教材卡片在增强后被清空了非纯假名读音，查表时按 (词, 空读音) 命中）：－階 / －分 / －本 / －杯 / 建て。"
   ],
   "entries": [
-    {"word": "しいんと", "reading": "しいんと", "force": true, "translation": "鸦雀无声\n寂静无声\n静悄悄", "note": "jadic 的 しいん 条目（Yori Dict）误收为「场面/场景/景象」，与 JMdict 的 silently 不符，故覆盖"},
-    {"word": "伯母さん", "reading": "おばさん", "translation": "伯母\n婶婶\n姑姑\n阿姨"},
-    {"word": "叔母さん", "reading": "おばさん", "translation": "婶婶\n伯母\n姑姑\n阿姨"},
-    {"word": "伯父さん", "reading": "おじさん", "translation": "伯父\n叔叔\n舅舅\n大叔"},
-    {"word": "叔父さん", "reading": "おじさん", "translation": "叔叔\n伯伯\n舅舅\n大叔"},
-    {"word": "小父さん", "reading": "おじさん", "translation": "叔叔\n伯伯\n大叔（对陌生中年男性的称呼）"},
-    {"word": "おじさん", "reading": "", "translation": "叔叔\n伯伯\n舅舅\n大叔"},
-    {"word": "おばさん", "reading": "", "translation": "伯母\n婶婶\n姑姑\n阿姨"},
-    {"word": "お祭り", "reading": "おまつり", "translation": "祭典\n庙会\n节日"},
-    {"word": "もうすぐ", "reading": "", "translation": "马上\n快要\n不久"},
-    {"word": "泳ぎ方", "reading": "およぎかた", "translation": "游泳方法\n游法"},
-    {"word": "行う", "reading": "おこなう", "translation": "进行\n举行\n实施\n做"},
-    {"word": "お互い", "reading": "おたがい", "translation": "互相\n彼此\n双方"},
-    {"word": "ばったり", "reading": "", "translation": "（偶然）碰见\n突然（倒下）\n扑通一声"},
-    {"word": "たま", "reading": "", "translation": "偶尔\n难得\n稀少"},
-    {"word": "偶", "reading": "たま", "translation": "偶尔\n难得\n稀少"},
-    {"word": "昨", "reading": "さく", "translation": "昨（前一个）\n上一个（年、日）"},
-    {"word": "おまちください", "reading": "", "translation": "请稍等\n请等候"},
-    {"word": "おめでたい", "reading": "", "translation": "值得庆贺的\n喜庆的\n（贬）好糊弄的\n天真"},
-    {"word": "かじる", "reading": "", "translation": "啃\n咬\n一点点地学（涉猎）"},
-    {"word": "噛る", "reading": "かじる", "translation": "啃\n咬\n一点点地学（涉猎）"},
-    {"word": "こうして", "reading": "", "translation": "这样\n如此\n这样一来"},
-    {"word": "すれちがう", "reading": "", "translation": "擦肩而过\n交错而过\n彼此错过"},
-    {"word": "すれ違う", "reading": "すれちがう", "translation": "擦肩而过\n交错而过\n彼此错过"},
-    {"word": "やっつける", "reading": "", "translation": "打败\n揍\n干掉\n赶紧做完"},
-    {"word": "やっ付ける", "reading": "やっつける", "translation": "打败\n揍\n干掉\n赶紧做完"},
-    {"word": "為す", "reading": "なす", "translation": "做\n干\n为\n导致"},
-    {"word": "引っ繰り返す", "reading": "ひっくりかえす", "translation": "翻过来\n弄翻\n颠倒\n推翻"},
-    {"word": "何々", "reading": "なになに", "translation": "某某\n什么什么\n（感叹）什么？\n等等"},
-    {"word": "逆様", "reading": "さかさま", "translation": "颠倒\n倒过来\n相反\n反了"},
-    {"word": "挙げる", "reading": "あげる", "translation": "举出\n列举\n提出（例子）"},
-    {"word": "先々月", "reading": "せんせんげつ", "translation": "上上个月"},
-    {"word": "先先月", "reading": "せんせんげつ", "translation": "上上个月"},
-    {"word": "先先週", "reading": "せんせんしゅう", "translation": "上上周"},
-    {"word": "店屋", "reading": "みせや", "translation": "店铺\n小铺"},
-    {"word": "発つ", "reading": "たつ", "translation": "出发\n动身\n启程"},
-    {"word": "無沙汰", "reading": "ぶさた", "translation": "久未问候\n疏于联系"},
-    {"word": "揚げる", "reading": "あげる", "translation": "油炸\n炸\n扬起\n升起（烟花）"},
-    {"word": "洋品店", "reading": "ようひんてん", "translation": "西式服饰店\n洋货店"},
-    {"word": "養分", "reading": "ようぶん", "translation": "养分\n营养"},
-    {"word": "話中", "reading": "はなしちゅう", "translation": "通话中（占线）\n（正在）商谈中"},
-    {"word": "ビールス", "reading": "", "translation": "病毒（＝ウイルス 的旧写法）"},
-    {"word": "依って", "reading": "よって", "translation": "因此\n所以\n据此"},
-    {"word": "為来り", "reading": "しきたり", "translation": "惯例\n规矩\n传统习俗"},
-    {"word": "厭々", "reading": "いやいや", "translation": "不情愿地\n勉强地\n（摇头表示）拒绝"},
-    {"word": "箇条書き", "reading": "かじょうがき", "translation": "分条列举\n逐条书写"},
-    {"word": "華奢", "reading": "かしゃ", "translation": "华丽\n奢华\n纤弱"},
-    {"word": "拐う", "reading": "さらう", "translation": "拐走\n绑架\n抢走"},
-    {"word": "館", "reading": "かん", "translation": "（大型）馆\n建筑物\n公共设施"},
-    {"word": "基", "reading": "もとい", "translation": "基础\n根基\n根源"},
-    {"word": "寄り掛かる", "reading": "よりかかる", "translation": "靠\n倚靠\n依靠"},
-    {"word": "傑", "reading": "けつ", "translation": "（量词）最优秀者\n前几名"},
-    {"word": "謙る", "reading": "へりくだる", "translation": "谦逊\n自谦"},
-    {"word": "些事", "reading": "さじ", "translation": "小事\n琐事"},
-    {"word": "座標", "reading": "ざひょう", "translation": "坐标"},
-    {"word": "擦れる", "reading": "すれる", "translation": "摩擦\n磨蹭\n磨损\n变得世故"},
-    {"word": "仕舞", "reading": "しまい", "translation": "终了\n结束\n收场"},
-    {"word": "取り替え", "reading": "とりかえ", "translation": "更换\n互换\n调换"},
-    {"word": "素っ気ない", "reading": "そっけない", "translation": "冷淡的\n生硬的\n爱答不理的"},
-    {"word": "対辺", "reading": "たいへん", "translation": "对边\n（几何）相对的边"},
-    {"word": "長々", "reading": "ながなが", "translation": "长时间地\n冗长地"},
-    {"word": "吊り革", "reading": "つりかわ", "translation": "（电车等的）吊环\n拉手吊带"},
-    {"word": "鉄片", "reading": "てっぺん", "translation": "铁片\n铁屑"},
-    {"word": "蕩ける", "reading": "とろける", "translation": "融化\n溶化\n陶醉\n入迷"},
-    {"word": "泊", "reading": "はく", "translation": "（量词）…夜\n住宿"},
-    {"word": "粉々", "reading": "こなごな", "translation": "粉碎\n稀碎"},
-    {"word": "捕吏", "reading": "ほり", "translation": "捕吏\n差役（旧时的警察）"},
-    {"word": "宝器", "reading": "ほうき", "translation": "宝物\n瑰宝\n杰出人物"},
-    {"word": "利根", "reading": "りこん", "translation": "聪慧\n机敏\n天生的才智"},
-    {"word": "歎", "reading": "たん", "translation": "叹息\n哀叹"},
-    {"word": "ぺん", "reading": "", "translation": "笔\n钢笔（＝ペン）"},
-    {"word": "とん", "reading": "", "translation": "吨（＝トン）"}
+    {
+      "word": "しいんと",
+      "reading": "しいんと",
+      "force": true,
+      "translation": "鸦雀无声\n寂静无声\n静悄悄",
+      "note": "jadic 的 しいん 条目（Yori Dict）误收为「场面/场景/景象」，与 JMdict 的 silently 不符，故覆盖"
+    },
+    {
+      "word": "伯母さん",
+      "reading": "おばさん",
+      "translation": "伯母\n婶婶\n姑姑\n阿姨"
+    },
+    {
+      "word": "叔母さん",
+      "reading": "おばさん",
+      "translation": "婶婶\n伯母\n姑姑\n阿姨"
+    },
+    {
+      "word": "伯父さん",
+      "reading": "おじさん",
+      "translation": "伯父\n叔叔\n舅舅\n大叔"
+    },
+    {
+      "word": "叔父さん",
+      "reading": "おじさん",
+      "translation": "叔叔\n伯伯\n舅舅\n大叔"
+    },
+    {
+      "word": "小父さん",
+      "reading": "おじさん",
+      "translation": "叔叔\n伯伯\n大叔（对陌生中年男性的称呼）"
+    },
+    {
+      "word": "おじさん",
+      "reading": "",
+      "translation": "叔叔\n伯伯\n舅舅\n大叔"
+    },
+    {
+      "word": "おばさん",
+      "reading": "",
+      "translation": "伯母\n婶婶\n姑姑\n阿姨"
+    },
+    {
+      "word": "お祭り",
+      "reading": "おまつり",
+      "translation": "祭典\n庙会\n节日"
+    },
+    {
+      "word": "もうすぐ",
+      "reading": "",
+      "translation": "马上\n快要\n不久"
+    },
+    {
+      "word": "泳ぎ方",
+      "reading": "およぎかた",
+      "translation": "游泳方法\n游法"
+    },
+    {
+      "word": "行う",
+      "reading": "おこなう",
+      "translation": "进行\n举行\n实施\n做"
+    },
+    {
+      "word": "お互い",
+      "reading": "おたがい",
+      "translation": "互相\n彼此\n双方"
+    },
+    {
+      "word": "ばったり",
+      "reading": "",
+      "translation": "（偶然）碰见\n突然（倒下）\n扑通一声"
+    },
+    {
+      "word": "たま",
+      "reading": "",
+      "translation": "偶尔\n难得\n稀少"
+    },
+    {
+      "word": "偶",
+      "reading": "たま",
+      "translation": "偶尔\n难得\n稀少"
+    },
+    {
+      "word": "昨",
+      "reading": "さく",
+      "translation": "昨（前一个）\n上一个（年、日）"
+    },
+    {
+      "word": "おまちください",
+      "reading": "",
+      "translation": "请稍等\n请等候"
+    },
+    {
+      "word": "おめでたい",
+      "reading": "",
+      "translation": "值得庆贺的\n喜庆的\n（贬）好糊弄的\n天真"
+    },
+    {
+      "word": "かじる",
+      "reading": "",
+      "translation": "啃\n咬\n一点点地学（涉猎）"
+    },
+    {
+      "word": "噛る",
+      "reading": "かじる",
+      "translation": "啃\n咬\n一点点地学（涉猎）"
+    },
+    {
+      "word": "こうして",
+      "reading": "",
+      "translation": "这样\n如此\n这样一来"
+    },
+    {
+      "word": "すれちがう",
+      "reading": "",
+      "translation": "擦肩而过\n交错而过\n彼此错过"
+    },
+    {
+      "word": "すれ違う",
+      "reading": "すれちがう",
+      "translation": "擦肩而过\n交错而过\n彼此错过"
+    },
+    {
+      "word": "やっつける",
+      "reading": "",
+      "translation": "打败\n揍\n干掉\n赶紧做完"
+    },
+    {
+      "word": "やっ付ける",
+      "reading": "やっつける",
+      "translation": "打败\n揍\n干掉\n赶紧做完"
+    },
+    {
+      "word": "為す",
+      "reading": "なす",
+      "translation": "做\n干\n为\n导致"
+    },
+    {
+      "word": "引っ繰り返す",
+      "reading": "ひっくりかえす",
+      "translation": "翻过来\n弄翻\n颠倒\n推翻"
+    },
+    {
+      "word": "何々",
+      "reading": "なになに",
+      "translation": "某某\n什么什么\n（感叹）什么？\n等等"
+    },
+    {
+      "word": "逆様",
+      "reading": "さかさま",
+      "translation": "颠倒\n倒过来\n相反\n反了"
+    },
+    {
+      "word": "挙げる",
+      "reading": "あげる",
+      "translation": "举出\n列举\n提出（例子）"
+    },
+    {
+      "word": "先々月",
+      "reading": "せんせんげつ",
+      "translation": "上上个月"
+    },
+    {
+      "word": "先先月",
+      "reading": "せんせんげつ",
+      "translation": "上上个月"
+    },
+    {
+      "word": "先先週",
+      "reading": "せんせんしゅう",
+      "translation": "上上周"
+    },
+    {
+      "word": "店屋",
+      "reading": "みせや",
+      "translation": "店铺\n小铺"
+    },
+    {
+      "word": "発つ",
+      "reading": "たつ",
+      "translation": "出发\n动身\n启程"
+    },
+    {
+      "word": "無沙汰",
+      "reading": "ぶさた",
+      "translation": "久未问候\n疏于联系"
+    },
+    {
+      "word": "揚げる",
+      "reading": "あげる",
+      "translation": "油炸\n炸\n扬起\n升起（烟花）"
+    },
+    {
+      "word": "洋品店",
+      "reading": "ようひんてん",
+      "translation": "西式服饰店\n洋货店"
+    },
+    {
+      "word": "養分",
+      "reading": "ようぶん",
+      "translation": "养分\n营养"
+    },
+    {
+      "word": "話中",
+      "reading": "はなしちゅう",
+      "translation": "通话中（占线）\n（正在）商谈中"
+    },
+    {
+      "word": "ビールス",
+      "reading": "",
+      "translation": "病毒（＝ウイルス 的旧写法）"
+    },
+    {
+      "word": "依って",
+      "reading": "よって",
+      "translation": "因此\n所以\n据此"
+    },
+    {
+      "word": "為来り",
+      "reading": "しきたり",
+      "translation": "惯例\n规矩\n传统习俗"
+    },
+    {
+      "word": "厭々",
+      "reading": "いやいや",
+      "translation": "不情愿地\n勉强地\n（摇头表示）拒绝"
+    },
+    {
+      "word": "箇条書き",
+      "reading": "かじょうがき",
+      "translation": "分条列举\n逐条书写"
+    },
+    {
+      "word": "華奢",
+      "reading": "かしゃ",
+      "translation": "华丽\n奢华\n纤弱"
+    },
+    {
+      "word": "拐う",
+      "reading": "さらう",
+      "translation": "拐走\n绑架\n抢走"
+    },
+    {
+      "word": "館",
+      "reading": "かん",
+      "translation": "（大型）馆\n建筑物\n公共设施"
+    },
+    {
+      "word": "基",
+      "reading": "もとい",
+      "translation": "基础\n根基\n根源"
+    },
+    {
+      "word": "寄り掛かる",
+      "reading": "よりかかる",
+      "translation": "靠\n倚靠\n依靠"
+    },
+    {
+      "word": "傑",
+      "reading": "けつ",
+      "translation": "（量词）最优秀者\n前几名"
+    },
+    {
+      "word": "謙る",
+      "reading": "へりくだる",
+      "translation": "谦逊\n自谦"
+    },
+    {
+      "word": "些事",
+      "reading": "さじ",
+      "translation": "小事\n琐事"
+    },
+    {
+      "word": "座標",
+      "reading": "ざひょう",
+      "translation": "坐标"
+    },
+    {
+      "word": "擦れる",
+      "reading": "すれる",
+      "translation": "摩擦\n磨蹭\n磨损\n变得世故"
+    },
+    {
+      "word": "仕舞",
+      "reading": "しまい",
+      "translation": "终了\n结束\n收场"
+    },
+    {
+      "word": "取り替え",
+      "reading": "とりかえ",
+      "translation": "更换\n互换\n调换"
+    },
+    {
+      "word": "素っ気ない",
+      "reading": "そっけない",
+      "translation": "冷淡的\n生硬的\n爱答不理的"
+    },
+    {
+      "word": "対辺",
+      "reading": "たいへん",
+      "translation": "对边\n（几何）相对的边"
+    },
+    {
+      "word": "長々",
+      "reading": "ながなが",
+      "translation": "长时间地\n冗长地"
+    },
+    {
+      "word": "吊り革",
+      "reading": "つりかわ",
+      "translation": "（电车等的）吊环\n拉手吊带"
+    },
+    {
+      "word": "鉄片",
+      "reading": "てっぺん",
+      "translation": "铁片\n铁屑"
+    },
+    {
+      "word": "蕩ける",
+      "reading": "とろける",
+      "translation": "融化\n溶化\n陶醉\n入迷"
+    },
+    {
+      "word": "泊",
+      "reading": "はく",
+      "translation": "（量词）…夜\n住宿"
+    },
+    {
+      "word": "粉々",
+      "reading": "こなごな",
+      "translation": "粉碎\n稀碎"
+    },
+    {
+      "word": "捕吏",
+      "reading": "ほり",
+      "translation": "捕吏\n差役（旧时的警察）"
+    },
+    {
+      "word": "宝器",
+      "reading": "ほうき",
+      "translation": "宝物\n瑰宝\n杰出人物"
+    },
+    {
+      "word": "利根",
+      "reading": "りこん",
+      "translation": "聪慧\n机敏\n天生的才智"
+    },
+    {
+      "word": "歎",
+      "reading": "たん",
+      "translation": "叹息\n哀叹"
+    },
+    {
+      "word": "ぺん",
+      "reading": "",
+      "translation": "笔\n钢笔（＝ペン）"
+    },
+    {
+      "word": "とん",
+      "reading": "",
+      "translation": "吨（＝トン）"
+    },
+    {
+      "word": "－歳",
+      "reading": "",
+      "translation": "－岁（年龄）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "失礼ですが",
+      "reading": "しつれいですが",
+      "translation": "不好意思，请问（打听个人信息时用）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お名前は？",
+      "reading": "",
+      "translation": "您贵姓？／您叫什么名字？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "AKC",
+      "reading": "",
+      "translation": "AKC（虚构的研究所名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "神戸病院",
+      "reading": "こうべびょういん",
+      "translation": "神户医院（虚构的医院名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "います",
+      "reading": "います",
+      "translation": "有，在（用于人或动物）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ATM",
+      "reading": "",
+      "translation": "自动取款机（ATM）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ナンプラー",
+      "reading": "ナンプラー",
+      "translation": "鱼露（东南亚调味料）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "アジアストア",
+      "reading": "アジアストア",
+      "translation": "亚洲超市（虚构的店名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－段目",
+      "reading": "",
+      "translation": "第－层架子（だん 是层数的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "チリソース",
+      "reading": "チリソース",
+      "translation": "辣椒酱",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－人",
+      "reading": "",
+      "translation": "－人（人数的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－台",
+      "reading": "",
+      "translation": "－台（机器、车辆等的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－枚",
+      "reading": "",
+      "translation": "－张／－枚（纸、邮票等薄物的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－回",
+      "reading": "",
+      "translation": "－次（次数的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－時間",
+      "reading": "",
+      "translation": "－小时",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－週間",
+      "reading": "",
+      "translation": "－周",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－か月",
+      "reading": "",
+      "translation": "－个月",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－年",
+      "reading": "",
+      "translation": "－年",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "全部で",
+      "reading": "ぜんぶで",
+      "translation": "总共，一共",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "かしこまりました。",
+      "reading": "",
+      "translation": "明白了，遵命（郑重的应答）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いらっしゃいませ。",
+      "reading": "",
+      "translation": "欢迎光临（对顾客、客人的招呼语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ただいま。",
+      "reading": "",
+      "translation": "我回来了。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "すごいですね。",
+      "reading": "",
+      "translation": "真厉害啊。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "毎日屋",
+      "reading": "まいにちや",
+      "translation": "每日屋（虚构的超市名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ご注文は？",
+      "reading": "",
+      "translation": "您点什么？（点菜用语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "アキックス",
+      "reading": "アキックス",
+      "translation": "AKICS（虚构的公司名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "おはようテレビ",
+      "reading": "おはようテレビ",
+      "translation": "《早安电视》（虚构的电视节目名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "そうですね。",
+      "reading": "",
+      "translation": "是啊（表示同意）\n嗯……（表示沉吟）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "つるや",
+      "reading": "つるや",
+      "translation": "鹤屋（虚构的日式餐馆名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "あれ？",
+      "reading": "",
+      "translation": "咦？（表示意外或不解）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いいですよ。",
+      "reading": "",
+      "translation": "可以呀。／不用了。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "梅田",
+      "reading": "うめだ",
+      "translation": "梅田（大阪的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いらっしゃいます",
+      "reading": "いらっしゃいます",
+      "translation": "在\n去\n来（います・いきます・きます 的敬语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "日本橋",
+      "reading": "にっぽんばし",
+      "translation": "日本桥（大阪的商店街）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ご家族",
+      "reading": "ごかぞく",
+      "translation": "您家人",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－番",
+      "reading": "",
+      "translation": "第－号",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お引き出しですか。",
+      "reading": "",
+      "translation": "您是取钱吗？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "次に",
+      "reading": "つぎに",
+      "translation": "接着，下一步",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "JR",
+      "reading": "",
+      "translation": "JR（日本铁路公司）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "バンドン",
+      "reading": "バンドン",
+      "translation": "万隆（印度尼西亚的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "フランケン",
+      "reading": "フランケン",
+      "translation": "弗兰肯（德国的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ベラクルス",
+      "reading": "ベラクルス",
+      "translation": "韦拉克鲁斯（墨西哥的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大学前",
+      "reading": "だいがくまえ",
+      "translation": "大学前（虚构的公交站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "フエ",
+      "reading": "フエ",
+      "translation": "顺化（越南的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－メートル",
+      "reading": "",
+      "translation": "－米",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お祈り",
+      "reading": "おいのり",
+      "translation": "祈祷（～を します：祈祷）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "へえ",
+      "reading": "へえ",
+      "translation": "咦！（表示惊讶）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ほんとうですか。",
+      "reading": "",
+      "translation": "真的吗？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ビートルズ",
+      "reading": "ビートルズ",
+      "translation": "披头士乐队",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "秋葉原",
+      "reading": "あきはばら",
+      "translation": "秋叶原（东京的电器街）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "一度も",
+      "reading": "いちども",
+      "translation": "一次也（没有），从未（与否定连用）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "東京スカイツリー",
+      "reading": "とうきょうスカイツリー",
+      "translation": "东京晴空塔",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "葛飾北斎",
+      "reading": "かつしかほくさい",
+      "translation": "葛饰北斋（江户时代浮世绘画家，1760-1849）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "CD",
+      "reading": "",
+      "translation": "CD，光盘",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "えっ",
+      "reading": "えっ",
+      "translation": "咦？（听到意外的事情时）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "どうぞ。",
+      "reading": "",
+      "translation": "请。（递东西给对方时）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "そうですか。",
+      "reading": "",
+      "translation": "是吗。／原来如此。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "どうも。",
+      "reading": "",
+      "translation": "谢谢。／（打招呼）你好。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "みんなで",
+      "reading": "みんなで",
+      "translation": "大家一起",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "久しぶりですね。",
+      "reading": "",
+      "translation": "好久不见啊。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "アインシュタイン",
+      "reading": "アインシュタイン",
+      "translation": "爱因斯坦（1879-1955）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ガガーリン",
+      "reading": "ガガーリン",
+      "translation": "加加林（苏联宇航员，1934-1968）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "キング牧師",
+      "reading": "キングぼくし",
+      "translation": "马丁·路德·金（1929-1968）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "フランクリン",
+      "reading": "フランクリン",
+      "translation": "富兰克林（1706-1790）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "かぐや姫",
+      "reading": "かぐやひめ",
+      "translation": "辉夜姬（日本民间故事《竹取物语》的女主角）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "天神祭",
+      "reading": "てんじんまつり",
+      "translation": "天神祭（大阪的祭典）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "吉野山",
+      "reading": "よしのやま",
+      "translation": "吉野山（奈良县的山）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ヨーネン",
+      "reading": "ヨーネン",
+      "translation": "Yonen（虚构的公司名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "しばらくですね。",
+      "reading": "",
+      "translation": "好久不见啊。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "見ないと……。",
+      "reading": "",
+      "translation": "我得看看……。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お探しですか。",
+      "reading": "",
+      "translation": "您在找～吗？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ダイニングキッチン",
+      "reading": "ダイニングキッチン",
+      "translation": "餐厨一体的厨房（DK）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "うーん。",
+      "reading": "",
+      "translation": "嗯……。（思考时）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "余暇開発センター",
+      "reading": "よかかいはつセンター",
+      "translation": "余暇开发中心（虚构的机构名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "レジャー白書",
+      "reading": "レジャーはくしょ",
+      "translation": "休闲白皮书",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－目",
+      "reading": "",
+      "translation": "第－（表示顺序）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "聖徳太子",
+      "reading": "しょうとくたいし",
+      "translation": "圣德太子（574-622）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "法隆寺",
+      "reading": "ほうりゅうじ",
+      "translation": "法隆寺（奈良县，圣德太子修建的寺院）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "元気茶",
+      "reading": "げんきちゃ",
+      "translation": "元气茶（虚构的茶名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "本田駅",
+      "reading": "ほんだえき",
+      "translation": "本田站（虚构的车站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "図書館前",
+      "reading": "としょかんまえ",
+      "translation": "图书馆前（虚构的公交站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "電気屋",
+      "reading": "でんきや",
+      "translation": "电器店",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "外国人登録証",
+      "reading": "がいこくじんとうろくしょう",
+      "translation": "外国人登记证",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ワゴン車",
+      "reading": "ワゴンしゃ",
+      "translation": "旅行车，厢式车",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "エドアストア",
+      "reading": "エドアストア",
+      "translation": "江户超市（虚构的店名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "星出彰彦",
+      "reading": "ほしであきひこ",
+      "translation": "星出彰彦（日本宇航员，1968-）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "NHK",
+      "reading": "",
+      "translation": "NHK（日本广播协会）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "困ったなあ。",
+      "reading": "",
+      "translation": "怎么办呢……。（感到为难时）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "別の",
+      "reading": "べつの",
+      "translation": "别的，另外的",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "土井隆雄",
+      "reading": "どいたかお",
+      "translation": "土井隆雄（日本宇航员，1955-）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "飼います",
+      "reading": "かいます",
+      "translation": "饲养（宠物、动物）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "パーティールーム",
+      "reading": "パーティールーム",
+      "translation": "聚会厅",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ほかの",
+      "reading": "ほかの",
+      "translation": "其他的",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ドラえもん",
+      "reading": "ドラえもん",
+      "translation": "哆啦A梦（动漫角色名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "関西空港",
+      "reading": "かんさいくうこう",
+      "translation": "关西国际机场",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "伊豆",
+      "reading": "いず",
+      "translation": "伊豆（静冈县的半岛）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "日曜大工",
+      "reading": "にちようだいく",
+      "translation": "（周末）自己动手做木工",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "このくらい",
+      "reading": "このくらい",
+      "translation": "大约这么（大）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "新宿",
+      "reading": "しんじゅく",
+      "translation": "新宿（东京的车站、地区名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "四ツ谷",
+      "reading": "よつや",
+      "translation": "四谷（东京的车站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "三宮",
+      "reading": "さんのみや",
+      "translation": "三宫（神户的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－階",
+      "reading": "－かい（－がい）",
+      "translation": "－楼（楼层）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "何階",
+      "reading": "なんがい",
+      "translation": "几楼",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－円",
+      "reading": "",
+      "translation": "－日元",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "すみません。",
+      "reading": "",
+      "translation": "对不起。／不好意思。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ベルリン",
+      "reading": "ベルリン",
+      "translation": "柏林",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "新大阪",
+      "reading": "しんおおさか",
+      "translation": "新大阪（大阪的车站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "リュック",
+      "reading": "リュック",
+      "translation": "双肩包",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "非常袋",
+      "reading": "ひじょうぶくろ",
+      "translation": "应急包",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "非常時",
+      "reading": "ひじょうじ",
+      "translation": "紧急时刻，非常时期",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ブロードウェイ",
+      "reading": "ブロードウェイ",
+      "translation": "百老汇",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－号",
+      "reading": "",
+      "translation": "－号（列车号、台风号等）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "バリ",
+      "reading": "バリ",
+      "translation": "巴厘岛",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "新神戸",
+      "reading": "しんこうべ",
+      "translation": "新神户（兵库县的车站名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "月に",
+      "reading": "つきに",
+      "translation": "每月",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "上野公園",
+      "reading": "うえのこうえん",
+      "translation": "上野公园（东京）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "普通の",
+      "reading": "ふつうの",
+      "translation": "普通的，一般的",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "すばらしさ",
+      "reading": "すばらしさ",
+      "translation": "出色，卓越，美好",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "働きすぎ",
+      "reading": "はたらきすぎ",
+      "translation": "过度劳累，工作过度",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ラッキーアイテム",
+      "reading": "ラッキーアイテム",
+      "translation": "幸运物",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "使用中",
+      "reading": "しようちゅう",
+      "translation": "使用中",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "募集中",
+      "reading": "ぼしゅうちゅう",
+      "translation": "正在招募，募集中",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "駐車違反",
+      "reading": "ちゅうしゃいはん",
+      "translation": "违章停车",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "本日休業",
+      "reading": "ほんじつきゅうぎょう",
+      "translation": "今日休息（店休）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "そりゃあ",
+      "reading": "そりゃあ",
+      "translation": "那个嘛（口语，そりゃ 的强调）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "電報代",
+      "reading": "でんぽうだい",
+      "translation": "电报费",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "短く",
+      "reading": "みじかく",
+      "translation": "简短地，短促地",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－グラム",
+      "reading": "",
+      "translation": "－克",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ー個",
+      "reading": "ーこ",
+      "translation": "－个（小件物品的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "箱根",
+      "reading": "はこね",
+      "translation": "箱根（神奈川县的温泉胜地）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "マンガミュージアム",
+      "reading": "マンガミュージアム",
+      "translation": "京都国际漫画博物馆",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大黒ずし",
+      "reading": "だいこくずし",
+      "translation": "大黑寿司（虚构的寿司店名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "IMCパソコン教室",
+      "reading": "",
+      "translation": "IMC 电脑教室（虚构的电脑学校）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "佐藤歯科",
+      "reading": "さとうしか",
+      "translation": "佐藤牙科（虚构的牙科诊所）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "毎日クッキング",
+      "reading": "まいにちクッキング",
+      "translation": "每日烹饪（虚构的烹饪学校）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "夜行バス",
+      "reading": "やこうバス",
+      "translation": "夜行巴士",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "旅行社",
+      "reading": "りょこうしゃ",
+      "translation": "旅行社",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "草津",
+      "reading": "くさつ",
+      "translation": "草津（群马县的温泉胜地）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "志賀高原",
+      "reading": "しがこうげん",
+      "translation": "志贺高原（长野县的国立公园）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ー世紀",
+      "reading": "ーせいき",
+      "translation": "－世纪",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "タンゴ",
+      "reading": "タンゴ",
+      "translation": "探戈",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ライト兄弟",
+      "reading": "ライトきょうだい",
+      "translation": "莱特兄弟（美国航空先驱）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "インスタントラーメン",
+      "reading": "インスタントラーメン",
+      "translation": "方便面",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－世紀",
+      "reading": "",
+      "translation": "－世纪",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "何語",
+      "reading": "なにご",
+      "translation": "什么语言",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "よかったですね。",
+      "reading": "",
+      "translation": "太好了。／真不错。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "東大寺",
+      "reading": "とうだいじ",
+      "translation": "东大寺（奈良）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－キロ",
+      "reading": "",
+      "translation": "－公斤\n－公里",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "言い伝え",
+      "reading": "いいつたえ",
+      "translation": "传说，口传",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "東照宮",
+      "reading": "とうしょうぐう",
+      "translation": "东照宫（栃木县日光市，祭祀德川家康的神社）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "眠り猫",
+      "reading": "ねむりねこ",
+      "translation": "睡猫（日光东照宫的雕刻）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "左甚五郎",
+      "reading": "ひだりじんごろう",
+      "translation": "左甚五郎（江户时代著名雕刻家，1594-1651）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ドミニカ",
+      "reading": "ドミニカ",
+      "translation": "多米尼加",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "紫式部",
+      "reading": "むらさきしきぶ",
+      "translation": "紫式部（平安时代女作家，《源氏物语》作者）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "原爆ドーム",
+      "reading": "げんばくドーム",
+      "translation": "原爆圆顶馆（广岛原子弹爆炸遗址）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "出雲大社",
+      "reading": "いずもたいしゃ",
+      "translation": "出云大社（岛根县出云市的神社）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "チェンマイ",
+      "reading": "チェンマイ",
+      "translation": "清迈（泰国）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－冊",
+      "reading": "",
+      "translation": "－册（书籍等的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "５年生",
+      "reading": "",
+      "translation": "五年级学生",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－点",
+      "reading": "",
+      "translation": "－分（分数）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－号室",
+      "reading": "",
+      "translation": "－号房间",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "途中で",
+      "reading": "とちゅうで",
+      "translation": "途中，半路",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "西洋化します",
+      "reading": "せいようかします",
+      "translation": "西化",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "合います",
+      "reading": "あいます",
+      "translation": "合适，相配",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "成人式",
+      "reading": "せいじんしき",
+      "translation": "成人礼",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "電話代",
+      "reading": "でんわだい",
+      "translation": "电话费",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－時",
+      "reading": "",
+      "translation": "－点（钟点）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－分",
+      "reading": "－ふん（－ぷん）",
+      "translation": "－分（钟）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大変ですね。",
+      "reading": "",
+      "translation": "真辛苦啊。（表示同情）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "あすか",
+      "reading": "あすか",
+      "translation": "飞鸟（虚构的日式餐馆名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "アップル銀行",
+      "reading": "アップルぎんこう",
+      "translation": "苹果银行（虚构的银行名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "みどり図書館",
+      "reading": "みどりとしょかん",
+      "translation": "绿图书馆（虚构的图书馆名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "やまと美術館",
+      "reading": "やまとびじゅつかん",
+      "translation": "大和美术馆（虚构的美术馆名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "１０４",
+      "reading": "",
+      "translation": "104（电话号码查询台）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お問い合わせの番号",
+      "reading": "おといあわせのばんごう",
+      "translation": "您咨询的号码",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大阪デパート",
+      "reading": "おおさかデパート",
+      "translation": "大阪百货（虚构的百货店名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－個",
+      "reading": "",
+      "translation": "－个（小件物品的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－本",
+      "reading": "－ほん（－ぽん、－ぼん）",
+      "translation": "－根／－瓶（细长物的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－杯",
+      "reading": "－はい（－ぱい、－ばい）",
+      "translation": "－杯（容器盛装量的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－センチ",
+      "reading": "",
+      "translation": "－厘米",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－ミリ",
+      "reading": "",
+      "translation": "－毫米",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "JL",
+      "reading": "",
+      "translation": "JL（日本航空）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "七夕祭り",
+      "reading": "たなばたまつり",
+      "translation": "七夕节",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "どうでしょうか。",
+      "reading": "",
+      "translation": "怎么样呢？（どうですか 的礼貌说法）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "積みます",
+      "reading": "つみます",
+      "translation": "装载，堆积",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "離れた",
+      "reading": "はなれた",
+      "translation": "远的，相隔的",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ゴッホ",
+      "reading": "ゴッホ",
+      "translation": "梵高（荷兰画家，1853-90）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "くださいます",
+      "reading": "くださいます",
+      "translation": "给（我）（くれます 的敬语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お姫様",
+      "reading": "おひめさま",
+      "translation": "公主",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "浦島太郎",
+      "reading": "うらしまたろう",
+      "translation": "浦岛太郎（日本民间故事的主人公）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "楽しく",
+      "reading": "たのしく",
+      "translation": "愉快地，快乐地",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "こどもニュース",
+      "reading": "こどもニュース",
+      "translation": "儿童新闻（虚构的节目名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "カップめん",
+      "reading": "カップめん",
+      "translation": "杯面，碗装方便面",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "世界初",
+      "reading": "せかいはつ",
+      "translation": "世界首创",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "チキンラーメン",
+      "reading": "チキンラーメン",
+      "translation": "鸡汤拉面（方便面的品牌名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "安藤百福",
+      "reading": "あんどうももふく",
+      "translation": "安藤百福（日本企业家，方便面发明者，1910-2007）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "カップラーメン",
+      "reading": "カップラーメン",
+      "translation": "杯面，碗装方便面",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "どこででも",
+      "reading": "どこででも",
+      "translation": "在任何地方",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "わあ",
+      "reading": "わあ",
+      "translation": "哇！（表示惊叹）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－倍",
+      "reading": "",
+      "translation": "－倍",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "DVD",
+      "reading": "",
+      "translation": "DVD",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ホテルひろしま",
+      "reading": "ホテルひろしま",
+      "translation": "广岛酒店（虚构的酒店名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "保証書",
+      "reading": "ほしょうしょ",
+      "translation": "保修单，保证书",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－位",
+      "reading": "",
+      "translation": "第－位（名次）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "間違い電話",
+      "reading": "まちがいでんわ",
+      "translation": "打错的电话",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "たった今",
+      "reading": "たったいま",
+      "translation": "刚刚（与过去式连用，表示动作刚完成）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ガスサービスセンター",
+      "reading": "ガスサービスセンター",
+      "translation": "燃气服务中心",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ガスレンジ",
+      "reading": "ガスレンジ",
+      "translation": "燃气灶",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "どちら様でしょうか。",
+      "reading": "",
+      "translation": "请问是哪位？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "慌てて",
+      "reading": "あわてて",
+      "translation": "匆忙地，慌张地",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お忙しいですか。",
+      "reading": "",
+      "translation": "您忙吗？（对长辈或上级说）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "それまでに",
+      "reading": "それまでに",
+      "translation": "到那时为止",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "かまいません。",
+      "reading": "",
+      "translation": "没关系。／我不介意。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－パーセント",
+      "reading": "",
+      "translation": "－百分比",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "入管",
+      "reading": "にゅうかん",
+      "translation": "入国管理局",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "再入国ビザ",
+      "reading": "さいにゅうこくビザ",
+      "translation": "再入境签证",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "おっしゃいます",
+      "reading": "おっしゃいます",
+      "translation": "说（いいます 的敬语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "なさいます",
+      "reading": "なさいます",
+      "translation": "做（します 的敬语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－年－組",
+      "reading": "",
+      "translation": "－年级－班",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "失礼いたします。",
+      "reading": "",
+      "translation": "告辞了。（しつれいします 的谦让语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ひまわり小学校",
+      "reading": "ひまわりしょうがっこう",
+      "translation": "向日葵小学（虚构的学校名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "iPS細胞",
+      "reading": "",
+      "translation": "诱导多能干细胞（iPS细胞）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "山中伸弥",
+      "reading": "やまなかしんや",
+      "translation": "山中伸弥（日本医学家，1962-）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "東京大学",
+      "reading": "とうきょうだいがく",
+      "translation": "东京大学",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ノーベル文学賞",
+      "reading": "ノーベルぶんがくしょう",
+      "translation": "诺贝尔文学奖",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－月",
+      "reading": "",
+      "translation": "－月",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－日",
+      "reading": "",
+      "translation": "－日\n－天",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－番線",
+      "reading": "",
+      "translation": "－号站台",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "次の",
+      "reading": "つぎの",
+      "translation": "下一个的",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大阪城",
+      "reading": "おおさかじょう",
+      "translation": "大阪城",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "伏見",
+      "reading": "ふしみ",
+      "translation": "伏见（京都的地名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "江戸東京博物館",
+      "reading": "えどとうきょうはくぶつかん",
+      "translation": "江户东京博物馆",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "買います",
+      "reading": "かいます",
+      "translation": "买",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いいですね。",
+      "reading": "",
+      "translation": "真好啊。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "わかりました。",
+      "reading": "",
+      "translation": "明白了。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "フランス屋",
+      "reading": "フランスや",
+      "translation": "法国屋（虚构的超市名）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "大阪城公園",
+      "reading": "おおさかじょうこうえん",
+      "translation": "大阪城公园",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いらっしゃい。",
+      "reading": "",
+      "translation": "欢迎来（我家）。（直译：欢迎）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いただきます。",
+      "reading": "",
+      "translation": "我开动了。（饭前用语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ごめんください。",
+      "reading": "",
+      "translation": "打扰了。／有人在家吗？（拜访时用语）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "お元気ですか。",
+      "reading": "",
+      "translation": "你好吗？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "いいえ。",
+      "reading": "",
+      "translation": "不，不是。",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "金閣寺",
+      "reading": "きんかくじ",
+      "translation": "金阁寺",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "奈良公園",
+      "reading": "ならこうえん",
+      "translation": "奈良公园",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "カラオケ",
+      "reading": "カラオケ",
+      "translation": "卡拉OK",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "だめですか。",
+      "reading": "",
+      "translation": "不行吗？",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "小沢征爾",
+      "reading": "おざわせいじ",
+      "translation": "小泽征尔（日本著名指挥家，1935-）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "ラジオカセ",
+      "reading": "ラジオカセ",
+      "translation": "收录机",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "建て",
+      "reading": "～だて",
+      "translation": "～层（建筑）\n独门独户",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "税",
+      "reading": "ぜい",
+      "translation": "税",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "咥える",
+      "reading": "くわえる",
+      "translation": "叼，衔，咬住",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "密",
+      "reading": "みつ",
+      "translation": "密，紧密\n稠密",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "異",
+      "reading": "い",
+      "translation": "异，不同（意见不同）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "意",
+      "reading": "い",
+      "translation": "意，意愿",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "苦",
+      "reading": "く",
+      "translation": "苦，苦恼，辛苦",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "ことによると",
+      "reading": "ことによると",
+      "translation": "也许，说不定（依情况而定）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "ちょうだい",
+      "reading": "ちょうだい",
+      "translation": "请给我（ください 的口语说法，多为小孩或女性使用）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "できれば",
+      "reading": "できれば",
+      "translation": "如果可能的话",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "行っていらっしゃい",
+      "reading": "いっていらっしゃい",
+      "translation": "走好，路上小心",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "いってまいります",
+      "reading": "いってまいります",
+      "translation": "我走了。（出门时的寒暄）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "おかけください",
+      "reading": "おかけください",
+      "translation": "请坐",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "お気の毒に",
+      "reading": "おきのどくに",
+      "translation": "真可怜\n真为您难过",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "お元気で",
+      "reading": "おげんきで",
+      "translation": "保重",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "お待ちください",
+      "reading": "おまちください",
+      "translation": "请稍等",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "そのころ",
+      "reading": "そのころ",
+      "translation": "那时，当时",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "それなのに",
+      "reading": "それなのに",
+      "translation": "尽管那样，然而",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "存ずる",
+      "reading": "ぞんずる",
+      "translation": "知道，认识（自谦语）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "茶色い",
+      "reading": "ちゃいろい",
+      "translation": "茶色的，棕色的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "通ずる",
+      "reading": "つうずる",
+      "translation": "通到，通向\n通晓",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "傾らか",
+      "reading": "なだらか",
+      "translation": "平缓的，坡度小的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "生意気な",
+      "reading": "なまいきな",
+      "translation": "傲慢的，狂妄的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "バイバイ",
+      "reading": "バイバイ",
+      "translation": "拜拜",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "斜",
+      "reading": "はす",
+      "translation": "斜，对角线",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "×",
+      "reading": "ばつ",
+      "translation": "叉号（表示错误）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "惨めな",
+      "reading": "みじめな",
+      "translation": "悲惨的，凄惨的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "破く",
+      "reading": "やぶく",
+      "translation": "撕破，弄破",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "言付け",
+      "reading": "ことづけ",
+      "translation": "口信，留言",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "おおまかな",
+      "reading": "おおまかな",
+      "translation": "大致的，粗略的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "強",
+      "reading": "きょう",
+      "translation": "强，强壮",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "ありふれる",
+      "reading": "ありふれる",
+      "translation": "常见的，普通的",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "陣",
+      "reading": "じん",
+      "translation": "阵，阵形\n营地",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "だと",
+      "reading": "だと",
+      "translation": "如果是……的话",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "つぶら",
+      "reading": "つぶら",
+      "translation": "圆圆的（眼睛）",
+      "note": "JLPT精选 教材英文释义"
+    },
+    {
+      "word": "－階",
+      "reading": "",
+      "translation": "－楼（楼层）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－分",
+      "reading": "",
+      "translation": "－分（钟）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－本",
+      "reading": "",
+      "translation": "－根／－瓶（细长物的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "－杯",
+      "reading": "",
+      "translation": "－杯（容器盛装量的量词）",
+      "note": "みんなの日本語 教材英文释义"
+    },
+    {
+      "word": "建て",
+      "reading": "",
+      "translation": "～层（建筑）\n独门独户",
+      "note": "JLPT精选 教材英文释义"
+    }
   ]
 }

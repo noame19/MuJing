@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ハンサム［な］",
-   "romaji": "hansamu [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -39,7 +39,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きれい［な］",
-   "romaji": "kirei [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しずか［な］",
-   "romaji": "shizuka [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "にぎやか［な］",
-   "romaji": "nigiyaka [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうめい［な］",
-   "romaji": "yūmei [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -115,7 +115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しんせつ［な］",
-   "romaji": "shinsetsu [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -134,7 +134,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "げんき［な］",
-   "romaji": "genki [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひま［な］",
-   "romaji": "hima [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "べんり［な］",
-   "romaji": "benri [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すてき［な］",
-   "romaji": "suteki [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -286,7 +286,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いい（よい）",
-   "romaji": "ii (yoi)",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -780,7 +780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］しごと",
-   "romaji": "[o] shigoto",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -818,7 +818,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "どんな ～",
-   "romaji": "donna ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -894,7 +894,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～が、～",
-   "romaji": "~ga, ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -904,7 +904,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "How are you?",
-   "translation": "",
+   "translation": "你好吗？",
    "pos": "惯用句",
    "collins": 0,
    "oxford": false,
@@ -923,7 +923,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Well let me see. (pausing)",
-   "translation": "",
+   "translation": "是啊（表示同意）\n嗯……（表示沉吟）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -951,7 +951,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［～、］もう いっぱい いかがですか。",
-   "romaji": "[~,] mō ippai ikagadesuka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -970,7 +970,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［いいえ、］けっこうです。",
-   "romaji": "[iie,] kekkōdesu.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -989,7 +989,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "もう ～です［ね］。",
-   "romaji": "mō ~desu [ne].",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1008,7 +1008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そろそろ しつれいします。",
-   "romaji": "sorosoro shitsureishimasu.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1018,7 +1018,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Not at all.",
-   "translation": "",
+   "translation": "不，不是。",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1046,7 +1046,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "また いらっしゃって ください。",
-   "romaji": "mata irasshatte kudasai.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1075,7 +1075,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Kinkakuji Temple (the Golden Pavilion)",
-   "translation": "",
+   "translation": "金阁寺",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -1094,7 +1094,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Nara Park",
-   "translation": "",
+   "translation": "奈良公园",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1141,7 +1141,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "「しちにんの さむらい」",
-   "romaji": "(shichininno samurai)",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1217,7 +1217,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "にほんの せいかつに なれましたか。",
-   "romaji": "nihonno seikatsuni naremashitaka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []

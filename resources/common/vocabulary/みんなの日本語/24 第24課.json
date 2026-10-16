@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つれて いきます",
-   "romaji": "tsurete ikimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つれて きます",
-   "romaji": "tsurete kimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おくります［ひとを～］",
-   "romaji": "okurimasu [hitowo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おじいさん／おじいちゃん",
-   "romaji": "ojiisan/ojiichan",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おばあさん／おばあちゃん",
-   "romaji": "obāsan/obāchan",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -248,7 +248,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］かし",
-   "romaji": "[o] kashi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -343,7 +343,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ははの ひ",
-   "romaji": "hahano hi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -362,7 +362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いれます［コーヒーを～］",
-   "romaji": "iremasu [kōhiiwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -391,7 +391,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "station wagon",
-   "translation": "",
+   "translation": "旅行车，厢式车",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -419,7 +419,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］べんとう",
-   "romaji": "[o] bentō",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []

@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あきます［ドアが～］",
-   "romaji": "akimasu [doaga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -39,7 +39,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しまります［ドアが～］",
-   "romaji": "shimarimasu [doaga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つきます［でんきが～］",
-   "romaji": "tsukimasu [denkiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きえます［でんきが～］",
-   "romaji": "kiemasu [denkiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こわれます［いすが～］",
-   "romaji": "kowaremasu [isuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -115,7 +115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "われます［コップが～］",
-   "romaji": "waremasu [koppuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -134,7 +134,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おれます［きが～］",
-   "romaji": "oremasu [kiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "やぶれます［かみが～］",
-   "romaji": "yaburemasu [kamiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "よごれます［ふくが～］",
-   "romaji": "yogoremasu [fukuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つきます［ポケットが～］",
-   "romaji": "tsukimasu [pokettoga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -210,7 +210,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はずれます［ボタンが～］",
-   "romaji": "hazuremasu [botanga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -229,7 +229,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とまります［くるまが～］",
-   "romaji": "tomarimasu [kurumaga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -286,7 +286,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かかります［かぎが～］",
-   "romaji": "kakarimasu [kagiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -362,7 +362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］さら",
-   "romaji": "[o] sara",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -381,7 +381,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］ちゃわん",
-   "romaji": "[o] chawan",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -571,7 +571,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おさきに どうぞ。",
-   "romaji": "osakini dōzo.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -609,7 +609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いまの でんしゃ",
-   "romaji": "imano densha",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -638,7 +638,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "about this (big)",
-   "translation": "",
+   "translation": "大约这么（大）",
    "pos": "副词、名词",
    "collins": 0,
    "oxford": false,
@@ -666,7 +666,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～がわ",
-   "romaji": "~gawa",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -704,7 +704,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ へん",
-   "romaji": "~ hen",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -723,7 +723,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おぼえて いません。",
-   "romaji": "oboete imasen.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -780,7 +780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［ああ、］よかった。",
-   "romaji": "[ā,] yokatta.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -790,7 +790,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "name of a station/district in Tokyo",
-   "translation": "",
+   "translation": "新宿（东京的车站、地区名）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -951,7 +951,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～の ほう",
-   "romaji": "~no hou",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1008,7 +1008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こみます［みちが～］",
-   "romaji": "komimasu [michiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1027,7 +1027,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すきます［みちが～］",
-   "romaji": "sukimasu [michiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1065,7 +1065,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "この へん",
-   "romaji": "kono hen",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1075,7 +1075,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "name of a station in Tokyo",
-   "translation": "",
+   "translation": "四谷（东京的车站名）",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -1113,7 +1113,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "name of a place in Kobe",
-   "translation": "",
+   "translation": "三宫（神户的地名）",
    "pos": "名词",
    "collins": 0,
    "oxford": false,

@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かわきます［シャツが～］",
-   "romaji": "kawakimasu [shatsuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぬれます［シャツが～］",
-   "romaji": "nuremasu [shatsuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -134,7 +134,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おきます［じこが～］",
-   "romaji": "okimasu [jikoga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あんぜん［な］",
-   "romaji": "anzen [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きけん［な］",
-   "romaji": "kiken [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -410,7 +410,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "－ times",
-   "translation": "",
+   "translation": "－倍",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -486,7 +486,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "DVD",
-   "translation": "",
+   "translation": "DVD",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -505,7 +505,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "a fictitious hotel",
-   "translation": "",
+   "translation": "广岛酒店（虚构的酒店名）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -533,7 +533,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "どう なさいますか。",
-   "romaji": "dō nasaimasuka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -590,7 +590,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "どういうふうに なさいますか。",
-   "romaji": "dōiufūni nasaimasuka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -628,7 +628,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～みたいに して ください。",
-   "romaji": "~mitaini shite kudasai.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -647,7 +647,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "これで よろしいでしょうか。",
-   "romaji": "korede yoroshiideshōka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -666,7 +666,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［どうも］おつかれさまでした。",
-   "romaji": "[dōmo] otsukaresamadeshita.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -761,7 +761,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あんしん［な］",
-   "romaji": "anshin [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -856,7 +856,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "えんぎが わるい",
-   "romaji": "engiga warui",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -875,7 +875,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ていねい［な］",
-   "romaji": "teinei [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []

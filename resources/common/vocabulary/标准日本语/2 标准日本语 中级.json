@@ -381,7 +381,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='け'>家</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -856,7 +856,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たまネギ",
-   "romaji": "tama",
+   "romaji": "ta-ma-ne-gi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1293,7 +1293,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふっとうする",
-   "romaji": "futtousuru",
+   "romaji": "fu-t-to-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1502,7 +1502,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ <span superscript='ミリリットル'>ml</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1521,7 +1521,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ <span superscript='キロカロリー'>kcal</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1540,7 +1540,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～さじ",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1559,7 +1559,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かけ",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1578,7 +1578,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='だい'>大</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1597,7 +1597,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～め",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -1958,7 +1958,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けいあいする",
-   "romaji": "keiaisuru",
+   "romaji": "ke-i-a-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -2357,7 +2357,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='しょう'>小</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -2490,7 +2490,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "げざんする",
-   "romaji": "gezansuru",
+   "romaji": "ge-za-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -2756,7 +2756,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こなチーズ",
-   "romaji": "kona",
+   "romaji": "ko-na-chi-i-zu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -3288,7 +3288,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "としこしする",
-   "romaji": "toshikoshisuru",
+   "romaji": "to-shi-ko-shi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -3459,7 +3459,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "のみくいする",
-   "romaji": "nomikuisuru",
+   "romaji": "no-mi-ku-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4162,7 +4162,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ろうじんホーム",
-   "romaji": "roujin",
+   "romaji": "ro-u-ji-n-ho-o-mu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4219,7 +4219,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ビニールぶくろ",
-   "romaji": "biniiru",
+   "romaji": "bi-ni-i-ru-bu-ku-ro",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4371,7 +4371,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だっしゅつする",
-   "romaji": "dasshutsusuru",
+   "romaji": "da-s-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4599,7 +4599,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さんらんする",
-   "romaji": "sanransuru",
+   "romaji": "sa-n-ra-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4789,7 +4789,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうひょうする",
-   "romaji": "kouhyousuru",
+   "romaji": "ko-u-hyo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -4827,7 +4827,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つうちする",
-   "romaji": "tsuuchisuru",
+   "romaji": "tsu-u-chi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5226,7 +5226,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "らいてんする",
-   "romaji": "raitensuru",
+   "romaji": "ra-i-te-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5283,7 +5283,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "スキーぐつ",
-   "romaji": "sukii",
+   "romaji": "su-ki-i-gu-tsu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5435,7 +5435,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='かい'>会</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5454,7 +5454,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='しょう'>省</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5530,7 +5530,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "オーバー［名］",
-   "romaji": "oobaa",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5739,7 +5739,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けんさくする",
-   "romaji": "kensakusuru",
+   "romaji": "ke-n-sa-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -5967,7 +5967,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かくりつする",
-   "romaji": "kakuritsusuru",
+   "romaji": "ka-ku-ri-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -6119,7 +6119,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "まきスカート",
-   "romaji": "maki",
+   "romaji": "ma-ki-su-ka-a-to",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -6138,7 +6138,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちゃくようする",
-   "romaji": "chakuyousuru",
+   "romaji": "cha-ku-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -6708,7 +6708,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かんこうする",
-   "romaji": "kankousuru",
+   "romaji": "ka-n-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -6879,7 +6879,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='めん'>面</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -6955,7 +6955,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちょういんする",
-   "romaji": "chouinsuru",
+   "romaji": "cho-u-i-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -7734,7 +7734,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せろん／よろん",
-   "romaji": "seron",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -7753,7 +7753,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひじょうボタン",
-   "romaji": "hijou",
+   "romaji": "hi-jo-u-bo-ta-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -7905,7 +7905,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きゅうさいする",
-   "romaji": "kyuusaisuru",
+   "romaji": "kyu-u-sa-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8057,7 +8057,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='じょう'>条</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8076,7 +8076,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='らい'>来</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8095,7 +8095,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='そう'>総</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8114,7 +8114,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='しつ'>室</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8190,7 +8190,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいほうする",
-   "romaji": "kaihousuru",
+   "romaji": "ka-i-ho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8266,7 +8266,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうせんする",
-   "romaji": "yuusensuru",
+   "romaji": "yu-u-se-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -8418,7 +8418,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かにゅうする",
-   "romaji": "kanyuusuru",
+   "romaji": "ka-nyu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -9406,7 +9406,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "アカデミーしょう",
-   "romaji": "akademii",
+   "romaji": "a-ka-de-mi-i-sho-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -9596,7 +9596,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='さく'>作</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -9615,7 +9615,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='じん'>陣</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -9900,7 +9900,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さくらぶんかセンター",
-   "romaji": "sakurabunka",
+   "romaji": "sa-ku-ra-bu-n-ka-se-n-ta-a",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -9957,7 +9957,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ジュリー・ヤング",
-   "romaji": "jurii・yangu",
+   "romaji": "ju-ri-i-ya-n-gu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -10128,7 +10128,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='けん'>県</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -10147,7 +10147,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ビービーケーラジオ",
-   "romaji": "biibiikeerajio",
+   "romaji": "bi-i-bi-i-ke-e-ra-ji-o",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -10280,7 +10280,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "チャン・イーモウ",
-   "romaji": "chan・iimou",
+   "romaji": "cha-n-i-i-mo-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -10356,7 +10356,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～きり",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -10717,7 +10717,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あかいコーリャン",
-   "romaji": "akai",
+   "romaji": "a-ka-i-ko-o-rya-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -11420,7 +11420,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうえいする",
-   "romaji": "yuueisuru",
+   "romaji": "yu-u-e-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -11952,7 +11952,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～あまり",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -11971,7 +11971,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "サブ～",
-   "romaji": "sabu",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -11990,7 +11990,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='こく'>国</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12009,7 +12009,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='び'>美</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12161,7 +12161,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はくねつする",
-   "romaji": "hakunetsusuru",
+   "romaji": "ha-ku-ne-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12218,7 +12218,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふじょうする",
-   "romaji": "fujousuru",
+   "romaji": "fu-jo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12351,7 +12351,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいしゅつする",
-   "romaji": "haishutsusuru",
+   "romaji": "ha-i-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12427,7 +12427,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かめいする",
-   "romaji": "kameisuru",
+   "romaji": "ka-me-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12769,7 +12769,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='へいほうキロメートル'>km²</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12788,7 +12788,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='し'>氏</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12807,7 +12807,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='わ'>我</span>が～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12864,7 +12864,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はかいする",
-   "romaji": "hakaisuru",
+   "romaji": "ha-ka-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12883,7 +12883,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けっかいする",
-   "romaji": "kekkaisuru",
+   "romaji": "ke-k-ka-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -12978,7 +12978,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ノルウェイのもり",
-   "romaji": "noruuei",
+   "romaji": "no-ru-we-i-no-mo-ri",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13111,7 +13111,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "くしする",
-   "romaji": "kushisuru",
+   "romaji": "ku-shi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13434,7 +13434,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='いち'>市</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13453,7 +13453,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='てん'>展</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13472,7 +13472,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ない'>内</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13491,7 +13491,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ h<span superscript='ヘクタール'>a</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13510,7 +13510,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='はつ'>発</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13567,7 +13567,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かんびする",
-   "romaji": "kanbisuru",
+   "romaji": "ka-n-bi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13852,7 +13852,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "チュウ・ファンリー",
-   "romaji": "chuu・fanrii",
+   "romaji": "chu-u-fa-n-ri-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13947,7 +13947,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "のち／あと",
-   "romaji": "nochi",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -13966,7 +13966,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "シーディーアルバム",
-   "romaji": "shiidiiarubamu",
+   "romaji": "shi-i-di-i-a-ru-ba-mu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -15125,7 +15125,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たんのうする",
-   "romaji": "tannousuru",
+   "romaji": "ta-n-no-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -15220,7 +15220,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='だん'>弾</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -15239,7 +15239,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='く'>区</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -15372,7 +15372,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ヒンズー／ヒンドゥー",
-   "romaji": "hinzuu",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -15562,7 +15562,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しょうすいする",
-   "romaji": "shousuisuru",
+   "romaji": "sho-u-su-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -16474,7 +16474,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "げんじつばなれする",
-   "romaji": "genjitsubanaresuru",
+   "romaji": "ge-n-ji-tsu-ba-na-re-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -16626,7 +16626,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "オランダじん",
-   "romaji": "oranda",
+   "romaji": "o-ra-n-da-ji-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -16816,7 +16816,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうべアート・エンタープライズ",
-   "romaji": "koube",
+   "romaji": "ko-u-be-a-a-to-e-n-ta-a-pu-ra-i-zu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -16892,7 +16892,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "キム・スンファ",
-   "romaji": "kimu・sunfa",
+   "romaji": "ki-mu-su-n-fa",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17025,7 +17025,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='は'>派</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17044,7 +17044,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ず'>好</span>き",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17063,7 +17063,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ろん'>論</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17253,7 +17253,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ねっちゅうする",
-   "romaji": "netchuusuru",
+   "romaji": "ne-t-chu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17538,7 +17538,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ばっかり",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -17956,7 +17956,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しゅっぴんする",
-   "romaji": "shuppinsuru",
+   "romaji": "shu-p-pi-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18108,7 +18108,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ようごする",
-   "romaji": "yougosuru",
+   "romaji": "yo-u-go-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18184,7 +18184,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すいしょうする",
-   "romaji": "suishousuru",
+   "romaji": "su-i-sho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18203,7 +18203,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "まんきつする",
-   "romaji": "mankitsusuru",
+   "romaji": "ma-n-ki-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18336,7 +18336,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "トーナメントせん",
-   "romaji": "toonamento",
+   "romaji": "to-o-na-me-n-to-se-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18640,7 +18640,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふんとうする",
-   "romaji": "funtousuru",
+   "romaji": "fu-n-to-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18659,7 +18659,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そうきする",
-   "romaji": "soukisuru",
+   "romaji": "so-u-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18963,7 +18963,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='じゅん'>準</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -18982,7 +18982,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='がい'>外</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19001,7 +19001,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ど'>度</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19020,7 +19020,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='はい'>敗</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19115,7 +19115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぞくする",
-   "romaji": "zokusuru",
+   "romaji": "zo-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19742,7 +19742,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひってきする",
-   "romaji": "hittekisuru",
+   "romaji": "hi-t-te-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19837,7 +19837,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "よにげする",
-   "romaji": "yonigesuru",
+   "romaji": "yo-ni-ge-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -19894,7 +19894,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ばいきゃくする",
-   "romaji": "baikyakusuru",
+   "romaji": "ba-i-kya-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20198,7 +20198,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='やく'>薬</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20502,7 +20502,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いんたいする",
-   "romaji": "intaisuru",
+   "romaji": "i-n-ta-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20540,7 +20540,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じにんする",
-   "romaji": "jininsuru",
+   "romaji": "ji-ni-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20578,7 +20578,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ばいしゅうする",
-   "romaji": "baishuusuru",
+   "romaji": "ba-i-shu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20597,7 +20597,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ビタミンエー",
-   "romaji": "bitamin'ee",
+   "romaji": "bi-ta-mi-n-e-e",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20920,7 +20920,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='ふく'>副</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -20958,7 +20958,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ジェーリーガー",
-   "romaji": "jieeriigaa",
+   "romaji": "je-e-ri-i-ga-a",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -21091,7 +21091,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せんばつする",
-   "romaji": "senbatsusuru",
+   "romaji": "se-n-ba-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -21186,7 +21186,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいしんする",
-   "romaji": "haishinsuru",
+   "romaji": "ha-i-shi-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -21414,7 +21414,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "パスまわし",
-   "romaji": "pasu",
+   "romaji": "pa-su-ma-wa-shi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22098,7 +22098,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='せん'>戦</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22117,7 +22117,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='こう'>好</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22212,7 +22212,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "えんちょうする",
-   "romaji": "enchousuru",
+   "romaji": "e-n-cho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22516,7 +22516,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かわせレート",
-   "romaji": "kawase",
+   "romaji": "ka-wa-se-re-e-to",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22573,7 +22573,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いせきする",
-   "romaji": "isekisuru",
+   "romaji": "i-se-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22763,7 +22763,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "スウェーデンおうりつかがくアカデミー",
-   "romaji": "suueeden",
+   "romaji": "su-we-e-de-n-o-u-ri-tsu-ka-ga-ku-a-ka-de-mi-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22782,7 +22782,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ノーベルかがくしょう",
-   "romaji": "nooberu",
+   "romaji": "no-o-be-ru-ka-ga-ku-sho-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22896,7 +22896,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "パデューだいがく",
-   "romaji": "padeyuu",
+   "romaji": "pa-dyu-u-da-i-ga-ku",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -22953,7 +22953,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "パラジウムしょくばいクロスカップリングはんのう",
-   "romaji": "parajiumu",
+   "romaji": "pa-ra-ji-u-mu-sho-ku-ba-i-ku-ro-su-ka-p-pu-ri-n-gu-ha-n-no-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23181,7 +23181,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='たい'>対</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23200,7 +23200,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='しょう'>症</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23295,7 +23295,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうたつする",
-   "romaji": "toutatsusuru",
+   "romaji": "to-u-ta-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23466,7 +23466,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ねん'>年</span><span superscript='ど'>度</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23485,7 +23485,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='じょう'>乗</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23770,7 +23770,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='おお'>大</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -23998,7 +23998,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たはつする",
-   "romaji": "tahatsusuru",
+   "romaji": "ta-ha-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24093,7 +24093,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうはつする",
-   "romaji": "yuuhatsusuru",
+   "romaji": "yu-u-ha-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24131,7 +24131,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たっする",
-   "romaji": "tassuru",
+   "romaji": "ta-s-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24207,7 +24207,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じょうげどうする",
-   "romaji": "jougedousuru",
+   "romaji": "jo-u-ge-do-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24606,7 +24606,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "るいじする",
-   "romaji": "ruijisuru",
+   "romaji": "ru-i-ji-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24663,7 +24663,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はつれいする",
-   "romaji": "hatsureisuru",
+   "romaji": "ha-tsu-re-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24720,7 +24720,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そじょうする",
-   "romaji": "sojousuru",
+   "romaji": "so-jo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24815,7 +24815,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぜっする",
-   "romaji": "zessuru",
+   "romaji": "ze-s-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24853,7 +24853,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はあくする",
-   "romaji": "haakusuru",
+   "romaji": "ha-a-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -24910,7 +24910,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうかいする",
-   "romaji": "toukaisuru",
+   "romaji": "to-u-ka-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -25081,7 +25081,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ブロックべい",
-   "romaji": "burokku",
+   "romaji": "bu-ro-k-ku-be-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -25461,7 +25461,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いきき／ゆきき",
-   "romaji": "ikiki",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -25518,7 +25518,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふかする",
-   "romaji": "fukasuru",
+   "romaji": "fu-ka-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -25898,7 +25898,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "へんさいする",
-   "romaji": "hensaisuru",
+   "romaji": "he-n-sa-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -26012,7 +26012,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そうなんする",
-   "romaji": "sounansuru",
+   "romaji": "so-u-na-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -26031,7 +26031,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きゅうしゅつする",
-   "romaji": "kyuushutsusuru",
+   "romaji": "kyu-u-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -26240,7 +26240,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいじょする",
-   "romaji": "kaijosuru",
+   "romaji": "ka-i-jo-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -26487,7 +26487,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='かい'>界</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -26734,7 +26734,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ルイス・ウルスア",
-   "romaji": "ruisu・urusua",
+   "romaji": "ru-i-su-u-ru-su-a",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27076,7 +27076,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='だん'>段</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27095,7 +27095,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='たん'>短</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27247,7 +27247,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はんにゅうする",
-   "romaji": "hannyuusuru",
+   "romaji": "ha-n-nyu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27266,7 +27266,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "キャンプむら",
-   "romaji": "kyanpu",
+   "romaji": "kya-n-pu-mu-ra",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27323,7 +27323,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='やく'>役</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -27798,7 +27798,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちょっけつする",
-   "romaji": "chokketsusuru",
+   "romaji": "cho-k-ke-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28539,7 +28539,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='トン'>ｔ</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28558,7 +28558,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='い'>入</span>り",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28577,7 +28577,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='じょう'>場</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28596,7 +28596,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='べつ'>別</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28634,7 +28634,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そうぞくする",
-   "romaji": "souzokusuru",
+   "romaji": "so-u-zo-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28672,7 +28672,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しゅとくする",
-   "romaji": "shutokusuru",
+   "romaji": "shu-to-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -28900,7 +28900,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほっそくする",
-   "romaji": "hossokusuru",
+   "romaji": "ho-s-so-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29147,7 +29147,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ほ'>歩</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29698,7 +29698,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ユーエスビーメモリ",
-   "romaji": "yuuesubiimemori",
+   "romaji": "yu-u-e-su-bi-i-me-mo-ri",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29717,7 +29717,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "るすばんする",
-   "romaji": "rusubansuru",
+   "romaji": "ru-su-ba-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29888,7 +29888,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='たい'>帯</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29907,7 +29907,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='だい'>題</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -29945,7 +29945,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さいくつする",
-   "romaji": "saikutsusuru",
+   "romaji": "sa-i-ku-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30097,7 +30097,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ドラムかん",
-   "romaji": "doramu",
+   "romaji": "do-ra-mu-ka-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30116,7 +30116,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='しゅう'>州</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30135,7 +30135,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='かん'>間</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30154,7 +30154,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='さい'>再</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30306,7 +30306,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さいせいかのうエネルギー",
-   "romaji": "saiseikanou",
+   "romaji": "sa-i-se-i-ka-no-u-e-ne-ru-gi-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30382,7 +30382,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きょうきゅうする",
-   "romaji": "kyoukyuusuru",
+   "romaji": "kyo-u-kyu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30496,7 +30496,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かつようする",
-   "romaji": "katsuyousuru",
+   "romaji": "ka-tsu-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30534,7 +30534,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうずうする",
-   "romaji": "yuuzuusuru",
+   "romaji": "yu-u-zu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -30990,7 +30990,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さゆうする",
-   "romaji": "sayuusuru",
+   "romaji": "sa-yu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31009,7 +31009,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そくしんする",
-   "romaji": "sokushinsuru",
+   "romaji": "so-ku-shi-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31085,7 +31085,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きゅうぞうする",
-   "romaji": "kyuuzousuru",
+   "romaji": "kyu-u-zo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31104,7 +31104,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せんこうする",
-   "romaji": "senkousuru",
+   "romaji": "se-n-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31294,7 +31294,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おうだんする",
-   "romaji": "oudansuru",
+   "romaji": "o-u-da-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31541,7 +31541,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ばん'>番</span><span superscript='め'>目</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31560,7 +31560,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ていぎする",
-   "romaji": "teigisuru",
+   "romaji": "te-i-gi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31598,7 +31598,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こりつする",
-   "romaji": "koritsusuru",
+   "romaji": "ko-ri-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31712,7 +31712,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいしゅつする",
-   "romaji": "haishutsusuru",
+   "romaji": "ha-i-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31826,7 +31826,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうぎょうプロセス",
-   "romaji": "kougyou",
+   "romaji": "ko-u-gyo-u-pu-ro-se-su",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -31978,7 +31978,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちくせきする",
-   "romaji": "chikusekisuru",
+   "romaji": "chi-ku-se-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32016,7 +32016,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ぶつ'>物</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32035,7 +32035,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='しょ'>諸</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32225,7 +32225,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てんねんガス",
-   "romaji": "tennen",
+   "romaji": "te-n-ne-n-ga-su",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32396,7 +32396,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じょうかする",
-   "romaji": "joukasuru",
+   "romaji": "jo-u-ka-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32643,7 +32643,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ていしょうする",
-   "romaji": "teishousuru",
+   "romaji": "te-i-sho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32966,7 +32966,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ちょう'>長</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -32985,7 +32985,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ず'>済</span>み",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33004,7 +33004,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='げん'>源</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33023,7 +33023,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='あく'>悪</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33042,7 +33042,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いっかんする",
-   "romaji": "ikkansuru",
+   "romaji": "i-k-ka-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33061,7 +33061,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しょうじんする",
-   "romaji": "shoujinsuru",
+   "romaji": "sho-u-ji-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33251,7 +33251,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しょうめいする",
-   "romaji": "shoumeisuru",
+   "romaji": "sho-u-me-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33270,7 +33270,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けっさいする",
-   "romaji": "kessaisuru",
+   "romaji": "ke-s-sa-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33289,7 +33289,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいとうする",
-   "romaji": "kaitousuru",
+   "romaji": "ka-i-to-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33308,7 +33308,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぶんべつする",
-   "romaji": "bunbetsusuru",
+   "romaji": "bu-n-be-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33593,7 +33593,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きょうゆうする",
-   "romaji": "kyouyuusuru",
+   "romaji": "kyo-u-yu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33631,7 +33631,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いくメン",
-   "romaji": "iku",
+   "romaji": "i-ku-me-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33764,7 +33764,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "レトルトしょくひん",
-   "romaji": "retoruto",
+   "romaji": "re-to-ru-to-sho-ku-hi-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33802,7 +33802,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たいようこうパネル",
-   "romaji": "taiyoukou",
+   "romaji": "ta-i-yo-u-ko-u-pa-ne-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -33954,7 +33954,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ばな'>離</span>れ",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -34030,7 +34030,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "グリーンしゃ",
-   "romaji": "guriin",
+   "romaji": "gu-ri-i-n-sha",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -34163,7 +34163,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ばん'>番</span><span superscript='せん'>線</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -34182,7 +34182,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ごう'>号</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -34201,7 +34201,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ごう'>号</span><span superscript='しゃ'>車</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -34619,7 +34619,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はっきする",
-   "romaji": "hakkisuru",
+   "romaji": "ha-k-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -35056,7 +35056,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みりょうする",
-   "romaji": "miryousuru",
+   "romaji": "mi-ryo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -35626,7 +35626,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ざん'>三</span><span superscript='まい'>昧</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -35949,7 +35949,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "りりくする",
-   "romaji": "ririkusuru",
+   "romaji": "ri-ri-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36025,7 +36025,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だんこうする",
-   "romaji": "dankousuru",
+   "romaji": "da-n-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36082,7 +36082,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='ぐ'>愚</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36215,7 +36215,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せっする",
-   "romaji": "sessuru",
+   "romaji": "se-s-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36405,7 +36405,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "リゾートち",
-   "romaji": "rizooto",
+   "romaji": "ri-zo-o-to-chi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36443,7 +36443,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なみのりする",
-   "romaji": "naminorisuru",
+   "romaji": "na-mi-no-ri-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36538,7 +36538,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうせんする",
-   "romaji": "tousensuru",
+   "romaji": "to-u-se-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -36671,7 +36671,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひさいする",
-   "romaji": "hisaisuru",
+   "romaji": "hi-sa-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37146,7 +37146,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さべつする",
-   "romaji": "sabetsusuru",
+   "romaji": "sa-be-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37241,7 +37241,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せんしゅつする",
-   "romaji": "senshutsusuru",
+   "romaji": "se-n-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37336,7 +37336,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はんえいする",
-   "romaji": "han'eisuru",
+   "romaji": "ha-n-e-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37526,7 +37526,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "にんめいする",
-   "romaji": "ninmeisuru",
+   "romaji": "ni-n-me-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37773,7 +37773,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='けん'>権</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37792,7 +37792,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='せい'>制</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37811,7 +37811,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='こう'>項</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37830,7 +37830,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='しゅ'>主</span><span superscript='ぎ'>義</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37849,7 +37849,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='ひ'>被</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37868,7 +37868,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='まん'>満</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37963,7 +37963,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じゅんようする",
-   "romaji": "junyousuru",
+   "romaji": "ju-n-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -37982,7 +37982,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かくちする",
-   "romaji": "kakuchisuru",
+   "romaji": "ka-ku-chi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38039,7 +38039,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆうする",
-   "romaji": "yuusuru",
+   "romaji": "yu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38362,7 +38362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "アマゾンがわ",
-   "romaji": "amazon",
+   "romaji": "a-ma-zo-n-ga-wa",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38514,7 +38514,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てきようする",
-   "romaji": "tekiyousuru",
+   "romaji": "te-ki-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38571,7 +38571,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ほう'>法</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38590,7 +38590,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='きん'>金</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38609,7 +38609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='とう'>等</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38628,7 +38628,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ちょう'>庁</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -38761,7 +38761,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうひょうする",
-   "romaji": "touhyousuru",
+   "romaji": "to-u-hyo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -39103,7 +39103,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せいする",
-   "romaji": "seisuru",
+   "romaji": "se-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -39141,7 +39141,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "したくする",
-   "romaji": "shitakusuru",
+   "romaji": "shi-ta-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -39350,7 +39350,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='くち'>口</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -39711,7 +39711,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きたくする",
-   "romaji": "kitakusuru",
+   "romaji": "ki-ta-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40395,7 +40395,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～あたり",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40414,7 +40414,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='きょく'>局</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40433,7 +40433,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='へん'>編</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40452,7 +40452,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='ちょう'>長</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40471,7 +40471,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='き'>期</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -40927,7 +40927,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きゅうふする",
-   "romaji": "kyuufusuru",
+   "romaji": "kyu-u-fu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41003,7 +41003,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ぜん'>前</span><span superscript='ご'>後</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41022,7 +41022,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='じゃく'>弱</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41041,7 +41041,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='きょう'>強</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41079,7 +41079,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けついする",
-   "romaji": "ketsuisuru",
+   "romaji": "ke-tsu-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41402,7 +41402,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ <span superscript='キロ'>k</span><span superscript='ワット'>Ｗ</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41421,7 +41421,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ほう'>放</span><span superscript='だい'>題</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41782,7 +41782,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じふする",
-   "romaji": "jifusuru",
+   "romaji": "ji-fu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41801,7 +41801,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ものおじする",
-   "romaji": "monoojisuru",
+   "romaji": "mo-no-o-ji-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -41953,7 +41953,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぶんせきする",
-   "romaji": "bunsekisuru",
+   "romaji": "bu-n-se-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -42086,7 +42086,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='かん'>官</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -42105,7 +42105,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='こん'>今</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43036,7 +43036,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうきょうスカイツリー",
-   "romaji": "toukyou",
+   "romaji": "to-u-kyo-u-su-ka-i-tsu-ri-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43074,7 +43074,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さいげんする",
-   "romaji": "saigensuru",
+   "romaji": "sa-i-ge-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43150,7 +43150,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かたぐるまする",
-   "romaji": "katagurumasuru",
+   "romaji": "ka-ta-gu-ru-ma-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43264,7 +43264,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ぎわ'>際</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43511,7 +43511,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さんぱいする",
-   "romaji": "sanpaisuru",
+   "romaji": "sa-n-pa-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43720,7 +43720,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けつごうする",
-   "romaji": "ketsugousuru",
+   "romaji": "ke-tsu-go-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -43967,7 +43967,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けいげんする",
-   "romaji": "keigensuru",
+   "romaji": "ke-i-ge-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44157,7 +44157,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けいしょうする",
-   "romaji": "keishousuru",
+   "romaji": "ke-i-sho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44252,7 +44252,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おうようする",
-   "romaji": "ouyousuru",
+   "romaji": "o-u-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44290,7 +44290,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～か<span superscript='こく'>国</span><span superscript='ご'>語</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44309,7 +44309,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ろく'>録</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44328,7 +44328,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='だ'>建</span>て",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44537,7 +44537,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひていする",
-   "romaji": "hiteisuru",
+   "romaji": "hi-te-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44613,7 +44613,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "えいぎょうマン",
-   "romaji": "eigyou",
+   "romaji": "e-i-gyo-u-ma-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44670,7 +44670,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちょくしんする",
-   "romaji": "chokushinsuru",
+   "romaji": "cho-ku-shi-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44708,7 +44708,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='い'>以</span><span superscript='ご'>後</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -44917,7 +44917,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふっかつする",
-   "romaji": "fukkatsusuru",
+   "romaji": "fu-k-ka-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -45088,7 +45088,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かんちする",
-   "romaji": "kanchisuru",
+   "romaji": "ka-n-chi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -45354,7 +45354,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいせきする",
-   "romaji": "kaisekisuru",
+   "romaji": "ka-i-se-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -45449,7 +45449,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうこうする",
-   "romaji": "toukousuru",
+   "romaji": "to-u-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -45487,7 +45487,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ど'>度</span>～<span superscript='ぶ'>分</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -45943,7 +45943,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "へいはつする",
-   "romaji": "heihatsusuru",
+   "romaji": "he-i-ha-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46361,7 +46361,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいひする",
-   "romaji": "kaihisuru",
+   "romaji": "ka-i-hi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46456,7 +46456,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふちゃくする",
-   "romaji": "fuchakusuru",
+   "romaji": "fu-cha-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46513,7 +46513,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はっしょうする",
-   "romaji": "hasshousuru",
+   "romaji": "ha-s-sho-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46570,7 +46570,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しゅうしゅうする",
-   "romaji": "shuushuusuru",
+   "romaji": "shu-u-shu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46608,7 +46608,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='か'>課</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46627,7 +46627,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='つう'>痛</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -46646,7 +46646,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='えん'>炎</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47026,7 +47026,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ないぞうする",
-   "romaji": "naizousuru",
+   "romaji": "na-i-zo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47083,7 +47083,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='へん'>遍</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47387,7 +47387,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じょきょする",
-   "romaji": "jokyosuru",
+   "romaji": "jo-kyo-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47406,7 +47406,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かねつする",
-   "romaji": "kanetsusuru",
+   "romaji": "ka-ne-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47444,7 +47444,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいせつする",
-   "romaji": "haisetsusuru",
+   "romaji": "ha-i-se-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47463,7 +47463,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいべんする",
-   "romaji": "haibensuru",
+   "romaji": "ha-i-be-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47501,7 +47501,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='るい'>類</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47805,7 +47805,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てんとうする",
-   "romaji": "tentousuru",
+   "romaji": "te-n-to-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -47919,7 +47919,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はっこうダイオード",
-   "romaji": "hakkou",
+   "romaji": "ha-k-ko-u-da-i-o-o-do",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48204,7 +48204,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とふする",
-   "romaji": "tofusuru",
+   "romaji": "to-fu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48280,7 +48280,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "サラダな",
-   "romaji": "sarada",
+   "romaji": "sa-ra-da-na",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48318,7 +48318,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みっぺいする",
-   "romaji": "mippeisuru",
+   "romaji": "mi-p-pe-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48432,7 +48432,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほうしゅつする",
-   "romaji": "houshutsusuru",
+   "romaji": "ho-u-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48546,7 +48546,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しょうしゃする",
-   "romaji": "shoushasuru",
+   "romaji": "sho-u-sha-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48622,7 +48622,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かくごする",
-   "romaji": "kakugosuru",
+   "romaji": "ka-ku-go-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48660,7 +48660,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "へいようする",
-   "romaji": "heiyousuru",
+   "romaji": "he-i-yo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48736,7 +48736,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='じゅん'>純</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48755,7 +48755,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='さん'>産</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48793,7 +48793,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きょこうする",
-   "romaji": "kyokousuru",
+   "romaji": "kyo-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48831,7 +48831,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほうちする",
-   "romaji": "houchisuru",
+   "romaji": "ho-u-chi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48888,7 +48888,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しめつする",
-   "romaji": "shimetsusuru",
+   "romaji": "shi-me-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48907,7 +48907,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じめつする",
-   "romaji": "jimetsusuru",
+   "romaji": "ji-me-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -48926,7 +48926,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はんえいする",
-   "romaji": "han'eisuru",
+   "romaji": "ha-n-e-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -49059,7 +49059,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ありえる／ありうる",
-   "romaji": "arieru",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -49116,7 +49116,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうちくする",
-   "romaji": "kouchikusuru",
+   "romaji": "ko-u-chi-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -49173,7 +49173,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ハウスさいばい",
-   "romaji": "hausu",
+   "romaji": "ha-u-su-sa-i-ba-i",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -49667,7 +49667,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='へん'>片</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50009,7 +50009,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "れんけつする",
-   "romaji": "renketsusuru",
+   "romaji": "re-n-ke-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50047,7 +50047,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちゅうしゃする",
-   "romaji": "chuushasuru",
+   "romaji": "chu-u-sha-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50142,7 +50142,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "のうさくぶつ／のうさくもつ",
-   "romaji": "nousakubutsu",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50180,7 +50180,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～パック",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50218,7 +50218,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ルーブルびじゅつかん",
-   "romaji": "ruuburu",
+   "romaji": "ru-u-bu-ru-bi-ju-tsu-ka-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50712,7 +50712,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おひろめする",
-   "romaji": "ohiromesuru",
+   "romaji": "o-hi-ro-me-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -50845,7 +50845,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みっぷうする",
-   "romaji": "mippuusuru",
+   "romaji": "mi-p-pu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -51111,7 +51111,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きせいする",
-   "romaji": "kiseisuru",
+   "romaji": "ki-se-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -51187,7 +51187,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たいいんする",
-   "romaji": "taiinsuru",
+   "romaji": "ta-i-i-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -51871,7 +51871,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なつばてする",
-   "romaji": "natsubatesuru",
+   "romaji": "na-tsu-ba-te-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52004,7 +52004,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうとうする",
-   "romaji": "koutousuru",
+   "romaji": "ko-u-to-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52669,7 +52669,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けいふくする",
-   "romaji": "keifukusuru",
+   "romaji": "ke-i-fu-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52707,7 +52707,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だんボール",
-   "romaji": "dan",
+   "romaji": "da-n-bo-o-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52840,7 +52840,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふくそうガラス",
-   "romaji": "fukusou",
+   "romaji": "fu-ku-so-u-ga-ra-su",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52859,7 +52859,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "アクトロイドエフ",
-   "romaji": "akutoroidoefu",
+   "romaji": "a-ku-to-ro-i-do-e-fu",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -52954,7 +52954,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たいわする",
-   "romaji": "taiwasuru",
+   "romaji": "ta-i-wa-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53087,7 +53087,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いたガラス",
-   "romaji": "ita",
+   "romaji": "i-ta-ga-ra-su",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53106,7 +53106,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちゅうにゅうする",
-   "romaji": "chuunyuusuru",
+   "romaji": "chu-u-nyu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53448,7 +53448,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こんりゅうする",
-   "romaji": "konryuusuru",
+   "romaji": "ko-n-ryu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53600,7 +53600,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ササンちょうペルシャ",
-   "romaji": "sasan",
+   "romaji": "sa-sa-n-cho-u-pe-ru-sha",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53676,7 +53676,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "げんそんする",
-   "romaji": "gensonsuru",
+   "romaji": "ge-n-so-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53771,7 +53771,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はい／さかずき",
-   "romaji": "hai",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53790,7 +53790,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ガラスだま",
-   "romaji": "garasu",
+   "romaji": "ga-ra-su-da-ma",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53828,7 +53828,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さいいき／せいいき",
-   "romaji": "saiiki",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53847,7 +53847,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でんらいする",
-   "romaji": "denraisuru",
+   "romaji": "de-n-ra-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53866,7 +53866,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ずいこうする",
-   "romaji": "zuikousuru",
+   "romaji": "zu-i-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53961,7 +53961,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "にしアジア",
-   "romaji": "nishi",
+   "romaji": "ni-shi-a-ji-a",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -53980,7 +53980,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きたアフリカ",
-   "romaji": "kita",
+   "romaji": "ki-ta-a-fu-ri-ka",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54075,7 +54075,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "オアシスろ",
-   "romaji": "oashisu",
+   "romaji": "o-a-shi-su-ro",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54094,7 +54094,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しんきょうウイグルじちく",
-   "romaji": "shinkyou",
+   "romaji": "shi-n-kyo-u-u-i-gu-ru-ji-chi-ku",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54132,7 +54132,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "タリムぼんち",
-   "romaji": "tarimu",
+   "romaji": "ta-ri-mu-bo-n-chi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54170,7 +54170,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ユーラシアたいりく",
-   "romaji": "yuurashia",
+   "romaji": "yu-u-ra-shi-a-ta-i-ri-ku",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54246,7 +54246,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "インドよう",
-   "romaji": "indo",
+   "romaji": "i-n-do-yo-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54265,7 +54265,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "アラビアはんとう",
-   "romaji": "arabia",
+   "romaji": "a-ra-bi-a-ha-n-to-u",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54379,7 +54379,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ていけつする",
-   "romaji": "teiketsusuru",
+   "romaji": "te-i-ke-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54398,7 +54398,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほうえいする",
-   "romaji": "houeisuru",
+   "romaji": "ho-u-e-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54474,7 +54474,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さっきょくする",
-   "romaji": "sakkyokusuru",
+   "romaji": "sa-k-kyo-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54740,7 +54740,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "へんぼうする",
-   "romaji": "henbousuru",
+   "romaji": "he-n-bo-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -54949,7 +54949,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ろ'>路</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55006,7 +55006,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しゅじゅ",
-   "romaji": "shuju",
+   "romaji": "shu-ju",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55025,7 +55025,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はしばし",
-   "romaji": "hashibashi",
+   "romaji": "ha-shi-ba-shi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55253,7 +55253,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つうかんする",
-   "romaji": "tsuukansuru",
+   "romaji": "tsu-u-ka-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55823,7 +55823,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ヴェルサイユきゅうでん",
-   "romaji": "verusaiyu",
+   "romaji": "ve-ru-sa-i-yu-kyu-u-de-n",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55918,7 +55918,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ちょう'>丁</span><span superscript='め'>目</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -55937,7 +55937,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "<span superscript='はつ'>初</span>～",
-   "romaji": "<span superscript='",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56260,7 +56260,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たいよする",
-   "romaji": "taiyosuru",
+   "romaji": "ta-i-yo-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56355,7 +56355,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てんかいする",
-   "romaji": "tenkaisuru",
+   "romaji": "te-n-ka-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56393,7 +56393,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ねんしゅつする",
-   "romaji": "nenshutsusuru",
+   "romaji": "ne-n-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56602,7 +56602,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうせいチワンぞくじちく",
-   "romaji": "kousei",
+   "romaji": "ko-u-se-i-chi-wa-n-zo-ku-ji-chi-ku",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56640,7 +56640,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すいていする",
-   "romaji": "suiteisuru",
+   "romaji": "su-i-te-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56868,7 +56868,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なんぎする",
-   "romaji": "nangisuru",
+   "romaji": "na-n-gi-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -56925,7 +56925,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かかりっきり／かかりきり",
-   "romaji": "kakarikkiri",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57001,7 +57001,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほかくする",
-   "romaji": "hokakusuru",
+   "romaji": "ho-ka-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57115,7 +57115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そげきする",
-   "romaji": "sogekisuru",
+   "romaji": "so-ge-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57267,7 +57267,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいさんする",
-   "romaji": "kaisansuru",
+   "romaji": "ka-i-sa-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57343,7 +57343,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちゃくしゅする",
-   "romaji": "chakushusuru",
+   "romaji": "cha-ku-shu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57666,7 +57666,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふくげんする",
-   "romaji": "fukugensuru",
+   "romaji": "fu-ku-ge-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57799,7 +57799,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ちょう'>兆</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -57818,7 +57818,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かんげんする",
-   "romaji": "kangensuru",
+   "romaji": "ka-n-ge-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58008,7 +58008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おこさまランチ",
-   "romaji": "okosama",
+   "romaji": "o-ko-sa-ma-ra-n-chi",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58445,7 +58445,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "たいかんする",
-   "romaji": "taikansuru",
+   "romaji": "ta-i-ka-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58597,7 +58597,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しゅうとくする",
-   "romaji": "shuutokusuru",
+   "romaji": "shu-u-to-ku-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58635,7 +58635,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せいつうする",
-   "romaji": "seitsuusuru",
+   "romaji": "se-i-tsu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58673,7 +58673,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だいする",
-   "romaji": "daisuru",
+   "romaji": "da-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -58977,7 +58977,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ぎゃくさつする",
-   "romaji": "gyakusatsusuru",
+   "romaji": "gya-ku-sa-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60041,7 +60041,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はなのパリ",
-   "romaji": "hanano",
+   "romaji": "ha-na-no-pa-ri",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60079,7 +60079,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さっする",
-   "romaji": "sassuru",
+   "romaji": "sa-s-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60250,7 +60250,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひとめぼれする",
-   "romaji": "hitomeboresuru",
+   "romaji": "hi-to-me-bo-re-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60364,7 +60364,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうこうする",
-   "romaji": "toukousuru",
+   "romaji": "to-u-ko-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60573,7 +60573,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='き'>気</span><span superscript='ど'>取</span>り",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -60763,7 +60763,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さんしゅつする",
-   "romaji": "sanshutsusuru",
+   "romaji": "sa-n-shu-tsu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61029,7 +61029,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あずまエリカ",
-   "romaji": "azuma",
+   "romaji": "a-zu-ma-e-ri-ka",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61067,7 +61067,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しきゅうする",
-   "romaji": "shikyuusuru",
+   "romaji": "shi-kyu-u-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61105,7 +61105,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とうきょうはくぎんホテル",
-   "romaji": "toukyouhakugin",
+   "romaji": "to-u-kyo-u-ha-ku-gi-n-ho-te-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61238,7 +61238,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てんぷする",
-   "romaji": "tenpusuru",
+   "romaji": "te-n-pu-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61656,7 +61656,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じゅしんする",
-   "romaji": "jushinsuru",
+   "romaji": "ju-shi-n-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61675,7 +61675,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かいする",
-   "romaji": "kaisuru",
+   "romaji": "ka-i-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -61922,7 +61922,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～<span superscript='ばん'>版</span>",
-   "romaji": "~",
+   "romaji": "",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []
@@ -62017,7 +62017,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しげきする",
-   "romaji": "shigekisuru",
+   "romaji": "shi-ge-ki-su-ru",
    "level": "标准日本语-中级",
    "externalCaptions": [],
    "captions": []

@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あいます［じこに～］",
-   "romaji": "aimasu [jikoni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すぎます［７じを～］",
-   "romaji": "sugimasu [7jiwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なれます［しごとに～］",
-   "romaji": "naremasu [shigotoni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "くさります［たべものが～］",
-   "romaji": "kusarimasu [tabemonoga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -248,7 +248,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "まいとし（まいねん）",
-   "romaji": "maitoshi (mainen)",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -457,7 +457,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とくべつ［な］",
-   "romaji": "tokubetsu [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -476,7 +476,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "して いらっしゃいます",
-   "romaji": "shite irasshaimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -533,7 +533,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つかって いらっしゃるんですね。",
-   "romaji": "tsukatte irassharundesune.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -600,7 +600,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "-th century",
-   "translation": "",
+   "translation": "－世纪",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -704,7 +704,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おおぜいの ～",
-   "romaji": "oozeino ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -780,7 +780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とどきます［にもつが～］",
-   "romaji": "todokimasu [nimotsuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -799,7 +799,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でます［しあいに～］",
-   "romaji": "demasu [shiaini~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -818,7 +818,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "うちます［ワープロを～］",
-   "romaji": "uchimasu [wāpurowo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -913,7 +913,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でんし～",
-   "romaji": "denshi~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -932,7 +932,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けいたい～",
-   "romaji": "keitai~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -989,7 +989,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ずつ",
-   "romaji": "~zutsu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1008,7 +1008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "その ほうが ～",
-   "romaji": "sono hōga~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1027,7 +1027,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～とか、～とか",
-   "romaji": "~toka, ~toka",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1037,7 +1037,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "tango",
-   "translation": "",
+   "translation": "探戈",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -1103,7 +1103,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あんぜん［な］",
-   "romaji": "anzen [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1132,7 +1132,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Wright brothers, American pioneers in aviation ; Wilbur Wright (1867-1912) Orville Wright (1871-1948)",
-   "translation": "",
+   "translation": "莱特兄弟（美国航空先驱）",
    "pos": "",
    "collins": 0,
    "oxford": false,

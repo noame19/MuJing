@@ -39,7 +39,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～く",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -267,7 +267,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "やはり; やっぱり",
-   "romaji": "yahari",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -362,7 +362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～つき",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -400,7 +400,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -818,7 +818,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ございます",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -1369,7 +1369,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～せい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -1445,7 +1445,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～けん",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -1521,7 +1521,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "レポート; リポート",
-   "romaji": "repooto",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -1673,7 +1673,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～がくぶ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -2224,7 +2224,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "パート (タイム)",
-   "romaji": "paato",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -2281,7 +2281,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しき",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -2319,7 +2319,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～か",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -2367,7 +2367,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "~ storied, separate housing",
-   "translation": "",
+   "translation": "～层（建筑）\n独门独户",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -2376,7 +2376,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～だて",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -2870,7 +2870,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いくら～ても",
-   "romaji": "ikura",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -3554,7 +3554,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～(て) しまう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -4390,7 +4390,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～いん",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -4713,7 +4713,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ばかり",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -4751,7 +4751,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～だす",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -6841,7 +6841,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ちゃん",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -7221,7 +7221,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～つづける",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -7335,7 +7335,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～やすい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -7943,7 +7943,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～はじめる",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -8228,7 +8228,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かねもち; おかねもち",
-   "romaji": "kanemochi",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -8361,7 +8361,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～まま",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -8418,7 +8418,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～(に) よると",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -8494,7 +8494,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かたい",
-   "romaji": "katai",
+   "romaji": "ka-ta-i",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -9159,7 +9159,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こうこう; こうとうがっこう",
-   "romaji": "koukou",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -9197,7 +9197,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～おわる",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -9558,7 +9558,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～さま",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -9729,7 +9729,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～だい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -9995,7 +9995,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～おき",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -10033,7 +10033,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ご～",
-   "romaji": "go",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -10660,7 +10660,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～くん",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -10755,7 +10755,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "スーパー (マーケット)",
-   "romaji": "suupaa",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -11078,7 +11078,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "けれど; けれども",
-   "romaji": "keredo",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -11135,7 +11135,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～(に) ついて",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -11211,7 +11211,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "コンピュータ; コンピューター",
-   "romaji": "konpyuuta",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -11838,7 +11838,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ちょう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -12180,7 +12180,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～にくい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []
@@ -12275,7 +12275,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～め",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N4",
    "externalCaptions": [],
    "captions": []

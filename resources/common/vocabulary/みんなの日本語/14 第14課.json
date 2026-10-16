@@ -286,7 +286,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おしえます［じゅうしょを～］",
-   "romaji": "oshiemasu [jūshowo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -343,7 +343,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "はいります［きっさてんに～］",
-   "romaji": "hairimasu [kissatenni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -362,7 +362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でます［きっさてんを～］",
-   "romaji": "demasu [kissatenwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -381,7 +381,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふります［あめが～］",
-   "romaji": "furimasu [amega~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -628,7 +628,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かた",
-   "romaji": "~kata",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -742,7 +742,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "もう すこし",
-   "romaji": "mō sukoshi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -761,7 +761,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "もう ～",
-   "romaji": "mō ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -790,7 +790,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Oh! Eh? (in surprise or wonder)",
-   "translation": "",
+   "translation": "咦？（表示意外或不解）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -818,7 +818,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しんごうを みぎへ まがって ください。",
-   "romaji": "shingōwo migihe magatte kudasai.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -837,7 +837,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "これで おねがいします。",
-   "romaji": "korede onegaishimasu.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -875,7 +875,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みどり ちょう",
-   "romaji": "midori chō",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -894,7 +894,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "まがります［みぎへ～］",
-   "romaji": "magarimasu [migihe~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -923,7 +923,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Sure./Certainly.",
-   "translation": "",
+   "translation": "可以呀。／不用了。",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -942,7 +942,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "name of a town in Osaka",
-   "translation": "",
+   "translation": "梅田（大阪的地名）",
    "pos": "",
    "collins": 0,
    "oxford": false,

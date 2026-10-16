@@ -324,7 +324,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こ～",
-   "romaji": "ko",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -400,7 +400,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～こう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -1844,7 +1844,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ございます (かん)",
-   "romaji": "gozaimasu",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -1901,7 +1901,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こす (みずを～)",
-   "romaji": "kosu",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -2053,7 +2053,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こつ (をつかむ)",
-   "romaji": "kotsu",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -2196,7 +2196,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "to leave a message",
-   "translation": "",
+   "translation": "口信，留言",
    "pos": "名词、动词·サ变",
    "collins": 0,
    "oxford": false,
@@ -2490,7 +2490,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ごらんなさい (かん)",
-   "romaji": "gorannasai",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -2623,7 +2623,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "コンタクト (レンズ)",
-   "romaji": "kontakuto",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -3345,7 +3345,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さきに (いぜん)",
-   "romaji": "sakini",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -3592,7 +3592,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さぞ (さぞや。さぞかし)",
-   "romaji": "sazo",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -3991,7 +3991,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さらう (こどもを～)",
-   "romaji": "sarau",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -6328,7 +6328,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とげ (をさす)",
-   "romaji": "toge",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -6366,7 +6366,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～どころか",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -8437,7 +8437,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～なんか",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -9881,7 +9881,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～は",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -12123,7 +12123,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～えい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -12693,7 +12693,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おおい (かん)",
-   "romaji": "ooi",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -12836,7 +12836,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "rough, approximate",
-   "translation": "",
+   "translation": "大致的，粗略的",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -13016,7 +13016,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おごる (ゆうしょくを～)",
-   "romaji": "ogoru",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -14118,7 +14118,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "が～",
-   "romaji": "ga",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -14156,7 +14156,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -14175,7 +14175,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～がい",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -15144,7 +15144,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かく (はじを)",
-   "romaji": "kaku",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -15163,7 +15163,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かく",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -15505,7 +15505,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かけ～",
-   "romaji": "kake",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -15524,7 +15524,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～かけ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -15885,7 +15885,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かた～",
-   "romaji": "kata",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -19011,7 +19011,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "strong",
-   "translation": "",
+   "translation": "强，强壮",
    "pos": "后缀、名词",
    "collins": 0,
    "oxford": false,
@@ -19039,7 +19039,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～きょう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -19780,7 +19780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～きり",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -20274,7 +20274,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "くじ (～をひく)",
-   "romaji": "kuji",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -21471,7 +21471,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "とう～",
-   "romaji": "tou",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -23067,7 +23067,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あせる (こえが～)",
-   "romaji": "aseru",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -23314,7 +23314,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～あて",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -23837,7 +23837,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "common, ordinary, routine",
-   "translation": "",
+   "translation": "常见的，普通的",
    "pos": "动词·一段词",
    "collins": 0,
    "oxford": false,
@@ -23941,7 +23941,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～あわせ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -24340,7 +24340,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "(はなを～) いける",
-   "romaji": "(",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -24853,7 +24853,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しょ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -24872,7 +24872,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しょう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -24891,7 +24891,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しょう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -24910,7 +24910,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～じょう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -25936,7 +25936,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しん",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -25946,7 +25946,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "battle formation, camp, encampment",
-   "translation": "",
+   "translation": "阵，阵形\n营地",
    "pos": "名词、名词后缀",
    "collins": 0,
    "oxford": false,
@@ -26829,7 +26829,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すくう (みずを～)",
-   "romaji": "sukuu",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -29907,7 +29907,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そり (～にのる)",
-   "romaji": "sori",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -31361,7 +31361,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "if it's the case",
-   "translation": "",
+   "translation": "如果是……的话",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -32795,7 +32795,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ちょ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -33802,7 +33802,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つじつま (はなしの～)",
-   "romaji": "tsujitsuma",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -34078,7 +34078,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "round, rotund",
-   "translation": "",
+   "translation": "圆圆的（眼睛）",
    "pos": "な形容词",
    "collins": 0,
    "oxford": false,
@@ -34106,7 +34106,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つぶる (めを～)",
-   "romaji": "tsuburu",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -35778,7 +35778,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～わり",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -37621,7 +37621,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～しゅう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -41991,7 +41991,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ほし～",
-   "romaji": "hoshi",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -42732,7 +42732,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "マイ～",
-   "romaji": "mai",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -43074,7 +43074,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～まし",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -43188,7 +43188,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "またがる (うまを～)",
-   "romaji": "matagaru",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -43454,7 +43454,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～まみれ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -43682,7 +43682,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～み",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -45582,7 +45582,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～もう",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -46361,7 +46361,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～やく",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -46722,7 +46722,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ゆ",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -47843,7 +47843,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "よし (かん)",
-   "romaji": "yoshi",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -47938,7 +47938,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "よって (よりどころ)",
-   "romaji": "yotte",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -48071,7 +48071,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～より",
-   "romaji": "~",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []
@@ -50826,7 +50826,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひび (かべの～)",
-   "romaji": "hibi",
+   "romaji": "",
    "level": "JLPT精选-N1",
    "externalCaptions": [],
    "captions": []

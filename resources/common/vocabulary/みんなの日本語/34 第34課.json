@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みがきます［はを～］",
-   "romaji": "migakimasu [hawo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きが つきます［わすれものに～］",
-   "romaji": "kiga tsukimasu [wasuremononi~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つけます［しょうゆを～］",
-   "romaji": "tsukemasu [shōyuwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -115,7 +115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "みつかります［かぎが～］",
-   "romaji": "mitsukarimasu [kagiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さします［かさを～］",
-   "romaji": "sashimasu [kasawo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］しろ",
-   "romaji": "[o] shiro",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -457,7 +457,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おきゃく［さん］",
-   "romaji": "okyaku [san]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -476,7 +476,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～か ～",
-   "romaji": "~ka ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -552,7 +552,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おちゃを たてます",
-   "romaji": "ochawo tatemasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -609,7 +609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "これで いいですか。",
-   "romaji": "korede iidesuka.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -685,7 +685,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～ぶん",
-   "romaji": "~bun",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -695,7 +695,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "－ gramme",
-   "translation": "",
+   "translation": "－克",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -714,7 +714,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "(counter for small objects)",
-   "translation": "",
+   "translation": "－个（小件物品的量词）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -761,7 +761,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "よんぶんのいち（１／４）",
-   "romaji": "yonbunnoichi (1/4)",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -799,7 +799,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "てきとうな おおきさに",
-   "romaji": "tekitōna ōkisani",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -856,7 +856,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひに かけます",
-   "romaji": "hini kakemasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -951,7 +951,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "します［ネクタイを～］",
-   "romaji": "shimasu [nekutaiwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []

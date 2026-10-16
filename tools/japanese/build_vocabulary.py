@@ -225,7 +225,9 @@ def build_word(entry, level, yori_index):
     chinese = pick_chinese_glosses(term, kana, yori_index)
     translation = "\n".join(chinese)
 
-    roman = split_romaji(kana) if kana else ""
+    # 罗马字只对纯假名读音有意义；带～［］（）等记号与空格的句型/量词卡片留空，
+    # 避免把标点也当成假名分拍（例：'－ほん（－ぽん）' → '－-ho-n-（-－-po-n-）'）
+    roman = split_romaji(kana) if is_kana(kana) else ""
 
     return {
         "value": term,
@@ -430,7 +432,7 @@ def build_standard_japanese(yori_index):
             if term in seen:
                 continue
             seen.add(term)
-            roman = split_romaji(kana) if kana else ""
+            roman = split_romaji(kana) if is_kana(kana) else ""
             label = "标准日本语" if book == "未分册" else f"标准日本语-{book}"
             words.append(make_word(term, kana, chinese, "", label, roman, pos))
         path, count = write_vocabulary(STD_OUTPUT_DIR, f"标准日本语 {book}", words, index)
@@ -468,7 +470,7 @@ def build_minna_no_nihongo(yori_index):
                 english = meaning
 
             chinese = pick_chinese_glosses(term, kana, yori_index)
-            roman = split_romaji(kana) if kana else ""
+            roman = split_romaji(kana) if is_kana(kana) else ""
             words.append(
                 make_word(term, kana, "\n".join(chinese), english,
                           "みんなの日本語-初級", roman)
@@ -504,7 +506,7 @@ def build_anki_jlpt(yori_index):
             kana = (row.get("reading") or "").strip()
             english = (row.get("meaning") or "").strip()
             chinese = pick_chinese_glosses(term, kana, yori_index)
-            roman = split_romaji(kana) if kana else ""
+            roman = split_romaji(kana) if is_kana(kana) else ""
             words.append(
                 make_word(term, kana, "\n".join(chinese), english, f"JLPT精选-{level}", roman)
             )

@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かんたん［な］",
-   "romaji": "kantan [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -115,7 +115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おおい［ひとが～］",
-   "romaji": "ōi [hitoga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -134,7 +134,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すくない［ひとが～］",
-   "romaji": "sukunai [hitoga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -267,7 +267,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いい［コーヒーが～］",
-   "romaji": "ii [kōhiiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -552,7 +552,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］まつり",
-   "romaji": "[o] matsuri",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -609,7 +609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］すし",
-   "romaji": "[o] sushi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -847,7 +847,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "I'm home.",
-   "translation": "",
+   "translation": "我回来了。",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -894,7 +894,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "わあ、すごい ひとですね。",
-   "romaji": "wā, sugoi hitodesune.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -989,7 +989,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ABC ストア",
-   "romaji": "ABC sutoa",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1037,7 +1037,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "That's amazing.",
-   "translation": "",
+   "translation": "真厉害啊。",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1075,7 +1075,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "fictitious supermarket",
-   "translation": "",
+   "translation": "每日屋（虚构的超市名）",
    "pos": "",
    "collins": 0,
    "oxford": false,

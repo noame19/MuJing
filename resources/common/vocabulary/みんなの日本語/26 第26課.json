@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おくれます［じかんに～］",
-   "romaji": "okuremasu [jikanni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "まに あいます［じかんに～］",
-   "romaji": "mani aimasu [jikanni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きぶんが いい",
-   "romaji": "kibunga ii",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きぶんが わるい",
-   "romaji": "kibunga warui",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -362,7 +362,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～べん",
-   "romaji": "~ben",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -514,7 +514,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こんな ～",
-   "romaji": "konna ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -533,7 +533,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "そんな ～",
-   "romaji": "sonna ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -552,7 +552,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あんな ～",
-   "romaji": "anna ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -562,7 +562,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "fictitious store",
-   "translation": "",
+   "translation": "江户超市（虚构的店名）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -590,7 +590,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かたづきます［にもつが～］",
-   "romaji": "katazukimasu [nimotsuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -609,7 +609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だします［ごみを～］",
-   "romaji": "dashimasu [gomiwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -628,7 +628,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "もえる ごみ",
-   "romaji": "moeru gomi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -742,7 +742,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～がいしゃ",
-   "romaji": "~gaisha",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -780,7 +780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～さま",
-   "romaji": "~sama",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -885,7 +885,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Japanese astronaut (1968-)",
-   "translation": "",
+   "translation": "星出彰彦（日本宇航员，1968-）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -913,7 +913,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さんかします［パーティーに～］",
-   "romaji": "sankashimasu [pāteiini~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -951,7 +951,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つごうが いい",
-   "romaji": "tsugōga ii",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -970,7 +970,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つごうが わるい",
-   "romaji": "tsugōga warui",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1018,7 +1018,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Nippon Hoso Kyokai (broadcasting company)",
-   "translation": "",
+   "translation": "NHK（日本广播协会）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1046,7 +1046,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こどもの ひ",
-   "romaji": "kodomono hi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1065,7 +1065,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "もえます［ごみが～］",
-   "romaji": "moemasu [gomiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1084,7 +1084,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "げっすいきん",
-   "romaji": "gessuikin",
+   "romaji": "ge-s-su-i-ki-n",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1103,7 +1103,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］ゆ",
-   "romaji": "[o] yu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1113,7 +1113,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "What shall I do?",
-   "translation": "",
+   "translation": "怎么办呢……。（感到为难时）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1151,7 +1151,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "another",
-   "translation": "",
+   "translation": "别的，另外的",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1170,7 +1170,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Japanese astronaut (1955-)",
-   "translation": "",
+   "translation": "土井隆雄（日本宇航员，1955-）",
    "pos": "",
    "collins": 0,
    "oxford": false,

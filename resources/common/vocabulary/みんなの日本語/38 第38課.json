@@ -20,7 +20,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "さんかします［りょこうに～］",
-   "romaji": "sankashimasu [ryokōni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -115,7 +115,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "いれます［でんげんを～］",
-   "romaji": "iremasu [dengenwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -134,7 +134,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きります［でんげんを～］",
-   "romaji": "kirimasu [dengenwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "かけます［かぎを～］",
-   "romaji": "kakemasu [kagiwo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つきます［うそを～］",
-   "romaji": "tsukimasu [usowo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -191,7 +191,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きもちが いい",
-   "romaji": "kimochiga ii",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -210,7 +210,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きもちが わるい",
-   "romaji": "kimochiga warui",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -229,7 +229,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おおきな ～",
-   "romaji": "ōkina ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -248,7 +248,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ちいさな ～",
-   "romaji": "chiisana ~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -495,7 +495,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～せい",
-   "romaji": "~sei",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -533,7 +533,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［あ、］いけない。",
-   "romaji": "[a,] ikenai.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -552,7 +552,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おさきに［しつれいします］。",
-   "romaji": "osakini [shitsureishimasu].",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -562,7 +562,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "dome commemorating the atomic bombing of Hiroshima",
-   "translation": "",
+   "translation": "原爆圆顶馆（广岛原子弹爆炸遗址）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -581,7 +581,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "a shrine in Izumo city in Shimane prefecture",
-   "translation": "",
+   "translation": "出云大社（岛根县出云市的神社）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -600,7 +600,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "Chiangmai (in Thailand)",
-   "translation": "",
+   "translation": "清迈（泰国）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -723,7 +723,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "～と いう",
-   "romaji": "~to iu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -733,7 +733,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "(counter for books, etc.)",
-   "translation": "",
+   "translation": "－册（书籍等的量词）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -780,7 +780,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "おします［はんこを～］",
-   "romaji": "oshimasu [hankowo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -828,7 +828,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "fifth grade, fifth year",
-   "translation": "",
+   "translation": "五年级学生",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -856,7 +856,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "にて います",
-   "romaji": "nite imasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -932,7 +932,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "せわを します",
-   "romaji": "sewawo shimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -951,7 +951,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じかんが たちます",
-   "romaji": "jikanga tachimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -970,7 +970,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "だいすき［な］",
-   "romaji": "daisuki [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -980,7 +980,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "－ points",
-   "translation": "",
+   "translation": "－分（分数）",
    "pos": "",
    "collins": 0,
    "oxford": false,
@@ -1008,7 +1008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "きが つよい",
-   "romaji": "kiga tsuyoi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1046,7 +1046,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふしぎ［な］",
-   "romaji": "fushigi [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []

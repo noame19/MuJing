@@ -58,7 +58,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しっぱいします［しけんに～］",
-   "romaji": "shippaishimasu [shikenni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -77,7 +77,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ごうかくします［しけんに～］",
-   "romaji": "gōkakushimasu [shikenni~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -96,7 +96,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "やみます［あめが～］",
-   "romaji": "yamimasu [amega~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -153,7 +153,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "つづきます［ねつが～］",
-   "romaji": "tsuzukimasu [netsuga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -172,7 +172,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ひきます［かぜを～］",
-   "romaji": "hikimasu [kazewo~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -210,7 +210,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こみます［みちが～］",
-   "romaji": "komimasu [michiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -229,7 +229,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "すきます［みちが～］",
-   "romaji": "sukimasu [michiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -248,7 +248,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でます［しあいに～］",
-   "romaji": "demasu [shiaini~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -267,7 +267,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "でます［パーティーに～］",
-   "romaji": "demasu [pāteiini~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -286,7 +286,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "むりを します",
-   "romaji": "muriwo shimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -305,7 +305,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "じゅうぶん［な］",
-   "romaji": "jūbun [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -609,7 +609,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "こくさい～",
-   "romaji": "kokusai~",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -894,7 +894,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "それは いけませんね。",
-   "romaji": "sorewa ikemasenne.",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -942,7 +942,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "overworking",
-   "translation": "",
+   "translation": "过度劳累，工作过度",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -1008,7 +1008,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "あたります［たからくじが～］",
-   "romaji": "atarimasu [takarakujiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1075,7 +1075,7 @@
    "usphone": "",
    "ukphone": "",
    "definition": "something lucky",
-   "translation": "",
+   "translation": "幸运物",
    "pos": "名词",
    "collins": 0,
    "oxford": false,
@@ -1141,7 +1141,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ふきます［かぜが～］",
-   "romaji": "fukimasu [kazega~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1160,7 +1160,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なおります［びょうきが～］",
-   "romaji": "naorimasu [byōkiga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1179,7 +1179,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "なおります［こしょうが～］",
-   "romaji": "naorimasu [koshōga~]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1198,7 +1198,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "しんぱい［な］",
-   "romaji": "shinpai [na]",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1274,7 +1274,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "ゆっくり します",
-   "romaji": "yukkuri shimasu",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
@@ -1293,7 +1293,7 @@
    "frq": 0,
    "exchange": "",
    "kana": "［お］かねもち",
-   "romaji": "[o] kanemochi",
+   "romaji": "",
    "level": "みんなの日本語-初級",
    "externalCaptions": [],
    "captions": []
