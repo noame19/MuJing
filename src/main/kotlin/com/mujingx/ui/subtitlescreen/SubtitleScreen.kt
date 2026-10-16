@@ -1350,6 +1350,13 @@ fun SelectTrack(
     }
 }
 
+/**
+ * 按字幕轨描述估算字符宽度（CJK 全角 24 / 其余 12）。
+ *
+ * 注意：这里判断的是**字幕轨的描述字符串**（轨元数据/文件名，用于字体宽度
+ * 估算），不是词库内容；AGENTS.md §8 禁止的「按字符范围判断词库语言」不适用
+ * 于此。词库/词条的语言分派一律以 `vocabulary.language` 为准。
+ */
  private fun computeCharWidth(description:String):Int{
     val regex = "Chinese|Japanese|Korean"
     val pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE)

@@ -209,52 +209,43 @@
 
 ### P2 — 「生成词库」界面交互
 
-- [ ] 内置词库列表要按目标语言过滤，并与右上角语言下拉**联动**
-      （现在英语/日语分类混排：`ui/components/BuiltInVocabulary.kt:59`；
-      `ui/components/BuiltInVocabularyMenu.kt:48` 没有 language 参数）
-- [ ] 内置词库支持**多选**（现在选一个就关闭：`BuiltInVocabularyMenu.kt:86-89`，
-      只能反复打开累加）
-- [ ] 语言下拉默认 `english` 且不跟随已加载词库：
-      `GenerateVocabularyDialog.kt:237`
-- [ ] 对日语无意义但仍显示的控件：「处理词组」（`:2237-2260`，日语
-      `parseJapaneseSRT`/`parseJapaneseMKV` 没有 `enablePhrases` 参数）、
-      摘要区的「牛津5000/四级/六级/GRE」计数（`:1264` `:1433`）、
-      「按BNC/COCA词频排序」（`:1312-1379`）、预览里的 `bnc`/`COCA:frq`
-      （`:2844-2914`）
-- [ ] 词详情/编辑/导出仍以英美音标为列、中英双 Tab：
-      `player/danmaku/WordDetail.kt:202`、`ui/edit/EditVocabulary.kt:173-174`
-      `:253-254` `:811-812`、`ui/edit/ExportVocabulary.kt:797` `:802`、
-      `ui/dialog/EditWordDialog.kt:244-245` `:416-431`；
-      `ui/search/SearchResultInfo.kt:83-92` 的「英文」Tab 对日语恒为空
-- [ ] 日语词条缺少 `kana`/`romaji` 的编辑与展示入口
-      （`ui/wordscreen/Word.kt:322` 的 `Phonetic` 靠 `kana` 是否为空分派，
-      不是靠语言）
+- [x] 内置词库列表按目标语言过滤，并与右上角语言下拉**联动**
+      （`ui/components/BuiltInVocabulary.kt` 的 `getBuiltInVocabularyDirectories(language)`
+      + `vocabularyCategoryLanguage()` 读取词库 JSON 的 `language` 字段；
+      `ui/components/BuiltInVocabularyMenu.kt` 新增 `language` 参数）
+- [x] 内置词库支持**多选**（`BuiltInVocabularyMenu.kt` 复选框 + 「已选 N 个词库」+ 确定）
+- [x] 语言下拉跟随已加载词库（`state/AppState.kt` 的 `generateVocabularyLanguage`，
+      `changeVocabulary` 时写入；`GenerateVocabularyDialog.kt` 取初值并回写）
+- [x] 日语隐藏英语专用控件：「处理词组」（`showEnablePhrases` 加
+      `targetLanguage != "japanese"`）、摘要区「牛津5000/四级/六级/GRE」计数与
+      「按BNC/COCA词频排序」（`Summary` / `PreviewWords` 的 `isJapanese`）、
+      预览卡片改显假名/罗马字
+- [x] 词详情/编辑/导出按语言切换：`player/danmaku/WordDetail.kt`、
+      `ui/edit/EditVocabulary.kt`、`ui/edit/ExportVocabulary.kt`、
+      `ui/dialog/EditWordDialog.kt`、`ui/search/SearchResultInfo.kt`
+- [x] 日语词条 `kana`/`romaji` 的编辑与展示入口（`ui/wordscreen/Word.kt` 的
+      `Phonetic` 改为按 `isJapanese` 分派；`ui/dialog/EditWordDialog.kt`
+      增加假名/罗马字输入；`ui/edit/EditVocabulary.kt` 表格列序一并修正）
 
 ### P3 — 语言分派的一致性与隐患
 
-- [ ] **用字符范围正则判断语言，违反 `AGENTS.md` §8**：
-      `player/HoverableCaption.kt:70` `String.containsJapanese()`、
-      `ui/util/GenerateVocabulary.kt:845` `String.looksJapanese()`、
-      `ui/subtitlescreen/SubtitleScreen.kt:1353` `computeCharWidth` 用
-      `"Chinese|Japanese|Korean"`。应一律改为按 `vocabulary.language` 分派
-      （`looksJapanese()` 仅作为 MKV 无 `languageIetf` 时的兜底）
-- [ ] `isJapanese` 取值来源不统一：`ui/search/Search.kt:90` 用
-      `wordScreenState.vocabulary.language`，同函数 `:100` 用
-      `vocabulary.language`
-- [ ] 听写输入的错误恢复分支用 UTF-16 码元索引（`ui/wordscreen/WordScreen.kt:1166`
-      `currentWord.value[i]`），与 `:1039` 的码点切分（`:1037-1038` 注释说明
-      日语浊音/汉字会超 UTF-16）不一致 → 日语下会错位
-- [ ] Azure TTS 缓存键不一致：`tts/Azure TTS.kt:186` 写盘用原始 `text`，
-      `player/PlayAudio.kt:134` 的 `audioCacheKey` 把非 ASCII 转成 `u%04x`
-      （`:138-140`）→ 日语发音缓存永不命中，反复下载
-- [ ] 英语动作槽解析无越界保护：`ui/wordscreen/WordScreen.kt:2188-2216`
-      对每项直接取 `pair[1]`，格式异常会 `IndexOutOfBoundsException`
-      （日语 `parseJapaneseExchange:2143` 有保护，两路不一致）
-- [ ] `filterWords` 的 `replaceToLemma` 仍用英语 ECDICT
-      （`GenerateVocabularyDialog.kt:2574`），无语言守卫
-- [ ] `ui/wordscreen/DictationState.kt:90`：`sentencesVisible` 默认值取自
-      `dataDictationState.subtitlesVisible`（疑似取错字段）
-- [ ] `ui/dialog/WordFrequencyDialog.kt:102` 硬编码 `language = "english"`
+- [x] 不再用字符范围正则判断语言：`containsJapanese()` 已无调用点（定义保留），
+      `HoverableCaption` / `WordDetail` 改按 `vocabulary.language` 分派；
+      `looksJapanese()` 仅保留为 MKV 无 `languageIetf` 时的兜底
+      （`ui/util/GenerateVocabulary.kt:1072`）。`SubtitleScreen.computeCharWidth`
+      作用于**字幕轨描述**（字体宽度启发式，不是词库内容判定），保留并加注释
+- [x] `isJapanese` 取值统一为 `vocabulary.language`（`ui/search/Search.kt`）
+- [x] 听写输入错误恢复分支改用码点安全访问（`WordScreen.kt` 的
+      `wordChars.getOrNull(i) ?: break`）
+- [x] Azure TTS 缓存键统一（`player/PlayAudio.kt` 的 `audioCacheKey` 改 internal，
+      `tts/Azure TTS.kt` 复用同一函数生成文件名）
+- [x] 动作槽解析加越界保护（`WordScreen.kt` 的 `if (pair.size < 2) return@forEach`）
+- [x] `replaceToLemma` 加日语守卫（`GenerateVocabularyDialog.kt` 三处 `&& !isJapanese`）
+- [x] `ui/wordscreen/DictationState.kt`：`sentencesVisible` 取回自身字段
+      （原文误取 `dataDictationState.subtitlesVisible`）
+- [x] `ui/dialog/WordFrequencyDialog.kt` 硬编码 `language = "english"`
+      —— **设计如此**：词频数据（BNC/COCA）来自英语 ECDICT，该对话框只能
+      生成英语词库，已在代码中注释说明
 
 ### P4 — 词库数据补强（承接）
 
