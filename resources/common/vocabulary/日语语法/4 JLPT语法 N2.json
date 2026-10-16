@@ -12,7 +12,9 @@
                 "〜かねない"
             ],
             "meaning": "might; there is a risk that",
+            "meaningZh": "有可能，难保不会（多用于不好的结果）",
             "formation": "Verb-stem + かねない",
+            "formationZh": "动词ます形词干 + かねない",
             "examples": [
                 {
                     "ja": "その話は誤解を招きかねない。",
@@ -35,7 +37,9 @@
                 "〜かのようだ"
             ],
             "meaning": "as if; just like",
+            "meaningZh": "仿佛，就好像",
             "formation": "Verb-plain / i-adjective / na-adjective + かのようだ",
+            "formationZh": "动词普通形／い形容词／な形容词 + かのようだ",
             "examples": [
                 {
                     "ja": "彼はまるで専門家かのように説明した。",
@@ -58,7 +62,9 @@
                 "〜ずにはいられない"
             ],
             "meaning": "cannot help but; can't resist",
+            "meaningZh": "不由得，忍不住要……",
             "formation": "Verb-negative (ない) + ずにはいられない",
+            "formationZh": "动词ない形（去 ない） + ずにはいられない",
             "examples": [
                 {
                     "ja": "面白くて、笑わずにはいられない。",
@@ -81,7 +87,9 @@
                 "〜にわたって"
             ],
             "meaning": "throughout; over; spanning",
+            "meaningZh": "历经，横跨，在……范围内",
             "formation": "Noun + にわたって",
+            "formationZh": "名词 + にわたって",
             "examples": [
                 {
                     "ja": "3年にわたって研究を続けた。",
@@ -104,7 +112,9 @@
                 "〜に沿って"
             ],
             "meaning": "along; in line with; following",
+            "meaningZh": "沿着；按照，依照（方针、计划）",
             "formation": "Noun + に沿って",
+            "formationZh": "名词 + に沿って",
             "examples": [
                 {
                     "ja": "海岸に沿って走る。",
@@ -127,7 +137,9 @@
                 "〜に応じて"
             ],
             "meaning": "according to; in proportion to; depending on",
+            "meaningZh": "根据……（相应地）；随……而",
             "formation": "Noun + に応じて",
+            "formationZh": "名词 + に応じて",
             "examples": [
                 {
                     "ja": "相手に応じて話し方を変える。",
@@ -150,7 +162,9 @@
                 "〜に加えて"
             ],
             "meaning": "in addition to",
+            "meaningZh": "加上，再加上",
             "formation": "Noun + に加えて",
+            "formationZh": "名词 + に加えて",
             "examples": [
                 {
                     "ja": "英語に加えて、フランス語も勉強している。",
@@ -172,7 +186,9 @@
                 "〜に基づいて"
             ],
             "meaning": "based on; in accordance with",
+            "meaningZh": "基于，根据",
             "formation": "Noun + に基づいて",
+            "formationZh": "名词 + に基づいて",
             "examples": [
                 {
                     "ja": "データに基づいて判断する。",
@@ -194,7 +210,9 @@
                 "〜に際して"
             ],
             "meaning": "on the occasion of; at the time of",
+            "meaningZh": "在……之际，当……的时候",
             "formation": "Noun + に際して",
+            "formationZh": "名词 + に際して",
             "examples": [
                 {
                     "ja": "出発に際して、一言ご挨拶させていただきます。",
@@ -217,7 +235,9 @@
                 "〜に至って"
             ],
             "meaning": "when it comes to; at the point of",
+            "meaningZh": "直到……才；（事态）到了……的地步",
             "formation": "Noun + に至って",
+            "formationZh": "名词 + に至って",
             "examples": [
                 {
                     "ja": "辞職に至った経緯を説明する。",
@@ -240,7 +260,9 @@
                 "〜に代わって"
             ],
             "meaning": "in place of; instead of; on behalf of",
+            "meaningZh": "代替，取代",
             "formation": "Noun + に代わって",
+            "formationZh": "名词 + に代わって",
             "examples": [
                 {
                     "ja": "社長に代わって挨拶する。",
@@ -262,7 +284,9 @@
                 "〜に伴って"
             ],
             "meaning": "as; in accordance with; along with",
+            "meaningZh": "伴随着，随着",
             "formation": "Noun + に伴って",
+            "formationZh": "名词 + に伴って",
             "examples": [
                 {
                     "ja": "都市化に伴って、緑が減っている。",
@@ -284,7 +308,9 @@
                 "〜に反して"
             ],
             "meaning": "contrary to; against",
+            "meaningZh": "与……相反，违背",
             "formation": "Noun + に反して",
+            "formationZh": "名词 + に反して",
             "examples": [
                 {
                     "ja": "予想に反して、試験は簡単だった。",
@@ -306,7 +332,9 @@
                 "〜をきっかけに"
             ],
             "meaning": "triggered by; taking the opportunity of",
+            "meaningZh": "以……为契机，借……之机",
             "formation": "Noun + をきっかけに",
+            "formationZh": "名词 + をきっかけに",
             "examples": [
                 {
                     "ja": "留学をきっかけに、日本語が好きになった。",
@@ -329,7 +357,9 @@
                 "〜をめぐって"
             ],
             "meaning": "concerning; regarding; around",
+            "meaningZh": "围绕……（争论、讨论）",
             "formation": "Noun + をめぐって",
+            "formationZh": "名词 + をめぐって",
             "examples": [
                 {
                     "ja": "環境問題をめぐって議論が続いている。",
@@ -352,7 +382,9 @@
                 "〜を禁じえない"
             ],
             "meaning": "cannot help feeling; unable to restrain",
+            "meaningZh": "不禁（感到）……，抑制不住",
             "formation": "Noun + を禁じえない",
+            "formationZh": "名词 + を禁じえない",
             "examples": [
                 {
                     "ja": "その結果には驚きを禁じえない。",
@@ -375,7 +407,9 @@
                 "〜を除いて"
             ],
             "meaning": "except for; excluding",
+            "meaningZh": "除了……以外",
             "formation": "Noun + を除いて",
+            "formationZh": "名词 + を除いて",
             "examples": [
                 {
                     "ja": "日曜日を除いて、毎日開店している。",
@@ -397,7 +431,9 @@
                 "〜を通して"
             ],
             "meaning": "through; by way of; throughout",
+            "meaningZh": "通过……；在整个……期间",
             "formation": "Noun + を通して",
+            "formationZh": "名词 + を通して",
             "examples": [
                 {
                     "ja": "仕事を通して多くを学んだ。",
@@ -420,7 +456,9 @@
                 "〜を通じて"
             ],
             "meaning": "through; by means of; throughout",
+            "meaningZh": "通过……（手段、媒介）；在整个……期间",
             "formation": "Noun + を通じて",
+            "formationZh": "名词 + を通じて",
             "examples": [
                 {
                     "ja": "SNSを通じて知り合った。",
@@ -443,7 +481,9 @@
                 "〜を余儀なくされる"
             ],
             "meaning": "be forced to; be compelled to",
+            "meaningZh": "被迫……，不得已……",
             "formation": "Noun + を余儀なくされる",
+            "formationZh": "名词 + を余儀なくされる",
             "examples": [
                 {
                     "ja": "悪天候で中止を余儀なくされた。",

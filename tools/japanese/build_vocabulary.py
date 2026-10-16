@@ -63,6 +63,7 @@ _JP_DIR = os.path.dirname(os.path.abspath(__file__))
 if _JP_DIR not in sys.path:
     sys.path.insert(0, _JP_DIR)
 from japanese_romaji import romaji as split_romaji  # noqa: E402
+from enrich_grammar import apply_zh as apply_grammar_zh  # noqa: E402
 
 # ---------------------------------------------------------------- 配置
 
@@ -574,9 +575,14 @@ def build_grammar():
             "grammarList": items,
         }
         path = os.path.join(GRAMMAR_OUTPUT_DIR, f"{order} JLPT语法 {level}.json")
+        # 中文释义/接续由 tools/japanese/enrich_grammar.py 注入（上游只有英文）。
+        # 必须在本函数里调用：每次重建都会覆盖语法文件，否则中文会被抹掉。
+        zh_hit, zh_missing = apply_grammar_zh(payload)
+        if zh_missing:
+            log(f"语法 {level}: {len(zh_missing)} 条缺中文（{'、'.join(zh_missing)}）")
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(payload, fh, ensure_ascii=False, indent=4)
-        log(f"语法 {level}: {len(items)} 条 -> {path}")
+        log(f"语法 {level}: {len(items)} 条（中文 {zh_hit} 条）-> {path}")
         total += len(items)
 
     log(f"语法合计 {total} 条，输出目录 {GRAMMAR_OUTPUT_DIR}")

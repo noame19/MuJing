@@ -12,7 +12,9 @@
                 "〜ことにする"
             ],
             "meaning": "decide to do",
+            "meaningZh": "决定做（主观决定）",
             "formation": "Verb-plain + ことにする",
+            "formationZh": "动词普通形 + ことにする",
             "examples": [
                 {
                     "ja": "毎日運動することにした。",
@@ -34,7 +36,9 @@
                 "〜ずに"
             ],
             "meaning": "without doing",
+            "meaningZh": "不……就（做）；没有做……而",
             "formation": "Verb-negative (ない) + ずに",
+            "formationZh": "动词ない形（去 ない） + ずに",
             "examples": [
                 {
                     "ja": "朝ご飯を食べずに出かけた。",
@@ -57,7 +61,9 @@
                 "〜そうだ"
             ],
             "meaning": "looks like; appears that",
+            "meaningZh": "看起来好像（凭外观判断）",
             "formation": "Verb-stem / i-adjective stem + そうだ",
+            "formationZh": "动词ます形词干／い形容词词干 + そうだ",
             "examples": [
                 {
                     "ja": "このケーキはおいしそうだ。",
@@ -79,7 +85,9 @@
                 "〜つもり"
             ],
             "meaning": "intend to; plan to",
+            "meaningZh": "打算，计划",
             "formation": "Verb-plain + つもり",
+            "formationZh": "动词普通形 + つもり",
             "examples": [
                 {
                     "ja": "来年、日本に留学するつもりだ。",
@@ -101,7 +109,9 @@
                 "〜てあげる"
             ],
             "meaning": "do something for someone (outward)",
+            "meaningZh": "（我）为别人做某事",
             "formation": "Verb-te + あげる",
+            "formationZh": "动词て形 + あげる",
             "examples": [
                 {
                     "ja": "友達に本を貸してあげた。",
@@ -124,7 +134,9 @@
                 "〜ていく"
             ],
             "meaning": "go and do; do something and go away; continue",
+            "meaningZh": "（做某事）去；逐渐……下去；（做完）离去",
             "formation": "Verb-te + いく",
+            "formationZh": "动词て形 + いく",
             "examples": [
                 {
                     "ja": "明日、荷物を持っていきます。",
@@ -147,7 +159,9 @@
                 "〜ておく"
             ],
             "meaning": "do something in advance; leave something in a state",
+            "meaningZh": "预先做好；保持某种状态",
             "formation": "Verb-te + おく",
+            "formationZh": "动词て形 + おく",
             "examples": [
                 {
                     "ja": "明日の朝のために水を出しておく。",
@@ -169,7 +183,9 @@
                 "〜てくる"
             ],
             "meaning": "come and do; do something and come back; start to",
+            "meaningZh": "（做某事）来；逐渐……起来；（做完）回来",
             "formation": "Verb-te + くる",
+            "formationZh": "动词て形 + くる",
             "examples": [
                 {
                     "ja": "すぐ戻ってきます。",
@@ -192,7 +208,9 @@
                 "〜てくれる"
             ],
             "meaning": "someone does something for me",
+            "meaningZh": "（别人）为我（或我一方）做某事",
             "formation": "Verb-te + くれる",
+            "formationZh": "动词て形 + くれる",
             "examples": [
                 {
                     "ja": "先生が漢字を教えてくれた。",
@@ -215,7 +233,9 @@
                 "〜てしまう"
             ],
             "meaning": "do something completely; unintentionally; regret",
+            "meaningZh": "做完了；不小心做了（含后悔、遗憾的语气）",
             "formation": "Verb-te + しまう",
+            "formationZh": "动词て形 + しまう",
             "examples": [
                 {
                     "ja": "財布を落としてしまった。",
@@ -238,7 +258,9 @@
                 "〜てみる"
             ],
             "meaning": "try doing something",
+            "meaningZh": "试着做做看",
             "formation": "Verb-te + みる",
+            "formationZh": "动词て形 + みる",
             "examples": [
                 {
                     "ja": "新しいレストランで食べてみる。",
@@ -260,7 +282,9 @@
                 "〜てもらう"
             ],
             "meaning": "receive the favor of someone doing something",
+            "meaningZh": "请（别人）为我做某事",
             "formation": "Verb-te + もらう",
+            "formationZh": "动词て形 + もらう",
             "examples": [
                 {
                     "ja": "田中さんに日本語を教えてもらう。",
@@ -283,7 +307,9 @@
                 "〜に違いない"
             ],
             "meaning": "must be; no doubt",
+            "meaningZh": "一定是，肯定（较书面）",
             "formation": "Verb-plain / i-adjective / na-adjective + に違いない",
+            "formationZh": "动词普通形／い形容词／な形容词 + に違いない",
             "examples": [
                 {
                     "ja": "彼は疲れているに違いない。",
@@ -305,7 +331,9 @@
                 "〜に決まっている"
             ],
             "meaning": "certainly; must; no doubt",
+            "meaningZh": "一定，肯定（口语、主观断定）",
             "formation": "Verb-plain / i-adjective / na-adjective + に決まっている",
+            "formationZh": "动词普通形／い形容词／な形容词 + に決まっている",
             "examples": [
                 {
                     "ja": "あの人が合格するに決まっている。",
@@ -327,7 +355,9 @@
                 "〜みたい"
             ],
             "meaning": "like; similar to; seems like (casual)",
+            "meaningZh": "像……一样；好像（口语，比 らしい 随便）",
             "formation": "Noun + みたい / Verb-plain / i-adjective / na-adjective + みたい",
+            "formationZh": "名词 + みたい；动词普通形／い形容词／な形容词 + みたい",
             "examples": [
                 {
                     "ja": "彼女は猫みたいだ。",
@@ -350,7 +380,9 @@
                 "〜らしい"
             ],
             "meaning": "seems like; I heard; typical of",
+            "meaningZh": "好像；听说；很有……的样子",
             "formation": "Noun/Verb-plain / i-adjective / na-adjective + らしい",
+            "formationZh": "名词／动词普通形／い形容词／な形容词 + らしい",
             "examples": [
                 {
                     "ja": "彼は日本語が上手らしい。",
@@ -373,7 +405,9 @@
                 "〜わけにはいかない"
             ],
             "meaning": "cannot afford to; must not",
+            "meaningZh": "不能，不可以（出于道义、情理的不能）",
             "formation": "Verb-negative (ない) + わけにはいかない",
+            "formationZh": "动词ない形 + わけにはいかない",
             "examples": [
                 {
                     "ja": "明日は試験だから、遊んでいるわけにはいかない。",
@@ -396,7 +430,9 @@
                 "〜過ぎる"
             ],
             "meaning": "too much; excessive",
+            "meaningZh": "过度，太……（超过限度）",
             "formation": "Verb-stem / i-adjective stem / na-adjective stem + すぎる",
+            "formationZh": "动词ます形词干／い形容词词干／な形容词词干 + すぎる",
             "examples": [
                 {
                     "ja": "昨日は飲みすぎた。",
@@ -418,7 +454,9 @@
                 "〜中"
             ],
             "meaning": "in the middle of; during",
+            "meaningZh": "正在……中；在……期间",
             "formation": "Verb-stem + ちゅう / Noun + ちゅう",
+            "formationZh": "动词ます形词干 + ちゅう；名词 + ちゅう",
             "examples": [
                 {
                     "ja": "会議中です。",
@@ -440,7 +478,9 @@
                 "〜方"
             ],
             "meaning": "way of doing; how to",
+            "meaningZh": "……的方法，做法",
             "formation": "Verb-stem + 方",
+            "formationZh": "动词ます形词干 + 方",
             "examples": [
                 {
                     "ja": "この漢字の読み方を教えてください。",

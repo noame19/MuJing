@@ -12,7 +12,9 @@
                 "〜が"
             ],
             "meaning": "but; however",
+            "meaningZh": "但是；然而（表示转折）",
             "formation": "Clause A + が + Clause B",
+            "formationZh": "句子A + が + 句子B",
             "examples": [
                 {
                     "ja": "この本は高いですが、面白いです。",
@@ -35,7 +37,9 @@
                 "〜があります"
             ],
             "meaning": "there is/are (animate or inanimate)",
+            "meaningZh": "有，在（います 用于人和动物，あります 用于事物）",
             "formation": "Noun + が + います/あります",
+            "formationZh": "名词 + が + います／あります",
             "examples": [
                 {
                     "ja": "公園に猫がいます。",
@@ -57,7 +61,9 @@
                 "〜から"
             ],
             "meaning": "because; since",
+            "meaningZh": "因为，所以（表示原因、理由）",
             "formation": "Sentence + から + Result",
+            "formationZh": "句子 + から + 结果",
             "examples": [
                 {
                     "ja": "雨が降っているから、出かけません。",
@@ -80,7 +86,9 @@
                 "〜が嫌いです"
             ],
             "meaning": "like / dislike",
+            "meaningZh": "喜欢／讨厌",
             "formation": "Noun/Verb-noun + が + 好きです/嫌いです",
+            "formationZh": "名词（或动名词） + が + 好きです／嫌いです",
             "examples": [
                 {
                     "ja": "私は猫が好きです。",
@@ -102,7 +110,9 @@
                 "〜たい"
             ],
             "meaning": "want to do",
+            "meaningZh": "想（做某事）",
             "formation": "Verb-stem + たい",
+            "formationZh": "动词ます形词干 + たい",
             "examples": [
                 {
                     "ja": "日本に行きたいです。",
@@ -124,7 +134,9 @@
                 "〜たことがあります"
             ],
             "meaning": "have done before; experienced",
+            "meaningZh": "曾经做过（表示经历）",
             "formation": "Verb-ta + ことがあります",
+            "formationZh": "动词た形 + ことがあります",
             "examples": [
                 {
                     "ja": "日本に行ったことがあります。",
@@ -146,7 +158,9 @@
                 "〜で"
             ],
             "meaning": "marks the place of action or the means of doing something",
+            "meaningZh": "表示动作的场所，或做某事的手段、工具",
             "formation": "Place/Means + で + Verb",
+            "formationZh": "场所／手段 + で + 动词",
             "examples": [
                 {
                     "ja": "学校で勉強します。",
@@ -168,7 +182,9 @@
                 "〜ている"
             ],
             "meaning": "is/am/are doing (progressive) or resultant state",
+            "meaningZh": "正在做（进行）；或表示动作结果留下的状态",
             "formation": "Verb-te + いる",
+            "formationZh": "动词て形 + いる",
             "examples": [
                 {
                     "ja": "今、ご飯を食べています。",
@@ -190,7 +206,9 @@
                 "〜てください"
             ],
             "meaning": "please do (for me)",
+            "meaningZh": "请（为我）做",
             "formation": "Verb-te + ください",
+            "formationZh": "动词て形 + ください",
             "examples": [
                 {
                     "ja": "窓を開けてください。",
@@ -212,7 +230,9 @@
                 "〜でした"
             ],
             "meaning": "was/were (polite past of です)",
+            "meaningZh": "是（です 的礼貌过去式）",
             "formation": "Noun/Na-adjective + でした",
+            "formationZh": "名词／な形容词 + でした",
             "examples": [
                 {
                     "ja": "昨日は日曜日でした。",
@@ -235,7 +255,9 @@
                 "〜ではありません"
             ],
             "meaning": "is not (polite negative)",
+            "meaningZh": "不是（礼貌否定）",
             "formation": "Noun/Na-adjective + ではありません",
+            "formationZh": "名词／な形容词 + ではありません",
             "examples": [
                 {
                     "ja": "私は学生ではありません。",
@@ -258,7 +280,9 @@
                 "〜てはいけません"
             ],
             "meaning": "must not do",
+            "meaningZh": "不可以做，禁止",
             "formation": "Verb-te + はいけません",
+            "formationZh": "动词て形 + はいけません",
             "examples": [
                 {
                     "ja": "ここで写真を撮ってはいけません。",
@@ -280,7 +304,9 @@
                 "〜てもいいです"
             ],
             "meaning": "may do; it's okay to do",
+            "meaningZh": "可以做，可以（表示许可）",
             "formation": "Verb-te + もいいです",
+            "formationZh": "动词て形 + もいいです",
             "examples": [
                 {
                     "ja": "写真を撮ってもいいですか。",
@@ -302,7 +328,9 @@
                 "〜と"
             ],
             "meaning": "and; with; together with",
+            "meaningZh": "和，与，同（表示并列或共同）",
             "formation": "Noun/Verb-plain + と + Noun/Verb",
+            "formationZh": "名词／动词普通形 + と + 名词／动词",
             "examples": [
                 {
                     "ja": "友達と映画を見ます。",
@@ -324,7 +352,9 @@
                 "〜なくてもいいです"
             ],
             "meaning": "don't have to; need not",
+            "meaningZh": "不做也可以，不必",
             "formation": "Verb-negative + くてもいいです",
+            "formationZh": "动词ない形（去 い） + くてもいいです",
             "examples": [
                 {
                     "ja": "明日は早く来なくてもいいです。",
@@ -347,7 +377,9 @@
                 "〜なくてはいけません"
             ],
             "meaning": "must do; have to do",
+            "meaningZh": "必须做，不得不做",
             "formation": "Verb-negative + ければなりません / くてはいけません",
+            "formationZh": "动词ない形（去 い） + ければなりません／くてはいけません",
             "examples": [
                 {
                     "ja": "明日までにレポートを出さなければなりません。",
@@ -369,7 +401,9 @@
                 "〜に"
             ],
             "meaning": "marks time, destination, or indirect target",
+            "meaningZh": "表示时间、目的地或动作的对象",
             "formation": "Noun/Time + に + Verb",
+            "formationZh": "名词／时间 + に + 动词",
             "examples": [
                 {
                     "ja": "7時に起きます。",
@@ -391,7 +425,9 @@
                 "〜ましょう"
             ],
             "meaning": "let's do; shall we do",
+            "meaningZh": "让我们……吧；（劝诱）……吧",
             "formation": "Verb-stem + ましょう",
+            "formationZh": "动词ます形词干 + ましょう",
             "examples": [
                 {
                     "ja": "一緒に行きましょう。",
@@ -413,7 +449,9 @@
                 "〜ませんか"
             ],
             "meaning": "shall we?; won't you?",
+            "meaningZh": "要不要……？（邀请）",
             "formation": "Verb-negative + ませんか",
+            "formationZh": "动词ない形（去 い） + ませんか",
             "examples": [
                 {
                     "ja": "一緒に食べませんか。",
@@ -435,7 +473,9 @@
                 "〜を"
             ],
             "meaning": "marks the direct object of a verb",
+            "meaningZh": "表示动词的直接宾语",
             "formation": "Noun + を + Verb",
+            "formationZh": "名词 + を + 动词",
             "examples": [
                 {
                     "ja": "本を読みます。",

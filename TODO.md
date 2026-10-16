@@ -278,8 +278,18 @@
       （英文讲解/释义）**，不补中文、不补罗马字——它们是教材的语法讲解而非词条，
       `enrich_vocabulary.py` 的 `is_pattern_card()` 会原样拷贝、不参与增强。
       （`みんなの日本語` 仍无词性 738 条、`标准日本语` 245 条同理）
-- [ ] `日语语法/`（5 档 `grammarList`，无 `wordList`）尚未增强，
-      需要单独设计（语法卡片不是词条）
+- [x] `日语语法/`（5 档 `grammarList`，无 `wordList`）中文补全：
+      新增 `tools/japanese/grammar_zh.json`（自撰 100 条，按语法点 `id` 键）
+      与 `tools/japanese/enrich_grammar.py`（`apply_zh()` 注入 `meaningZh`
+      / `formationZh`），并在 `build_vocabulary.py` 的 `build_grammar()`
+      写文件前调用（**语法文件每次重建都会被覆盖，中文必须由脚本注入**）。
+      实测 100/100 命中；显示端 `ui/dialog/GrammarDetail.kt` 中文优先、英文回退
+- [x] 四个日语分类补齐 `NOTICE.md`（`标准日本语` / `みんなの日本語` /
+      `JLPT精选` / `日语语法`；`JLPT日语` 原有），声明来源、许可与生成命令。
+      **合规提示：`みんなの日本語` 的上游 `vitto4/MinnaNoDS` 未声明任何许可
+      （license: none），再分发条款不明，正式分发前需与上游确认或改用其他词表**
+      （另三家：`smartsl/biaori` MIT、`jamsinclair/open-anki-jlpt-decks` MIT、
+      `evanclan/OpenJLPT` CC BY-SA 4.0）
 - [ ] 少数 N1 同音异形词仍会挑错条目：`依` `共` `於` `僅` `供` `し`
       （JMdict 里没有对应汉字形，同音候选里也没有 `common` 条目；
       需要词频/优先级数据才能解决）

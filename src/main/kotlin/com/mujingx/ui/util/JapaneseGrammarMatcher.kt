@@ -31,8 +31,10 @@ import java.io.File
  * @param level 等级，N5 到 N1
  * @param patterns 可匹配的表面形式。上游用「〜」表示词尾变化的位置，
  *                 例如「〜ない」实际会匹配「食べない」
- * @param meaning 语法含义（英文）
- * @param formation 接续方式
+ * @param meaning 语法含义（英文，上游原文）
+ * @param meaningZh 语法含义（中文），由 `tools/japanese/enrich_grammar.py` 注入
+ * @param formation 接续方式（英文，上游原文）
+ * @param formationZh 接续方式（中文），由 `tools/japanese/enrich_grammar.py` 注入
  * @param examples 例句
  */
 @Serializable
@@ -41,7 +43,9 @@ data class GrammarPoint(
     val level: String,
     val patterns: List<String>,
     val meaning: String = "",
+    val meaningZh: String = "",
     val formation: String = "",
+    val formationZh: String = "",
     val examples: List<GrammarExample> = emptyList(),
     val tags: List<String> = emptyList()
 )
@@ -50,7 +54,9 @@ data class GrammarPoint(
 @Serializable
 data class GrammarExample(
     val ja: String = "",
-    val en: String = ""
+    val en: String = "",
+    /** 例句中文翻译，由 `tools/japanese/enrich_grammar.py` 注入；未翻译时为空串 */
+    val zh: String = ""
 )
 
 /** 语法库文件 */

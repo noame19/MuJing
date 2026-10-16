@@ -196,10 +196,13 @@ resources/common/vocabulary/
 内置词库**不手工编辑**，一律由脚本生成。产物头部与同目录 `NOTICE.md` 会注明来源。
 
 ```text
-tools/japanese/build_vocabulary.py     拉取 OpenJLPT + Yori Dict，产出基础词库
+tools/japanese/build_vocabulary.py     拉取 OpenJLPT + Yori Dict + 教材词表，产出基础词库/语法库
         ↓  resources/common/vocabulary/<分类>/*.json
 tools/japanese/enrich_vocabulary.py    以 JMdict + JMdictDB 补全词性/罗马字/活用
         ↓  覆盖同目录 JSON
+
+tools/japanese/enrich_grammar.py       给 `日语语法/` 注入中文（由 build_grammar() 调用）
+tools/japanese/grammar_zh.json         自撰的语法点中文含义/接续（按语法点 id 键）
 ```
 
 顺序不可颠倒：`enrich_vocabulary.py` 的输入就是它自己要写的文件，同音异形词
@@ -226,7 +229,8 @@ python3 tools/japanese/enrich_vocabulary.py --category JLPT日语 --all --write
 
 可用分类（`--categories` / `--category`）：`jlpt`（JLPT日语）、`standard`
 （标准日本语）、`minna`（みんなの日本語）、`anki`（JLPT精选）、`grammar`
-（日语语法；只有句型卡片，无需增强）。
+（日语语法；走 `grammarList` 结构，由 `build_grammar()` 内部调用
+`enrich_grammar.py` 注入中文，不能用 `enrich_vocabulary.py` 处理）。
 
 分拍罗马字由 `tools/japanese/japanese_romaji.py` 统一提供，两个脚本共用，
 不再各自生成、互相覆盖（旧版 build 用 pykakasi 产出 `kakkou`、enrich 覆盖为
@@ -256,11 +260,19 @@ AppImage 里就看不到词性与活用。此问题曾长期存在（AppImage �
 
 | 数据源 | 用途 | 许可 |
 | --- | --- | --- |
-| [OpenJLPT](https://github.com/evanclan/OpenJLPT) | 分级、英文释义 | CC BY-SA 4.0 |
+| [OpenJLPT](https://github.com/evanclan/OpenJLPT) | 分级、英文释义、JLPT 语法点 | CC BY-SA 4.0 |
 | [Yori Dict](https://github.com/YoriJP/yori-dict) | 中文释义 | CC BY-SA 4.0 |
 | [JMdict](https://www.edrdg.org/jmdict/) | 词性、义项 | CC BY-SA 4.0（仅日/英部分） |
 | [JMdictDB](https://www.edrdg.org/) `conjo.csv` | 动词/形容词活用表 | CC BY-SA 4.0 |
+| [smartsl/biaori](https://github.com/smartsl/biaori) | `标准日本语` 词表 | MIT |
+| [vitto4/MinnaNoDS](https://github.com/vitto4/MinnaNoDS) | `みんなの日本語` 词表 | **未声明（license: none）** |
+| [jamsinclair/open-anki-jlpt-decks](https://github.com/jamsinclair/open-anki-jlpt-decks) | `JLPT精选` 词表 | MIT |
 | `tools/japanese/jadic_supplement.json` | 人工校订的中文释义 | 本项目自撰（CC BY-SA 4.0） |
+| `tools/japanese/grammar_zh.json` | JLPT 语法点的中文含义/接续 | 本项目自撰（CC BY-SA 4.0） |
+
+`みんなの日本語` 词表的上游 `vitto4/MinnaNoDS` **没有声明任何许可证**，
+严格说与本节的「许可不明一律不得引入」冲突：目前仅作学习用途，
+正式分发前须与上游确认许可或改用其他词表（见该分类的 `NOTICE.md` 与 `TODO.md`）。
 
 `jadic_supplement.json` 只在 `jadic.db` 查不到释义时兜底使用（`chinese_for`
 末级），补的是 Yori Dict 根本没有收录的词（`行う` `お祭り` `おまちください`

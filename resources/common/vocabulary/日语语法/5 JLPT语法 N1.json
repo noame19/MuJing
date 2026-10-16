@@ -12,7 +12,9 @@
                 "〜かたわら"
             ],
             "meaning": "while doing; concurrently; on the side",
+            "meaningZh": "一边……一边……；同时从事（本职之外还做）",
             "formation": "Verb-stem / Noun + かたわら",
+            "formationZh": "动词ます形词干／名词 + かたわら",
             "examples": [
                 {
                     "ja": "本業のかたわら、小説を書いている。",
@@ -35,7 +37,9 @@
                 "〜がち"
             ],
             "meaning": "tend to; prone to; frequently",
+            "meaningZh": "容易……，往往……（多用于不好的倾向）",
             "formation": "Verb-stem / Noun + がち",
+            "formationZh": "动词ます形词干／名词 + がち",
             "examples": [
                 {
                     "ja": "彼は病気がちだ。",
@@ -57,7 +61,9 @@
                 "〜がてら"
             ],
             "meaning": "on the way; while doing; taking the opportunity",
+            "meaningZh": "顺便……，顺路……",
             "formation": "Verb-stem / Noun + がてら",
+            "formationZh": "动词ます形词干／名词 + がてら",
             "examples": [
                 {
                     "ja": "散歩がてら、駅前まで買い物に行った。",
@@ -80,7 +86,9 @@
                 "〜かねる"
             ],
             "meaning": "unable to do; cannot (polite refusal)",
+            "meaningZh": "难以……，不能……（委婉的拒绝）",
             "formation": "Verb-stem + かねる",
+            "formationZh": "动词ます形词干 + かねる",
             "examples": [
                 {
                     "ja": "お答えしかねます。",
@@ -103,7 +111,9 @@
                 "〜が早いか"
             ],
             "meaning": "as soon as; the moment",
+            "meaningZh": "刚……就……（瞬间发生）",
             "formation": "Verb-plain + が早いか",
+            "formationZh": "动词普通形 + が早いか",
             "examples": [
                 {
                     "ja": "彼は教室に入るが早いか、泣き出した。",
@@ -126,7 +136,9 @@
                 "〜ずくめ"
             ],
             "meaning": "nothing but; full of; entirely (positive or neutral)",
+            "meaningZh": "全是……，清一色是……",
             "formation": "Noun + ずくめ",
+            "formationZh": "名词 + ずくめ",
             "examples": [
                 {
                     "ja": "彼女はいいことずくめだ。",
@@ -148,7 +160,9 @@
                 "〜すら"
             ],
             "meaning": "even; not even (emphatic negative)",
+            "meaningZh": "连……都（也）（强调）",
             "formation": "Noun + すら",
+            "formationZh": "名词 + すら",
             "examples": [
                 {
                     "ja": "彼は水すら飲まなかった。",
@@ -171,7 +185,9 @@
                 "〜たところで"
             ],
             "meaning": "even if; even though (unlikely to help)",
+            "meaningZh": "即使……也（无济于事），纵然",
             "formation": "Verb-ta + ところで",
+            "formationZh": "动词た形 + ところで",
             "examples": [
                 {
                     "ja": "今さら謝ったところで、許されないだろう。",
@@ -194,7 +210,9 @@
                 "〜だらけ"
             ],
             "meaning": "full of; covered with; lots of (negative nuance)",
+            "meaningZh": "满是……，净是……（多含贬义）",
             "formation": "Noun + だらけ",
+            "formationZh": "名词 + だらけ",
             "examples": [
                 {
                     "ja": "部屋はゴミだらけだ。",
@@ -217,7 +235,9 @@
                 "〜たら最後"
             ],
             "meaning": "once ... it's all over; the moment ...",
+            "meaningZh": "一旦……就完了，一旦……就一定会",
             "formation": "Verb-ta + ら最後",
+            "formationZh": "动词た形 + ら最後",
             "examples": [
                 {
                     "ja": "彼に黙っていると言ったら最後、誰にも言うだろう。",
@@ -240,7 +260,9 @@
                 "〜た末"
             ],
             "meaning": "after all; in the end; as a result of",
+            "meaningZh": "经过……之后，最终……",
             "formation": "Verb-ta + 末（に/の）",
+            "formationZh": "动词た形 + 末（に／の）",
             "examples": [
                 {
                     "ja": "長い議論の末、結論が出た。",
@@ -263,7 +285,9 @@
                 "〜てからというもの"
             ],
             "meaning": "ever since; from the time that",
+            "meaningZh": "自从……以后（一直）",
             "formation": "Verb-te + からというもの",
+            "formationZh": "动词て形 + からというもの",
             "examples": [
                 {
                     "ja": "日本に来てからというもの、毎日忙しい。",
@@ -286,7 +310,9 @@
                 "〜てやまない"
             ],
             "meaning": "cannot stop doing; do nothing but",
+            "meaningZh": "一直……不已，由衷地……",
             "formation": "Verb-te + やまない",
+            "formationZh": "动词て形 + やまない",
             "examples": [
                 {
                     "ja": "子供の将来を案じてやまない。",
@@ -309,7 +335,9 @@
                 "〜ともなると"
             ],
             "meaning": "when it comes to; now that",
+            "meaningZh": "一旦到了……（的状况）就；作为……来说",
             "formation": "Verb-plain / Noun + ともなると",
+            "formationZh": "动词普通形／名词 + ともなると",
             "examples": [
                 {
                     "ja": "家族旅行ともなると、準備が大変だ。",
@@ -332,7 +360,9 @@
                 "〜と相まって"
             ],
             "meaning": "combined with; together with",
+            "meaningZh": "与……相互作用，加上……（更加）",
             "formation": "Noun + と相まって",
+            "formationZh": "名词 + と相まって",
             "examples": [
                 {
                     "ja": "好天に恵まれたことと相まって、大会は大成功だった。",
@@ -355,7 +385,9 @@
                 "〜ならでは"
             ],
             "meaning": "unique to; only possible for; characteristic of",
+            "meaningZh": "只有……才有的，非……莫属",
             "formation": "Noun + ならでは",
+            "formationZh": "名词 + ならでは",
             "examples": [
                 {
                     "ja": "京都ならではの風景だ。",
@@ -377,7 +409,9 @@
                 "〜べく"
             ],
             "meaning": "in order to; for the purpose of (formal)",
+            "meaningZh": "为了……（书面语）",
             "formation": "Verb-stem + べく",
+            "formationZh": "动词ます形词干 + べく",
             "examples": [
                 {
                     "ja": "成功を目指すべく、日夜努力している。",
@@ -400,7 +434,9 @@
                 "〜まい"
             ],
             "meaning": "will not; let's not; probably not",
+            "meaningZh": "不会……吧，绝不（做）（否定推量、否定意志）",
             "formation": "Verb-stem + まい",
+            "formationZh": "动词ます形词干 + まい",
             "examples": [
                 {
                     "ja": "あんな失敗は二度とするまい。",
@@ -423,7 +459,9 @@
                 "〜ものなら"
             ],
             "meaning": "if one could; if only; if you think you can",
+            "meaningZh": "如果能……的话；要是敢……就（威胁）",
             "formation": "Verb-potential + ものなら",
+            "formationZh": "动词可能形 + ものなら",
             "examples": [
                 {
                     "ja": "できるものなら、やってみろ。",
@@ -446,7 +484,9 @@
                 "〜ようによっては"
             ],
             "meaning": "depending on how; depending on the way",
+            "meaningZh": "取决于……的方式，视……而定",
             "formation": "Verb-stem + ようによっては",
+            "formationZh": "动词ます形词干 + ようによっては",
             "examples": [
                 {
                     "ja": "使いようによっては、この道具は便利だ。",

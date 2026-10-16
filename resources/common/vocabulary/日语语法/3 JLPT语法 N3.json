@@ -12,7 +12,9 @@
                 "〜ことだ"
             ],
             "meaning": "should; it is important to",
+            "meaningZh": "应该……，最好是……（忠告、建议）",
             "formation": "Verb-plain + ことだ",
+            "formationZh": "动词普通形 + ことだ",
             "examples": [
                 {
                     "ja": "毎日復習することだ。",
@@ -35,7 +37,9 @@
                 "〜ことはない"
             ],
             "meaning": "there is no need to; never happens",
+            "meaningZh": "用不着，没必要；不会（有这种事）",
             "formation": "Verb-plain + ことはない",
+            "formationZh": "动词普通形 + ことはない",
             "examples": [
                 {
                     "ja": "心配することはない。",
@@ -58,7 +62,9 @@
                 "〜そうにする"
             ],
             "meaning": "pretend to; act as if",
+            "meaningZh": "装作……的样子，做出……的样子",
             "formation": "Verb-plain + そうにする",
+            "formationZh": "动词普通形 + そうにする",
             "examples": [
                 {
                     "ja": "知らないそうにしていた。",
@@ -81,7 +87,9 @@
                 "〜ところ"
             ],
             "meaning": "time; place; situation; about to",
+            "meaningZh": "时间、场所、情况；正要……（ところだ）",
             "formation": "Verb-plain / Verb-te / Verb-ta + ところ",
+            "formationZh": "动词普通形／て形／た形 + ところ",
             "examples": [
                 {
                     "ja": "今、出かけるところです。",
@@ -104,7 +112,9 @@
                 "〜について"
             ],
             "meaning": "about; concerning; regarding",
+            "meaningZh": "关于，就……",
             "formation": "Noun + について",
+            "formationZh": "名词 + について",
             "examples": [
                 {
                     "ja": "環境について話す。",
@@ -126,7 +136,9 @@
                 "〜によって"
             ],
             "meaning": "by means of; due to; depending on; passive agent",
+            "meaningZh": "由于，因为；由……（被动句的动作发出者）；因……而异",
             "formation": "Noun + によって",
+            "formationZh": "名词 + によって",
             "examples": [
                 {
                     "ja": "この本は有名な作家によって書かれた。",
@@ -150,7 +162,9 @@
                 "〜によると"
             ],
             "meaning": "according to",
+            "meaningZh": "据……说，根据……",
             "formation": "Noun + によると",
+            "formationZh": "名词 + によると",
             "examples": [
                 {
                     "ja": "天気予報によると、明日は雨だ。",
@@ -172,7 +186,9 @@
                 "〜に対して"
             ],
             "meaning": "toward; in contrast to; regarding",
+            "meaningZh": "对……，对于；与……相对",
             "formation": "Noun + に対して",
+            "formationZh": "名词 + に対して",
             "examples": [
                 {
                     "ja": "お客様に対して丁寧に話す。",
@@ -195,7 +211,9 @@
                 "〜ばかり"
             ],
             "meaning": "only; just; full of; tendency to",
+            "meaningZh": "只有，光是；尽是；刚刚（做过）",
             "formation": "Verb-te / Noun + ばかり",
+            "formationZh": "动词て形／名词 + ばかり",
             "examples": [
                 {
                     "ja": "毎日ゲームをしているばかりだ。",
@@ -218,7 +236,9 @@
                 "〜ばかりでなく"
             ],
             "meaning": "not only ... but also",
+            "meaningZh": "不仅……而且……",
             "formation": "Verb-plain / i-adjective / na-adjective + ばかりでなく",
+            "formationZh": "动词普通形／い形容词／な形容词 + ばかりでなく",
             "examples": [
                 {
                     "ja": "彼女は頭がいいばかりでなく、優しい。",
@@ -240,7 +260,9 @@
                 "〜ものだ"
             ],
             "meaning": "it is natural/normal to; one should",
+            "meaningZh": "本来就该……，理应……；真是……（感叹）",
             "formation": "Verb-plain + ものだ",
+            "formationZh": "动词普通形 + ものだ",
             "examples": [
                 {
                     "ja": "子供のころはよく遊んだものだ。",
@@ -263,7 +285,9 @@
                 "〜ものではない"
             ],
             "meaning": "should not; it's not right to",
+            "meaningZh": "不该……，不应该",
             "formation": "Verb-plain + ものではない",
+            "formationZh": "动词普通形 + ものではない",
             "examples": [
                 {
                     "ja": "人の悪口を言うものではない。",
@@ -286,7 +310,9 @@
                 "〜よう"
             ],
             "meaning": "way/manner of; like; in order to",
+            "meaningZh": "……的方法、样子；像……；为了……",
             "formation": "Verb-plain + よう",
+            "formationZh": "动词普通形 + よう",
             "examples": [
                 {
                     "ja": "泳ぎ方を教えてください。",
@@ -309,7 +335,9 @@
                 "〜ようにする"
             ],
             "meaning": "make sure to; try to",
+            "meaningZh": "设法做到，尽量做到",
             "formation": "Verb-plain + ようにする",
+            "formationZh": "动词普通形 + ようにする",
             "examples": [
                 {
                     "ja": "毎日日本語を話すようにしている。",
@@ -332,7 +360,9 @@
                 "〜ようになる"
             ],
             "meaning": "come to be able to; reach the point where",
+            "meaningZh": "变得能够……，逐渐变成……",
             "formation": "Verb-plain + ようになる",
+            "formationZh": "动词普通形 + ようになる",
             "examples": [
                 {
                     "ja": "毎日練習したら、泳げるようになった。",
@@ -355,7 +385,9 @@
                 "〜らしい"
             ],
             "meaning": "seems; I heard; typical (less casual than みたい)",
+            "meaningZh": "好像；听说；很有……的样子（比 みたい 正式）",
             "formation": "Verb-plain / i-adjective / na-adjective + らしい",
+            "formationZh": "动词普通形／い形容词／な形容词 + らしい",
             "examples": [
                 {
                     "ja": "彼は怒っているらしい。",
@@ -378,7 +410,9 @@
                 "〜わけがない"
             ],
             "meaning": "there is no way that; impossible",
+            "meaningZh": "不可能，绝不会",
             "formation": "Verb-plain / i-adjective / na-adjective + わけがない",
+            "formationZh": "动词普通形／い形容词／な形容词 + わけがない",
             "examples": [
                 {
                     "ja": "あの人が嘘をつくわけがない。",
@@ -401,7 +435,9 @@
                 "〜わけだ"
             ],
             "meaning": "it is natural that; no wonder; as expected",
+            "meaningZh": "难怪，怪不得；自然会……",
             "formation": "Verb-plain / i-adjective / na-adjective + わけだ",
+            "formationZh": "动词普通形／い形容词／な形容词 + わけだ",
             "examples": [
                 {
                     "ja": "毎日勉強しているから、上手になるわけだ。",
@@ -424,7 +460,9 @@
                 "〜わけではない"
             ],
             "meaning": "it doesn't mean that; not necessarily",
+            "meaningZh": "并不是说……，并非",
             "formation": "Verb-plain / i-adjective / na-adjective + わけではない",
+            "formationZh": "动词普通形／い形容词／な形容词 + わけではない",
             "examples": [
                 {
                     "ja": "嫌いなわけではない。",
@@ -447,7 +485,9 @@
                 "〜一方"
             ],
             "meaning": "on the one hand; on the other hand; while",
+            "meaningZh": "一方面；另一方面；一边……一边（对比、并列）",
             "formation": "Noun/Verb-plain + 一方",
+            "formationZh": "名词／动词普通形 + 一方",
             "examples": [
                 {
                     "ja": "この町は静かな一方、不便だ。",

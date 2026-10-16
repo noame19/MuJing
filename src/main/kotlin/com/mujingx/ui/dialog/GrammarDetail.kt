@@ -93,11 +93,14 @@ fun GrammarDetailCard(
             }
         }
 
-        if (point.meaning.isNotEmpty()) {
-            KeyValueRow("含义", point.meaning)
+        // 中文释义/接续由 tools/japanese/enrich_grammar.py 注入，缺失时回退上游英文
+        val meaningText = point.meaningZh.ifEmpty { point.meaning }
+        val formationText = point.formationZh.ifEmpty { point.formation }
+        if (meaningText.isNotEmpty()) {
+            KeyValueRow("含义", meaningText)
         }
-        if (point.formation.isNotEmpty()) {
-            KeyValueRow("接续", point.formation)
+        if (formationText.isNotEmpty()) {
+            KeyValueRow("接续", formationText)
         }
 
         if (point.examples.isNotEmpty()) {
@@ -116,9 +119,11 @@ fun GrammarDetailCard(
                             fontFamily = FontFamily.Default,
                             color = MaterialTheme.colors.onBackground
                         )
-                        if (example.en.isNotEmpty()) {
+                        // 例句译文：优先中文（本项目翻译），缺失时回退上游英文
+                        val translation = example.zh.ifEmpty { example.en }
+                        if (translation.isNotEmpty()) {
                             Text(
-                                text = example.en,
+                                text = translation,
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
                             )
