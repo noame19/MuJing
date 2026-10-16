@@ -1,7 +1,11 @@
 # TODO — 日语支持待办
 
-本文件记录日语学习支持的剩余工作。已完成部分见 git 历史与
-`docs/JAPANESE_SUPPORT_PLAN.md`。
+本文件记录日语支持的剩余工作。已完成部分见 git 历史、
+`docs/JAPANESE_SUPPORT_PLAN.md` 与 `AGENTS.md`。
+
+分支约定（`AGENTS.md` §9）：功能开发提交到 `japanese-support-dev`，
+编译验证用 `gh workflow run Build-AppImage.yml --ref japanese-support-dev`，
+**用户实测确认无误后再合入 `master`**。
 
 ## 已完成（近期）
 
@@ -67,79 +71,177 @@
 
 ## 待办
 
-### P0 — 验证
+### P0 — 日语「影视字幕背单词」链路（当前基本不可用，最高优先）
 
-- [ ] 用修复后的构建实测：词型栏的活用行**能显示出来**、词性有值
-      （此前 AppImage 的词库是构建期重生成的基础版，`pos`/`exchange` 全空，
-      所以「活用静默不显示」既是 UI bug 也是数据 bug，见「已完成」末条）
-- [ ] 回归验证英语词库的显示与发音未受影响
-      （Morphology 增加了 language 分派，英语路径应保持原样）
-- [ ] 验证日语发音仍走有道真人录音，未回落到 espeak
+用户实测：拖入日语字幕、左侧选了 `JLPT日语 N1–N5`、点「生成词库」，
+结果**「没有发现词语」**。测试文件：
+`/home/manaka-fedora/下载/[SweetSub] Seihantai na Kimi to Boku - 24 [WebRip 1080p HEVC-10bit AAC CHS&CHT].jp.ass`
+（UTF-8、Aegisub v4.00+、620 条 Dialogue **全部是日文**、内联 `{\an3\pos(...)\fs90}`
+标签很碎，没有中文行）。
 
-### P1 — 数据完整性
+- [ ] **日语 `.ass` 字幕根本不被支持**（用户 0 词的直接原因）
+      `ui/dialog/GenerateVocabularyDialog.kt:517-527` 文件选择器允许
+      `listOf("srt","ass")`，但 `:634-639` 的 SUBTITLES 分支对日语
+      **无条件**调用 `parseJapaneseSRT`（注释写「ASS 会先转换为 SRT」，实际没有），
+      而 `ui/util/GenerateVocabulary.kt:556` 的 `parseJapaneseSRT` 用
+      `FormatSRT().parseFile(...)`（`:576`）按 SRT 解析 → `.ass` 解析失败。
+      英语路径有 `parseASS`（`:664`，走 ffmpeg 转 SRT）。
+      修法：日语分支按扩展名分派，`.ass` 复用已有的 ffmpeg 转换后按 SRT 解析
+      （或另写 ASS 解析器）。
+- [ ] **日语字幕在播放器/字幕浏览器里无法点词、悬停查词**：
+      `player/HoverableCaption.kt:512` 的 `renderCaptionLine` 用
+      `line.split(Regex("\\s+"))` 按空格切词，`:516`/`:520` 又只用
+      `a..z`/`A..Z`/数字判定词边界 —— 日语没有空格且不是 ASCII，
+      整行被当作 `leadingPunctuation`、`wordPart` 为空，
+      于是永远不生成 `HoverableText`（字幕浏览器同 `:578`）。
+      修法：日语走 `JapaneseWordSegmenter.tokenize()` 得到词与起止下标。
+- [ ] **悬停查词恒查英语词典**：`player/HoverableCaption.kt:149`
+      `val dictWord = Dictionary.query(text.lowercase().trim())` 硬编码英语
+      ECDICT，未按词库 `language` 分派 `JapaneseDictionary` →
+      日语词只会显示「内置词典里面没有 …」。
+      （`player/danmaku/WordDetail.kt:202` 还硬编码 `英 … 美 …` 音标，
+      且完全没展示 kana/romaji。）
+- [ ] **「用文档生成词库」忽略目标语言**：
+      `ui/dialog/GenerateVocabularyDialog.kt:613` 算了 `isJapanese`，
+      但 DOCUMENT 分支 `:615-628` 完全不用它，恒调 `parseDocument`
+      （`ui/util/GenerateVocabulary.kt:81` 英语 OpenNLP `:117-130`，
+      再用 ECDICT 过滤 `:179`）→ 选「日语」仍走英语链路，日文词全被丢弃。
+- [ ] **播放器「匹配词库」恒按英语分词**：
+      `ui/util/GenerateVocabulary.kt:1147` `generateMatchedVocabulary`
+      恒调 `parseSRT(..., enablePhrases=true)` 且 `language = ""`（`:1165`），
+      不看播放器当前词库的语言。
+- [ ] 「包含词库」未做语言防护：`GenerateVocabularyDialog.kt:992-1003`
+      调用 `includeWords(...)` 没传 `isJapanese`；`:2662-2673` 的
+      BNC/COCA 条件缺少 `applyFrequencyFilters` 守卫（对比 `filterWords:2482`）。
+- [ ] 目标语言下拉对「用文档生成词库」等类型仍显示（`:899`）但无效：
+      要么让它真正生效，要么按类型隐藏。
+- [ ] 补一套日语字幕的端到端用例：`.srt` / `.ass` / `.mkv` 三种源
+      都要能出词，并覆盖「播放器点词 → 查词 → 加入词库」这条链。
 
+### P1 — 内置词库：学习数据与进度分离（路线 B，用户已选定）
+
+现状（读代码确认）：
+
+- 内置词库是**只读模板**，必须「另存为」才能用：
+  `ui/dialog/BuiltInVocabularyDialog.kt:64` 标题即「选择内置词库到本地文件系统」，
+  `:148-169` 另存后 `writeBytes` → `openChooseVocabulary`。
+- 内置列表扫描**全部**分类、不按语言过滤：`ui/components/BuiltInVocabulary.kt:59`
+  `getBuiltInVocabularyDirectories()`。
+- 学习进度写回**词库文件本身**并另存一份全局状态：
+  `ui/wordscreen/WordScreenState.kt:355-364` `saveCurrentVocabulary()`
+  （`vocabularyPath.writeText(...)` 整份覆盖）、`:388-410` `saveWordScreenState()`
+  → `WordScreenData`（`:44-64`）只有 `index` / `hardVocabularyIndex` /
+  `familiarVocabularyIndex` / `vocabularyName` / `vocabularyPath` 等，
+  存放在 `~/.MuJing/TypingWordSettings.json`（`:466-469`，**全机单文件**）。
+- `Word` / `Vocabulary` 数据模型里**没有任何学习状态字段**：
+  `data/Vocabulary.kt:34-68`。
+- 「加入熟悉词库」会把词**从当前词库文件里删掉**：
+  `ui/wordscreen/WordScreen.kt:519-555`（`getFamiliarVocabularyFile()` +
+  `saveVocabulary(...)`），MKV/字幕来源还会顺带写 `externalCaptions`。
+
+待办：
+
+- [ ] 支持直接从内置词库开始学习（不必先另存为）——只读词库 + 外部进度
+- [ ] 进度存储与词库数据分离：新建进度存储（按词库指纹 + `value` 索引
+      记录熟练度/复习状态），词库文件保持只读；迁移旧的
+      `~/.MuJing/TypingWordSettings.json`
+- [ ] 「熟悉词库」改为进度标记，不再从词库文件里删词
+      （现在删词会让只读内置词库不可用）
+- [ ] 修 `WordScreenState.kt:155`：`familiarVocabularyIndex` 初始化误用了
+      `hardVocabularyIndex`
+- [ ] 进度要不要接 `fsrs/`（现在 FSRS 只服务 apkg 复习，与词屏无关）——待定
+
+### P2 — 「生成词库」界面交互
+
+- [ ] 内置词库列表要按目标语言过滤，并与右上角语言下拉**联动**
+      （现在英语/日语分类混排：`ui/components/BuiltInVocabulary.kt:59`；
+      `ui/components/BuiltInVocabularyMenu.kt:48` 没有 language 参数）
+- [ ] 内置词库支持**多选**（现在选一个就关闭：`BuiltInVocabularyMenu.kt:86-89`，
+      只能反复打开累加）
+- [ ] 语言下拉默认 `english` 且不跟随已加载词库：
+      `GenerateVocabularyDialog.kt:237`
+- [ ] 对日语无意义但仍显示的控件：「处理词组」（`:2237-2260`，日语
+      `parseJapaneseSRT`/`parseJapaneseMKV` 没有 `enablePhrases` 参数）、
+      摘要区的「牛津5000/四级/六级/GRE」计数（`:1264` `:1433`）、
+      「按BNC/COCA词频排序」（`:1312-1379`）、预览里的 `bnc`/`COCA:frq`
+      （`:2844-2914`）
+- [ ] 词详情/编辑/导出仍以英美音标为列、中英双 Tab：
+      `player/danmaku/WordDetail.kt:202`、`ui/edit/EditVocabulary.kt:173-174`
+      `:253-254` `:811-812`、`ui/edit/ExportVocabulary.kt:797` `:802`、
+      `ui/dialog/EditWordDialog.kt:244-245` `:416-431`；
+      `ui/search/SearchResultInfo.kt:83-92` 的「英文」Tab 对日语恒为空
+- [ ] 日语词条缺少 `kana`/`romaji` 的编辑与展示入口
+      （`ui/wordscreen/Word.kt:322` 的 `Phonetic` 靠 `kana` 是否为空分派，
+      不是靠语言）
+
+### P3 — 语言分派的一致性与隐患
+
+- [ ] **用字符范围正则判断语言，违反 `AGENTS.md` §8**：
+      `player/HoverableCaption.kt:70` `String.containsJapanese()`、
+      `ui/util/GenerateVocabulary.kt:845` `String.looksJapanese()`、
+      `ui/subtitlescreen/SubtitleScreen.kt:1353` `computeCharWidth` 用
+      `"Chinese|Japanese|Korean"`。应一律改为按 `vocabulary.language` 分派
+      （`looksJapanese()` 仅作为 MKV 无 `languageIetf` 时的兜底）
+- [ ] `isJapanese` 取值来源不统一：`ui/search/Search.kt:90` 用
+      `wordScreenState.vocabulary.language`，同函数 `:100` 用
+      `vocabulary.language`
+- [ ] 听写输入的错误恢复分支用 UTF-16 码元索引（`ui/wordscreen/WordScreen.kt:1166`
+      `currentWord.value[i]`），与 `:1039` 的码点切分（`:1037-1038` 注释说明
+      日语浊音/汉字会超 UTF-16）不一致 → 日语下会错位
+- [ ] Azure TTS 缓存键不一致：`tts/Azure TTS.kt:186` 写盘用原始 `text`，
+      `player/PlayAudio.kt:134` 的 `audioCacheKey` 把非 ASCII 转成 `u%04x`
+      （`:138-140`）→ 日语发音缓存永不命中，反复下载
+- [ ] 英语动作槽解析无越界保护：`ui/wordscreen/WordScreen.kt:2188-2216`
+      对每项直接取 `pair[1]`，格式异常会 `IndexOutOfBoundsException`
+      （日语 `parseJapaneseExchange:2143` 有保护，两路不一致）
+- [ ] `filterWords` 的 `replaceToLemma` 仍用英语 ECDICT
+      （`GenerateVocabularyDialog.kt:2574`），无语言守卫
+- [ ] `ui/wordscreen/DictationState.kt:90`：`sentencesVisible` 默认值取自
+      `dataDictationState.subtitlesVisible`（疑似取错字段）
+- [ ] `ui/dialog/WordFrequencyDialog.kt:102` 硬编码 `language = "english"`
+
+### P4 — 词库数据补强（承接）
+
+- [ ] 三类教材补到 `JLPT日语` 的水准（缺的量已统计）：
+      `标准日本语` 9021 词（词性/中文 100%、活用 29%、非纯假名 332）、
+      `JLPT精选` 8062 词（缺中文 365、词性 96%、非纯假名 332）、
+      `みんなの日本語` 2692 词（缺中文 811、词性 73%、无 kana/romaji 110、
+      非纯假名 539）。需要：① 归并列写法（`いい; よい`）② 校订表 + 按汉字形
+      兜底补 1176 条中文 ③ 评估 481 条专有名词/整句
 - [ ] `value` 仍保留源词库原样写法（`いい/よい`、`けれど/けれども`、
-      `あげる (=やる)`、`ゆっくりと` 等 40 余条），未改写词库主键。
-      是否归一化（拆成多条 / 去括号注释 / 去尾助词）待定
+      `あげる (=やる)`、`ゆっくりと` 等 40 余条），是否归一化待定
+      （拆条会造成重复词条，需先定策略）
 - [ ] 少量词因 JMdict 无对应条目而只能保留源数据（无词性/活用）：
-      `おまちください` `ぺん`（中文释义已由校订表补上）。这类词若今后
-      出现得多，可考虑片假名↔平假名折叠匹配（但会引入 `歎` → `タン`(牛舌)
-      这类错配，需逐条核对，暂不做）
-- [ ] 教材分类里整句卡片与专有名词查不到 JMdict 条目，仍是空的词性/释义：
-      `みんなの日本語` 738 条无词性（含 `お元気ですか。` 这类整句、
-      地名/公司名），`标准日本语` 245 条（专有名词居多）；
-      另 `みんなの日本語` 有 110 条无假名/罗马字（源数据 kana 为空或是
-      带 `［ ］` 注记的卡片），需要在源数据或显示层处理
-- [ ] 原词库的数据质量问题（宜在 build_vocabulary.py 上游修正）：
-      - `けれど/けれども` 在 N4 与 N2 重复收录（源数据如此，未改）
-      - OpenJLPT 的英文释义本身有错（`はい` 的 meanings 是 `wear; put on (sword)`），
-        我们只能照抄
-      - 源 kana 与 JMdict 不符的（`日付` 在 N1 作 `かづけ`）已由 `pick_kana`
-        以 JMdict 校正为 `ひづけ`；jadic 本身解释错的（`しいんと` 被串成
-        「场面/场景」）改由校订表的 `force` 条目覆盖（见「已完成」）
-- [ ] 少数 N1 同音异形词仍会挑错条目（源词条在 JMdict 里没有对应汉字形，
-      只能在同音词里猜）：`依` `共` `於` `僅` `供` `し`。
-      已用 JMdict 词条的 `common` 标志做同分时的优先项，但这几个词的
-      同音候选里没有 `common` 条目，需要词频/优先级数据才能解决
-      （jmdict-simplified 不带 `<pri>` 标签）
+      `おまちください` `ぺん`（中文已由校订表补上）。
+      片假名↔平假名折叠匹配会引入 `歎` → `タン`(牛舌) 这类错配，暂不做
+- [ ] 教材分类的整句卡片/专有名词查不到 JMdict 条目（`みんなの日本語` 738 条
+      无词性、`标准日本语` 245 条），维持现状即可，不必强补
+- [ ] `日语语法/`（5 档 `grammarList`，无 `wordList`）尚未增强，
+      需要单独设计（语法卡片不是词条）
+- [ ] 少数 N1 同音异形词仍会挑错条目：`依` `共` `於` `僅` `供` `し`
+      （JMdict 里没有对应汉字形，同音候选里也没有 `common` 条目；
+      需要词频/优先级数据才能解决）
+- [ ] 源数据质量问题（宜在 `build_vocabulary.py` 上游修正）：
+      `けれど/けれども` 在 N4 与 N2 重复收录（源数据如此）；
+      OpenJLPT 的英文释义本身有错（`はい` 的 meanings 是
+      `wear; put on (sword)`），只能照抄
 
-### P2 — 展示与内容
+### P5 — 验证与收尾
 
-结论（2026-10 核查后决定不改，均为有意保留）：
+- [ ] 用户实测最新 AppImage（`japanese-support-dev`，含构建修复）：
+      `合う` 应显示词性、14 行中文与活用块；`标准日本语` 词性应显示
+      「名词」而不是 `[名]`；`JLPT精选` 的 `合う` 应有词性与活用
+- [ ] 实测确认后把 `japanese-support-dev` 合入 `master`
+- [ ] 回归验证英语词库的显示与发音未受影响
+- [ ] 验证日语发音仍走有道真人录音，未回落到 espeak
+- [ ] 清理仓库外的验证残留：`~/work_rom/MuJing/glyph/`、`squashfs-root/`、
+      `verifyA/`、`testA/`（等用户确认后删）
 
-- `definition` 保持英文释义（JMdict gloss）。要做「日语释义」需引入
-  国語辞典数据源（JMdict 只有英文 gloss），而界面已同时给出中文释义
-  （`translation`），英文释义只作补充；引入新数据源是独立任务，
-  且会把 `definition` 从现在可直接用的英文换成需要再校对的内容
-- 多词性**无需**分行：`definition` 已按义项分行、每行带词性前缀
-  （与英语 `n.` / `vt.` / `vi.` 完全同构），`pos` 字段另有整词词性汇总
-  （英语词库该字段为空，日语因为能拿到权威词性才填）；
-  `WordScreen.kt` 的 `rows` 也按 `\n` 计算，多行本来就支持
-- 中文释义保持平铺：jadic 给的是 (词形, 读音) 下的平铺列表，
-  与 JMdict 义项无法可靠对齐，强行对齐会引入错配
-- な形容词活用已由 3 形补到 8 形（见「已完成」）
-
-### P3 — 管线与工程
-
-- [x] romaji 权威来源统一：`tools/japanese/japanese_romaji.py` 为唯一实现，
-  两个脚本共用；`build_vocabulary.py` 不再依赖 pykakasi
-- [x] 增强步骤并入 `build_vocabulary.py`：`--enrich` 在生成之后立即调用
-  `enrich_vocabulary.py`（顺序由脚本保证，避免在已增强文件上再跑一次
-  导致同音异形词消歧被上一轮结果污染）
-- [x] 代码风格落地为仓库根的 `.editorconfig`（4 空格缩进、UTF-8、LF、
-  末尾单个换行、Markdown 保留行尾空格）。**未**引入 ktlint/spotless：
-  构建全部在 GitHub Actions 云端进行，为格式加一个 Gradle 插件会扩大
-  构建失败面；编辑器自动格式化改以 `.editorconfig` 为准
-
-### P4 — 后续语言与功能
+### P6 — 后续语言与功能（承接）
 
 - [ ] 韩语支持：按 `AGENTS.md` §6 的清单实施
       （`resources/common/vocabulary/TOPIK한국어/` + `KoreanDictionary`）
-- [ ] 音调（アクセント）展示：NHK 词典不可分发，
-      需另找开放许可的音调数据源
-- [x] 视频词库生成接入日语分词：已由 `lucene-analysis-kuromoji` +
-      `player/JapaneseWordSegmenter.kt` + `GenerateVocabulary.kt`
-      的 `extractJapaneseWords()` 实现（核查确认，不必再改）
+- [ ] 音调（アクセント）展示：NHK 词典不可分发，需另找开放许可的数据源
 
 ## 已知的坑
 
@@ -149,3 +251,13 @@
   **不是**语言名；`language` 才是语种；`subtitlesTrackId` 是整数
 - `exchange` 的标签与值内不得出现 `/` 或 `:`，否则被界面当分隔符
 - 词库由脚本生成，不要手工编辑 `resources/common/vocabulary/` 下的 JSON
+- **构建期必须 `--dict-only`**：`resources/common/dictionary/jadic.db` 被
+  `.gitignore` 排除，云端构建时不存在，`build.gradle.kts` 的
+  `buildJapaneseDictionary` 任务因此每次都会执行；不带参数调用
+  `build_vocabulary.py` 会把仓库里已增强的词库覆盖成基础词库
+- 应用数据目录是 `~/.MuJing/`（`state/AppState.kt:412-419`）：
+  `AppSettings.json`、`TypingWordSettings.json`（词汇学习进度，全机单文件）、
+  `VideoPlayer/`、`audio/`、`logs/`
+- 日语字幕支持现状：字幕解析走 `JapaneseWordSegmenter`（Kuromoji），
+  但播放器/字幕浏览器的点击查词仍是英语实现（见 P0），
+  且 `.ass` 未做转换
