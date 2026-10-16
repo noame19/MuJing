@@ -57,13 +57,21 @@
   首个用例是 `しいんと` —— jadic 的 `しいん`（Yori Dict）误收为
   「场面/场景/景象」，与 JMdict 的 `silently` 不符，已改为
   「鸦雀无声/寂静无声/静悄悄」；覆盖需在条目 `note` 里写明依据
+- **修复「AppImage 里的词库一直是基础版」**（2026-10-16 定位）：`jadic.db`
+  被 `.gitignore` 排除，云端每次构建都缺失，`build.gradle.kts` 的
+  `buildJapaneseDictionary` 任务因此每次执行，而它原先不带参数调用
+  `build_vocabulary.py` —— 把**已提交的增强词库覆盖成基础词库**
+  （`pos`/`exchange` 为空、`definition` 是 OpenJLPT 原文、中文未按义项切分），
+  所以打出来的 AppImage 里看不到词性与活用。现改为固定传 `--dict-only`
+  （只重建 jadic.db，不碰任何词库 JSON），并在 `AGENTS.md` §4 写明构建期约束
 
 ## 待办
 
 ### P0 — 验证
 
-- [ ] 下载最新 AppImage 实测，确认词型栏的活用行**能显示出来**
-      （此前 300 个动词/形容词的活用全部静默丢失）
+- [ ] 用修复后的构建实测：词型栏的活用行**能显示出来**、词性有值
+      （此前 AppImage 的词库是构建期重生成的基础版，`pos`/`exchange` 全空，
+      所以「活用静默不显示」既是 UI bug 也是数据 bug，见「已完成」末条）
 - [ ] 回归验证英语词库的显示与发音未受影响
       （Morphology 增加了 language 分派，英语路径应保持原样）
 - [ ] 验证日语发音仍走有道真人录音，未回落到 espeak

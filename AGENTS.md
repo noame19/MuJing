@@ -211,6 +211,23 @@ python3 tools/japanese/enrich_vocabulary.py --category JLPT日语 --all --write
 脚本依赖放在 `tools/japanese/.venv/`，与仓库其他部分隔离。
 `tools/japanese/data/`、`.venv/`、`__pycache__/` 已在 `.gitignore` 中排除。
 
+### 构建期（GitHub Actions）
+
+`resources/common/vocabulary/**/*.json` 是**已提交的增强产物**，构建期不得重新生成。
+`jadic.db` 被 `.gitignore` 排除，云端每次构建都缺失，`build.gradle.kts` 的
+`buildJapaneseDictionary` 任务因此每次都会执行，它固定调用：
+
+```bash
+python3 tools/japanese/build_vocabulary.py --dict-only   # 只生成 jadic.db
+```
+
+⚠ **构建期严禁不带 `--dict-only` 运行 `build_vocabulary.py`。** 脚本会重写
+`resources/common/vocabulary/<分类>/*.json`，把已提交的增强词库覆盖成基础词库
+（`pos`/`exchange` 为空、`definition` 用 OpenJLPT 原文、中文释义未按义项切分），
+AppImage 里就看不到词性与活用。此问题曾长期存在（AppImage 的词库一直是基础版），
+2026-10-16 定位并修复。若要更新词库，请在本地按上面「运行」一节的顺序生成后
+提交 JSON；构建机只负责生成不进仓库的 `jadic.db`。
+
 ### 数据源与许可
 
 | 数据源 | 用途 | 许可 |

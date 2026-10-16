@@ -212,8 +212,14 @@ val decompressDictionary by tasks.registering {
 }
 
 // 日→中词典 jadic.db：日语功能依赖它，缺失时调用生成脚本构建。
-// 脚本只依赖 Python 标准库；可选依赖 pykakasi 用于生成罗马字，
-// 缺失时 romaji 字段留空，不影响其他功能。
+// 脚本只依赖 Python 标准库，无需在构建机安装额外依赖。
+//
+// ⚠ 必须传 --dict-only：
+//   jadic.db 被 .gitignore 排除，每次云端构建都缺失，所以这个任务每次都会执行。
+//   而词库 JSON（resources/common/vocabulary/**）是**已提交的增强产物**，
+//   若不带参数运行脚本，会把它们覆盖成基础词库（无词性、无活用、中文未按义项
+//   切分），打出来的 AppImage 里就看不到词性与活用 —— 见 tools/japanese/
+//   build_vocabulary.py 的 --dict-only 说明。
 //
 // 注意：词典为可选增强，构建期缺少 Python 时跳过而非中断，
 // 以免英语用户在未安装 Python 的机器上无法构建。
@@ -238,7 +244,7 @@ val buildJapaneseDictionary by tasks.registering {
         var executed = false
         for (command in candidates) {
             try {
-                val process = ProcessBuilder(command, script.absolutePath)
+                val process = ProcessBuilder(command, script.absolutePath, "--dict-only")
                     .redirectErrorStream(true)
                     .start()
                 process.inputStream.bufferedReader().forEachLine { println(it) }
@@ -253,7 +259,7 @@ val buildJapaneseDictionary by tasks.registering {
 
         if (!executed) {
             println("警告：未能生成日语词典 jadic.db（日语查词功能将不可用）。")
-            println("可手动执行：python3 tools/japanese/build_vocabulary.py")
+            println("可手动执行：python3 tools/japanese/build_vocabulary.py --dict-only")
         }
     }
 }

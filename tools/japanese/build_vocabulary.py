@@ -21,12 +21,21 @@
     python3 tools/japanese/build_vocabulary.py              # 生成全部基础词库
     python3 tools/japanese/build_vocabulary.py --categories jlpt --no-dict
     python3 tools/japanese/build_vocabulary.py --enrich     # 生成后立即增强
+    python3 tools/japanese/build_vocabulary.py --dict-only  # 只重建 jadic.db
 
     选项：
       --categories jlpt,standard,minna,anki,grammar  只生成指定分类
       --no-dict       跳过重写 resources/common/dictionary/jadic.db
+      --dict-only     只重建 jadic.db，不生成任何词库 JSON
       --enrich        生成后调用 enrich_vocabulary.py 补全词性/活用/释义
       -h, --help      显示帮助
+
+注意：仓库里的 resources/common/vocabulary/**/*.json 是**已提交的增强产物**，
+      构建期只允许用 --dict-only 生成 jadic.db（jadic.db 被 .gitignore 排除，
+      每次构建都缺失）。若在构建期不带参数运行本脚本，会把已增强的词库
+      覆盖成基础词库（无词性、无活用、无中文按要求切分），
+      AppImage 里就会看到旧数据 —— build.gradle.kts 的 buildJapaneseDictionary
+      任务因此固定传 --dict-only。
 
 增强步骤也可以单独执行（但必须紧跟在本脚本之后）：
     python3 tools/japanese/enrich_vocabulary.py --all --write
@@ -672,6 +681,7 @@ USAGE = """用法：python3 tools/japanese/build_vocabulary.py [选项]
 
   --categories jlpt,standard,minna,anki,grammar  只生成指定分类（默认全部）
   --no-dict       跳过重写 resources/common/dictionary/jadic.db
+  --dict-only     只重建 jadic.db，不生成任何词库 JSON（构建期使用）
   --enrich        生成后立即调用 enrich_vocabulary.py 增强（语法库跳过）
   -h, --help      显示本帮助
 
@@ -685,6 +695,7 @@ def parse_args(argv):
     categories = list(CATEGORIES)
     enrich = False
     with_dict = True
+    dict_only = False
     i = 0
     while i < len(argv):
         arg = argv[i]
@@ -695,6 +706,8 @@ def parse_args(argv):
             enrich = True
         elif arg == "--no-dict":
             with_dict = False
+        elif arg == "--dict-only":
+            dict_only = True
         elif arg.startswith("--categories"):
             if "=" in arg:
                 value = arg.split("=", 1)[1]
@@ -711,6 +724,10 @@ def parse_args(argv):
             print(USAGE)
             return None
         i += 1
+    if dict_only:
+        # 构建期专用：只重建 jadic.db，绝不覆盖已提交的增强词库
+        categories = []
+        enrich = False
     return categories, enrich, with_dict
 
 
@@ -719,6 +736,8 @@ def main(argv=None):
     if parsed is None:
         return 1
     categories, enrich, with_dict = parsed
+    if not categories:
+        log("只重建日语词典 jadic.db（--dict-only）：不生成任何词库 JSON")
 
     yori_index = None
     if with_dict or any(name != "grammar" for name in categories):
