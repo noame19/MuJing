@@ -144,13 +144,14 @@ fun Table(
     val searchState = loadSearchState()
     val appState = rememberAppState()
     var removedColumnSet = mutableSetOf<Pair<String, TableColumn>>()
+    val isJapanese = vocabulary.language.equals("japanese", true)
     val columnNames = arrayOf(
         "  ",
         "单词",
         "中文释义",
         "英文释义",
-        "美国音标",
-        "英国音标",
+        if (isJapanese) "假名" else "美国音标",
+        if (isJapanese) "罗马字" else "英国音标",
         "词形变化",
         "例句",
         "字幕",
@@ -170,8 +171,8 @@ fun Table(
                 word.value,
                 word.translation,
                 word.definition,
-                word.usphone,
-                word.ukphone,
+                if (isJapanese) word.kana else word.usphone,
+                if (isJapanese) word.romaji else word.ukphone,
                 exchange,
                 word.pos,
                 captions,
@@ -250,8 +251,13 @@ fun Table(
                             model.setValueAt(it.value, editRow, 1)
                             model.setValueAt(it.translation, editRow, 2)
                             model.setValueAt(it.definition, editRow, 3)
-                            model.setValueAt(it.usphone, editRow, 4)
-                            model.setValueAt(it.ukphone, editRow, 5)
+                            if (isJapanese) {
+                                model.setValueAt(it.kana, editRow, 4)
+                                model.setValueAt(it.romaji, editRow, 5)
+                            } else {
+                                model.setValueAt(it.usphone, editRow, 4)
+                                model.setValueAt(it.ukphone, editRow, 5)
+                            }
                             model.setValueAt(exchange, editRow, 6)
                             model.setValueAt(it.pos, editRow, 7)
                             model.setValueAt(captions, editRow, 8)
@@ -808,11 +814,11 @@ fun Table(
                         it.value,
                         it.translation,
                         it.definition,
-                        it.usphone,
-                        it.ukphone,
-                        captions,
+                        if (isJapanese) it.kana else it.usphone,
+                        if (isJapanese) it.romaji else it.ukphone,
+                        exchange,
                         it.pos,
-                        exchange
+                        captions
                     )
                     model.addRow(row)
                     wordList.add(it)

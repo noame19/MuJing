@@ -1169,10 +1169,12 @@ fun MainContent(
                         // 如果不截取字符串，用户长按某个按键，程序可能会崩溃
                         val inputStr = input.substring(0,wordScreenState.wordTypingResult.size)
                         val inputChars = inputStr.toList()
+                        // 与正确输入的比对保持一致：按码点切分，日语下 String[i] 会取到半个字符
+                        val wordChars = currentWord.value.toList()
                         isWrong = false
                         for (i in inputChars.indices) {
                             val inputChar = inputChars[i]
-                            val wordChar = currentWord.value[i]
+                            val wordChar = wordChars.getOrNull(i) ?: break
                             if (inputChar != wordChar) {
                                 playBeepSound()
                                 isWrong = true
@@ -2185,6 +2187,10 @@ fun Morphology(
 
         exchanges.forEach { exchange ->
             val pair = exchange.split(":")
+            // 格式异常（缺分隔符）时跳过，避免 IndexOutOfBoundsException
+            if (pair.size < 2) {
+                return@forEach
+            }
             when (pair[0]) {
                 "p" -> {
                     preterite = pair[1]

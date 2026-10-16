@@ -87,8 +87,7 @@ fun Search(
                         addToAudioSet = {audioPath -> appState.localAudioSet.add(audioPath)},
                         pronunciation = wordScreenState.pronunciation,
                         azureTTS = azureTTS,
-                        isJapanese = wordScreenState.vocabulary.language
-                            .equals("japanese", true),
+                        isJapanese = vocabulary.language.equals("japanese", true),
                     )
                     playAudio(
                         word = searchResult!!.value,

@@ -61,6 +61,12 @@ class AppState {
     /** 困难词库 */
     var hardVocabulary = loadMutableVocabularyByName("HardVocabulary")
 
+    /**
+     * 「生成词库」对话框使用的目标语言（english / japanese）。
+     * 从背单词界面打开对话框时会先设成当前词库的语言，供对话框作为初值。
+     */
+    var generateVocabularyLanguage by mutableStateOf("english")
+
     /** 最近生成的词库列表 */
     var recentList = readRecentList()
 
@@ -220,6 +226,10 @@ class AppState {
             wordScreenState.vocabulary = newVocabulary
             wordScreenState.vocabularyName = vocabularyFile.nameWithoutExtension
             wordScreenState.vocabularyPath = vocabularyFile.absolutePath
+            // 记住当前词库的语言，「生成词库」对话框据此预设目标语言
+            if (newVocabulary.language.isNotEmpty()) {
+                generateVocabularyLanguage = newVocabulary.language
+            }
             // 载入这个词库自己的学习进度（内置词库只读，已移除的词按进度过滤；下标优先用进度文件）
             wordScreenState.loadProgress(index)
             vocabularyChanged = true

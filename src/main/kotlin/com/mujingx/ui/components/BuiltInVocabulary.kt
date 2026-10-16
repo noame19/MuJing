@@ -55,14 +55,53 @@ private val NUMERIC_SORT_CATEGORIES = setOf(
 
 /**
  * 扫描内置词库的全部分类目录，按名称排序返回。
+ *
+ * @param language 只看某个语言的分类（`english` / `japanese`），传空串表示全部。
+ *   分类语言取自分类下第一个词库文件的 `language` 字段，不做名称硬编码。
  */
-fun getBuiltInVocabularyDirectories(): List<File> {
+fun getBuiltInVocabularyDirectories(language: String = ""): List<File> {
     val root = getResourcesFile(VOCABULARY_ROOT)
     if (!root.isDirectory) return emptyList()
     return root.listFiles()
         ?.filter { it.isDirectory }
+        ?.filter { language.isEmpty() || vocabularyCategoryLanguage(it) == language }
         ?.sortedBy { it.name }
         ?: emptyList()
+}
+
+/**
+ * 词库文件开头的 `"language": "..."`，用于判定分类语言。
+ */
+private val LANGUAGE_REGEX = Regex("\"language\"\\s*:\\s*\"([A-Za-z_-]+)\"")
+
+/**
+ * 分类语言的缓存，避免每次重组都去读磁盘。
+ */
+private val categoryLanguageCache = mutableMapOf<String, String>()
+
+/**
+ * 判断一个分类的语言（`english` / `japanese` / 其它）。
+ *
+ * 词库文件可能十几 MB，因此只读文件开头若干字节 —— `language` 是 JSON 的顶层字段，
+ * 位置很靠前。读不到（文件损坏、字段缺失）时返回空串，调用方按「未知」处理，
+ * 不要让 UI 因此丢掉整个分类。
+ */
+fun vocabularyCategoryLanguage(directory: File): String {
+    val key = directory.absolutePath
+    categoryLanguageCache[key]?.let { return it }
+    val file = listVocabularyFiles(directory).firstOrNull() ?: return ""
+    val language = runCatching {
+        file.bufferedReader(Charsets.UTF_8).use { reader ->
+            val buffer = CharArray(4096)
+            val count = reader.read(buffer)
+            if (count <= 0) return@use ""
+            LANGUAGE_REGEX.find(String(buffer, 0, count))?.groupValues?.get(1).orEmpty()
+        }
+    }.getOrDefault("")
+    if (categoryLanguageCache.size < 128) {
+        categoryLanguageCache[key] = language
+    }
+    return language
 }
 
 /**

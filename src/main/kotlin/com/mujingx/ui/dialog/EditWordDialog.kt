@@ -247,12 +247,16 @@ fun EditWordComposeContent(
     var translationFieldValue by remember { mutableStateOf(TextFieldValue(tempWord.translation)) }
     var sentencesFieldValue by remember { mutableStateOf(TextFieldValue(tempWord.pos)) }
     var exchange by remember { mutableStateOf(tempWord.exchange) }
+    // 日语词条没有英美音标，改用假名与罗马字（分拍罗马字）
+    val isJapanese = vocabulary.language.equals("japanese", true)
+    var kanaFieldValue by remember { mutableStateOf(TextFieldValue(tempWord.kana)) }
+    var romajiFieldValue by remember { mutableStateOf(TextFieldValue(tempWord.romaji)) }
     var saveEnable by remember { mutableStateOf(false) }
     var captionsChanged by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(inputWordStr, usphone, ukphone, translationFieldValue, sentencesFieldValue, definitionFieldValue, exchange,captionsChanged,tempWord.captions.size,tempWord.externalCaptions.size) {
+    LaunchedEffect(inputWordStr, usphone, ukphone, translationFieldValue, sentencesFieldValue, definitionFieldValue, exchange, kanaFieldValue, romajiFieldValue, captionsChanged,tempWord.captions.size,tempWord.externalCaptions.size) {
         // 单词不为空，并且任何一个字段发生变化，就激活保存按钮
         saveEnable = (
                 inputWordStr.text.isNotEmpty() &&
@@ -260,6 +264,8 @@ fun EditWordComposeContent(
                                 (inputWordStr.text != word.value)
                                         || (usphone.text != word.usphone)
                                         || (ukphone.text != word.ukphone)
+                                        || (kanaFieldValue.text != word.kana)
+                                        || (romajiFieldValue.text != word.romaji)
                                         || (definitionFieldValue.text != word.definition)
                                         || (translationFieldValue.text != word.translation)
                                         || (sentencesFieldValue.text != word.pos)
@@ -279,12 +285,16 @@ fun EditWordComposeContent(
             tempWord.pos = sentencesFieldValue.text
             tempWord.definition = definitionFieldValue.text
             tempWord.exchange = exchange
+            tempWord.kana = kanaFieldValue.text
+            tempWord.romaji = romajiFieldValue.text
             save(tempWord)
             if(title =="添加单词"){
                 tempWord = Word("")
                 inputWordStr = TextFieldValue("")
                 usphone = TextFieldValue("")
                 ukphone = TextFieldValue("")
+                kanaFieldValue = TextFieldValue("")
+                romajiFieldValue = TextFieldValue("")
                 translationFieldValue = TextFieldValue("")
                 sentencesFieldValue = TextFieldValue("")
                 definitionFieldValue = TextFieldValue("")
@@ -411,11 +421,14 @@ fun EditWordComposeContent(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ){
-                Text("英：" ,color = MaterialTheme.colors.onBackground)
+                // 日语词条没有英美音标，改为编辑假名与罗马字（分拍）
+                val phoneticLabel = if (isJapanese) "假名：" else "英："
+                val secondPhoneticLabel = if (isJapanese) "罗马字：" else "美："
+                Text(phoneticLabel ,color = MaterialTheme.colors.onBackground)
                 BasicTextField(
-                    value = ukphone,
+                    value = if (isJapanese) kanaFieldValue else ukphone,
                     onValueChange = {
-                        ukphone = it
+                        if (isJapanese) kanaFieldValue = it else ukphone = it
                     },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -424,11 +437,11 @@ fun EditWordComposeContent(
                     cursorBrush = SolidColor(MaterialTheme.colors.primary),
                     modifier = Modifier.border(border = border).padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
                 )
-                Text("美：" ,color = MaterialTheme.colors.onBackground,modifier = Modifier.padding(start = 10.dp))
+                Text(secondPhoneticLabel ,color = MaterialTheme.colors.onBackground,modifier = Modifier.padding(start = 10.dp))
                 BasicTextField(
-                    value = usphone,
+                    value = if (isJapanese) romajiFieldValue else usphone,
                     onValueChange = {
-                        usphone = it
+                        if (isJapanese) romajiFieldValue = it else usphone = it
                     },
                     textStyle = TextStyle(
                         fontSize = 16.sp,

@@ -233,8 +233,9 @@ fun GenerateVocabularyDialog(
         /**
          * 生成词库的目标语言，决定使用哪套分词器与词典。
          * english 走 OpenNLP + ECDICT，japanese 走 Kuromoji + 日汉词典。
+         * 初值沿用上次的选择（从背单词界面打开时会先按当前词库的语言设置）。
          */
-        var targetLanguage by remember { mutableStateOf("english") }
+        var targetLanguage by remember { mutableStateOf(state.generateVocabularyLanguage) }
 
         /**
          * 过滤单词
@@ -900,7 +901,8 @@ fun GenerateVocabularyDialog(
                             updateFamiliarVocabulary = {
                                 val wordList = loadMutableVocabularyByName("FamiliarVocabulary").wordList
                                 familiarVocabulary.wordList.addAll(wordList)
-                            }
+                            },
+                            targetLanguage = targetLanguage,
                         )
                     }
                     Divider(Modifier.width(1.dp).fillMaxHeight())
@@ -940,14 +942,18 @@ fun GenerateVocabularyDialog(
                             openFile = { filePicker?.launch() },
                             openRelateVideo = {relateVideoPicker.launch() },
                             started = started,
-                            showEnablePhrases = title != "过滤词库",
+                            showEnablePhrases = title != "过滤词库" && targetLanguage != "japanese",
                             enablePhrases = enablePhrases,
                             changeEnablePhrases = {
                                 enablePhrases = it
                                 filterState = Filtering
                             },
                             targetLanguage = targetLanguage,
-                            setTargetLanguage = { targetLanguage = it },
+                            setTargetLanguage = {
+                                targetLanguage = it
+                                // 记住选择：下次打开对话框以及切换到同语言的词库时沿用
+                                state.generateVocabularyLanguage = it
+                            },
                         )
 
                         // 单词预览和任务列表
@@ -1046,7 +1052,8 @@ fun GenerateVocabularyDialog(
                                             sort = sort,
                                             changeSort = { sort = it },
                                             showCard = showCard,
-                                            changeShowCard = { showCard = it }
+                                            changeShowCard = { showCard = it },
+                                            isJapanese = targetLanguage == "japanese"
                                         )
                                     }
 
@@ -1231,6 +1238,7 @@ fun GenerateVocabularyDialog(
                         wordList = previewList,
                         vocabularyType = vType,
                         colors = state.colors,
+                        language = targetLanguage,
                         close = { saveOtherFormats = false }
                     )
                 }
@@ -1283,6 +1291,7 @@ fun Summary(
     showCard: Boolean,
     changeShowCard: (Boolean) -> Unit,
     changeSort: (String) -> Unit,
+    isJapanese: Boolean = false,
 ) {
 
     Column(Modifier.fillMaxWidth()) {
@@ -1294,29 +1303,32 @@ fun Summary(
         ) {
             val summary = computeSummary(list, summaryVocabulary)
             Text(text = "共 ${list.size} 词  ", color = MaterialTheme.colors.onBackground)
-            Text(text = "牛津5000核心词：", color = MaterialTheme.colors.onBackground)
-            if (summaryVocabulary["oxford"]?.isEmpty() == true) {
-                Text(text = "词库缺失 ", color = Color.Red)
-            } else {
-                Text("${summary[0]} 词  ", color = MaterialTheme.colors.onBackground)
-            }
-            Text(text = "四级：", color = MaterialTheme.colors.onBackground)
-            if (summaryVocabulary["cet4"]?.isEmpty() == true) {
-                Text(text = "词库缺失 ", color = Color.Red)
-            } else {
-                Text("${summary[1]} 词  ", color = MaterialTheme.colors.onBackground)
-            }
-            Text(text = "六级：", color = MaterialTheme.colors.onBackground)
-            if (summaryVocabulary["cet6"]?.isEmpty() == true) {
-                Text(text = "词库缺失 ", color = Color.Red)
-            } else {
-                Text("${summary[2]} 词  ", color = MaterialTheme.colors.onBackground)
-            }
-            Text(text = "GRE: ", color = MaterialTheme.colors.onBackground)
-            if (summaryVocabulary["gre"]?.isEmpty() == true) {
-                Text(text = "词库缺失 ", color = Color.Red)
-            } else {
-                Text("${summary[3]} 词", color = MaterialTheme.colors.onBackground)
+            // 牛津5000/四级/六级/GRE 都是英语词表，日语词库下不展示
+            if (!isJapanese) {
+                Text(text = "牛津5000核心词：", color = MaterialTheme.colors.onBackground)
+                if (summaryVocabulary["oxford"]?.isEmpty() == true) {
+                    Text(text = "词库缺失 ", color = Color.Red)
+                } else {
+                    Text("${summary[0]} 词  ", color = MaterialTheme.colors.onBackground)
+                }
+                Text(text = "四级：", color = MaterialTheme.colors.onBackground)
+                if (summaryVocabulary["cet4"]?.isEmpty() == true) {
+                    Text(text = "词库缺失 ", color = Color.Red)
+                } else {
+                    Text("${summary[1]} 词  ", color = MaterialTheme.colors.onBackground)
+                }
+                Text(text = "六级：", color = MaterialTheme.colors.onBackground)
+                if (summaryVocabulary["cet6"]?.isEmpty() == true) {
+                    Text(text = "词库缺失 ", color = Color.Red)
+                } else {
+                    Text("${summary[2]} 词  ", color = MaterialTheme.colors.onBackground)
+                }
+                Text(text = "GRE: ", color = MaterialTheme.colors.onBackground)
+                if (summaryVocabulary["gre"]?.isEmpty() == true) {
+                    Text(text = "词库缺失 ", color = Color.Red)
+                } else {
+                    Text("${summary[3]} 词", color = MaterialTheme.colors.onBackground)
+                }
             }
 
 
@@ -1358,26 +1370,29 @@ fun Summary(
                     ) {
                         Text("按首字母排序")
                     }
-                    DropdownMenuItem(
-                        onClick = {
-                            expanded = false
-                            changeSort("bnc")
-                        },
-                        modifier = Modifier.width(width).height(40.dp)
-                            .background(if (sort == "bnc") selectedColor else backgroundColor)
-                    ) {
-                        Text("按BNC词频排序")
-                    }
-                    DropdownMenuItem(
-                        onClick = {
-                            expanded = false
-                            changeSort("coca")
-                        },
-                        modifier = Modifier.width(width).height(40.dp)
-                            .background(if (sort == "coca") selectedColor else backgroundColor)
-                    ) {
-                        Text("按COCA词频排序")
+                    // BNC/COCA 是英语语料词频，日语词库下不展示排序方式
+                    if (!isJapanese) {
+                        DropdownMenuItem(
+                            onClick = {
+                                expanded = false
+                                changeSort("bnc")
+                            },
+                            modifier = Modifier.width(width).height(40.dp)
+                                .background(if (sort == "bnc") selectedColor else backgroundColor)
+                        ) {
+                            Text("按BNC词频排序")
+                        }
+                        DropdownMenuItem(
+                            onClick = {
+                                expanded = false
+                                changeSort("coca")
+                            },
+                            modifier = Modifier.width(width).height(40.dp)
+                                .background(if (sort == "coca") selectedColor else backgroundColor)
+                        ) {
+                            Text("按COCA词频排序")
 
+                        }
                     }
 
 
@@ -1842,40 +1857,45 @@ fun VocabularyFilter(
     recentList: List<RecentItem>,
     removeInvalidRecentItem: (RecentItem) -> Unit,
     familiarVocabulary: MutableVocabulary,
-    updateFamiliarVocabulary: () -> Unit
+    updateFamiliarVocabulary: () -> Unit,
+    targetLanguage: String = "english"
 ) {
     val scope = rememberCoroutineScope()
+    // 日语没有四六级这类英语考试词库，内置列表也只列日语分类
+    val isJapanese = targetLanguage == "japanese"
     Row(Modifier.fillMaxWidth().background(MaterialTheme.colors.background)) {
 
         Column(Modifier.width(180.dp).fillMaxHeight().background(MaterialTheme.colors.background)) {
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().height(40.dp)
-                    .clickable {
-                        getResourcesFile("vocabulary/大学英语/四级.json").let {
-                            if (!vocabularyFilterList.contains(it)) {
-                                vocabularyFilterListAdd(it)
+            if (!isJapanese) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().height(40.dp)
+                        .clickable {
+                            getResourcesFile("vocabulary/大学英语/四级.json").let {
+                                if (!vocabularyFilterList.contains(it)) {
+                                    vocabularyFilterListAdd(it)
+                                }
                             }
                         }
-                    }
-            ) {
-                Text("四级", color = MaterialTheme.colors.onBackground)
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().height(40.dp)
-                    .clickable {
-                        getResourcesFile("vocabulary/大学英语/六级.json").let {
-                            if (!vocabularyFilterList.contains(it)) {
-                                vocabularyFilterListAdd(it)
+                ) {
+                    Text("四级", color = MaterialTheme.colors.onBackground)
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().height(40.dp)
+                        .clickable {
+                            getResourcesFile("vocabulary/大学英语/六级.json").let {
+                                if (!vocabularyFilterList.contains(it)) {
+                                    vocabularyFilterListAdd(it)
+                                }
                             }
                         }
-                    }
-            ) {
-                Text("六级", color = MaterialTheme.colors.onBackground)
+                ) {
+                    Text("六级", color = MaterialTheme.colors.onBackground)
+                }
             }
             var expanded by remember { mutableStateOf(false) }
             Box(Modifier.fillMaxWidth().height(40.dp)
@@ -1890,6 +1910,7 @@ fun VocabularyFilter(
                 BuiltInVocabularyMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
+                    language = targetLanguage,
                     addVocabulary = { file ->
                         if (!vocabularyFilterList.contains(file)) {
                             vocabularyFilterListAdd(file)
@@ -2530,7 +2551,7 @@ fun filterWords(
         }
 
 
-        if (replaceToLemma) {
+        if (replaceToLemma && !isJapanese) {
             val lemma = getWordLemma(word)
             if (lemma.isNotEmpty()) {
                 lemmaMap[word] = lemma
@@ -2581,8 +2602,8 @@ fun filterWords(
         }
     }
 
-    //替换原型需要特殊处理
-    if (replaceToLemma) {
+    //替换原型需要特殊处理（原型词来自 ECDICT，只对英语有效；日语的 exchange 没有 "0" 槽位）
+    if (replaceToLemma && !isJapanese) {
         // 查询单词原型
         val queryList = lemmaMap.values.toList()
         val lemmaList = Dictionary.queryList(queryList)
@@ -2695,7 +2716,7 @@ fun includeWords(
 
     }
 
-    if (replaceToLemma) {
+    if (replaceToLemma && !isJapanese) {
         resultList.forEach { word ->
 
             val lemma = getWordLemma(word)
@@ -2842,19 +2863,24 @@ fun PreviewWords(
     changeSort: (String) -> Unit,
     showCard: Boolean,
     changeShowCard: (Boolean) -> Unit,
+    isJapanese: Boolean = false,
 ) {
     val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
         // 显示方式：卡片或列表
 
+        // BNC/COCA 排序只对英语有意义，日语固定按出现顺序
+        val effectiveSort = if (isJapanese) "appearance" else sort
+
         Summary(
             previewList,
             summaryVocabulary,
-            sort = sort, changeSort = { changeSort(it) },
-            showCard = showCard, changeShowCard = changeShowCard
+            sort = effectiveSort, changeSort = { changeSort(it) },
+            showCard = showCard, changeShowCard = changeShowCard,
+            isJapanese = isJapanese
         )
 
-        val sortedList = when (sort) {
+        val sortedList = when (effectiveSort) {
             "alphabet" -> {
                 val sorted = previewList.sortedBy { it.value }
                 sorted
@@ -2919,18 +2945,28 @@ fun PreviewWords(
                                             textAlign = TextAlign.Center,
                                             modifier = Modifier.fillMaxWidth()
                                         )
-                                        val lemma = getWordLemma(word)
-                                        Text(text = "原型:$lemma", fontSize = 12.sp)
-                                        Row {
-                                            Text(
-                                                text = "BNC  ",
-                                                fontSize = 12.sp,
-                                                modifier = Modifier.padding(end = 2.dp)
-                                            )
-                                            Text(text = ":${word.bnc}", fontSize = 12.sp)
-                                        }
+                                        if (isJapanese) {
+                                            // 日语显示假名与罗马字（BNC/COCA 对日语恒为 0）
+                                            if (word.kana.isNotEmpty()) {
+                                                Text(text = "假名:${word.kana}", fontSize = 12.sp)
+                                            }
+                                            if (word.romaji.isNotEmpty()) {
+                                                Text(text = "罗马字:${word.romaji}", fontSize = 12.sp)
+                                            }
+                                        } else {
+                                            val lemma = getWordLemma(word)
+                                            Text(text = "原型:$lemma", fontSize = 12.sp)
+                                            Row {
+                                                Text(
+                                                    text = "BNC  ",
+                                                    fontSize = 12.sp,
+                                                    modifier = Modifier.padding(end = 2.dp)
+                                                )
+                                                Text(text = ":${word.bnc}", fontSize = 12.sp)
+                                            }
 
-                                        Text(text = "COCA:${word.frq}", fontSize = 12.sp)
+                                            Text(text = "COCA:${word.frq}", fontSize = 12.sp)
+                                        }
                                         Divider()
                                         Text(
                                             text = word.translation,

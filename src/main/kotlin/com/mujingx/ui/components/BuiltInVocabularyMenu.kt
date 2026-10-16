@@ -42,32 +42,53 @@ import java.io.File
 
 
 /**
- * 用在生成词库界面，使用内置词库过滤单词
+ * 用在生成词库界面，使用内置词库过滤单词。
+ *
+ * @param language 只列出该语言的内置词库分类（与「目标语言」下拉联动），空串表示全部
+ * @param addVocabulary 每勾选一个词库调用一次；菜单支持多选，点「确定」后逐个加入
  */
 @Composable
 fun BuiltInVocabularyMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
+    language: String = "",
     addVocabulary:(File) -> Unit
 ) {
     var selectedDirectory by remember { mutableStateOf<File?>(null) }
     var showList by remember { mutableStateOf(false) }
     val width = if(showList) 441.dp else 240.dp
 
+    // 多选：先在列表里勾选若干个词库，再统一加入
+    val selectedFiles = remember { mutableStateListOf<File>() }
+
+    // 语言切换后，之前选中的分类可能已不在列表里
+    LaunchedEffect(language) {
+        selectedDirectory = null
+        showList = false
+    }
+
     DropdownMenu(
         expanded = expanded,
         offset = DpOffset(20.dp, 0.dp),
         onDismissRequest = onDismissRequest,
-        modifier = Modifier.width(width).height(400.dp),
+        modifier = Modifier.width(width).height(440.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.width(width).fillMaxHeight()){
+            modifier = Modifier.width(width).height(400.dp)){
+            val directories = getBuiltInVocabularyDirectories(language)
             Column(
                 modifier = Modifier.width(240.dp).height(400.dp)
                     .verticalScroll(rememberScrollState())
             ){
-                getBuiltInVocabularyDirectories().forEach { directory ->
+                if (directories.isEmpty()) {
+                    Text(
+                        text = "没有内置的" + if (language == "japanese") "日语" else "该语言" + "词库",
+                        color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+                directories.forEach { directory ->
                     VocabularyDirectory(
                         directory = directory,
                         selectedDirectory = selectedDirectory,
@@ -79,15 +100,36 @@ fun BuiltInVocabularyMenu(
                 }
             }
 
-            if(showList){
+            if(showList && selectedDirectory != null){
                 Divider(Modifier.width(1.dp).height(400.dp))
                VocabularyList(
                    directory = selectedDirectory!!,
-                   selectedFile = { file ->
-                       addVocabulary(file)
-                       onDismissRequest()
-                   }
+                   selectedFiles = selectedFiles,
                )
+            }
+        }
+
+        Divider()
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.width(width).height(40.dp)
+        ) {
+            Text(
+                text = "已选 ${selectedFiles.size} 个词库",
+                color = MaterialTheme.colors.onBackground,
+                modifier = Modifier.padding(start = 12.dp)
+            )
+            Spacer(Modifier.weight(1f))
+            TextButton(
+                enabled = selectedFiles.isNotEmpty(),
+                onClick = {
+                    selectedFiles.toList().forEach { addVocabulary(it) }
+                    selectedFiles.clear()
+                    onDismissRequest()
+                }
+            ) {
+                Text("确定")
             }
         }
 
@@ -122,7 +164,7 @@ fun VocabularyDirectory(
 @Composable
 fun VocabularyList(
     directory: File,
-    selectedFile: (File) -> Unit
+    selectedFiles: MutableList<File>,
 ) {
     val files = listVocabularyFiles(directory)
     if (files.isNotEmpty()) {
@@ -137,12 +179,22 @@ fun VocabularyList(
             ) {
                 items(files) { file ->
                     val name = formatVocabularyName(file, directory)
-                    DropdownMenuItem(onClick = { selectedFile(file) }) {
-                        Text(
-                            text = name,
-                            color = MaterialTheme.colors.onBackground,
-                            textAlign = TextAlign.Center,
-                        )
+                    val checked = selectedFiles.contains(file)
+                    DropdownMenuItem(onClick = {
+                        if (checked) selectedFiles.remove(file) else selectedFiles.add(file)
+                    }) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = checked,
+                                onCheckedChange = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Text(
+                                text = name,
+                                color = MaterialTheme.colors.onBackground,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
 
                 }

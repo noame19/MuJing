@@ -36,6 +36,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import com.mujingx.state.getAudioDirectory
 import com.mujingx.state.getSettingsDirectory
+import com.mujingx.player.audioCacheKey
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -183,7 +184,10 @@ class AzureTTS(
                 if (response.status == HttpStatusCode.OK) {
                     withContext(Dispatchers.IO) {
                         val bytes = response.body<ByteArray>()
-                        val file = File(getAudioDirectory(), text +"_Azure_${displayName}_${pronunciationStyle}.mp3")
+                        // 缓存文件名必须与 player/PlayAudio.kt 的 getAudioPath() 一致，
+                        // 否则查缓存永远落空，日语词条会反复重新下载。
+                        val fileName = audioCacheKey(text) + "_Azure_${displayName}_${pronunciationStyle}.mp3"
+                        val file = File(getAudioDirectory(), fileName)
                         Files.write(Paths.get(file.toURI()), bytes)
                         path =  file.absolutePath
                     }

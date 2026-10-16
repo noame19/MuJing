@@ -87,7 +87,7 @@ class DictationState(dataDictationState: DataDictationState){
     /**
      * 例句组件的可见性
      */
-    var sentencesVisible by mutableStateOf(dataDictationState.subtitlesVisible)
+    var sentencesVisible by mutableStateOf(dataDictationState.sentencesVisible)
 
     /** 保存听写时的配置信息 */
     fun saveDictationState() {

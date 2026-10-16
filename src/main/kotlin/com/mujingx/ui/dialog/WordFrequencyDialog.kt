@@ -99,6 +99,7 @@ fun WordFrequencyDialog(
                     newVocabulary = Vocabulary(
                         name = "",
                         type = VocabularyType.DOCUMENT,
+                        // 词频（BNC/COCA）来自英语 ECDICT，本对话框只能生成英语词库
                         language = "english",
                         size = list.size,
                         relateVideoPath = "",

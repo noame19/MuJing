@@ -51,6 +51,8 @@ fun SearchResultInfo(
     wordScreenState: WordScreenState,
     azureTTS: AzureTTS,
 ){
+    // 日语词条没有「英文释义」，第二个页签改为显示假名与罗马字读音
+    val isJapanese = wordScreenState.vocabulary.language.equals("japanese", true)
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()){
@@ -86,7 +88,7 @@ fun SearchResultInfo(
             onClick = { tabState = 0 }
         )
         Tab(
-            text = { Text("英文") },
+            text = { Text(if (isJapanese) "读音" else "英文") },
             selected = tabState == 1,
             onClick = { tabState = 1 }
         )
@@ -102,7 +104,10 @@ fun SearchResultInfo(
 
         1 -> {
             SelectionContainer {
-                Text(text = word.definition,
+                Text(text = if (isJapanese) {
+                    listOf(word.romaji, word.kana).filter { it.isNotEmpty() }
+                        .joinToString("  ").ifEmpty { word.definition }
+                } else word.definition,
                     color = MaterialTheme.colors.onBackground,
                     modifier = Modifier.padding(top = 8.dp,bottom = 8.dp))
             }

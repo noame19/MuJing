@@ -131,7 +131,7 @@ fun playAudio(
  * 这里非 ASCII 一律转写成十六进制形式，例如「食べる」-> "u5403u3079u308b"，
  * 保证文件名在任何系统上都安全且可逆。
  */
-private fun audioCacheKey(word: String): String {
+internal fun audioCacheKey(word: String): String {
     if (word.all { it.code in 32..126 && it != '/' && it != '\\' }) {
         return word.lowercase()
     }

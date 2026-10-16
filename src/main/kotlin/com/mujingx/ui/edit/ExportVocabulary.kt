@@ -116,6 +116,8 @@ fun ExportVocabulary(
     close: () -> Unit,
     colors: Colors,
 ) {
+    // 日语词条没有英美音标，导出时改为假名与罗马字（分拍）
+    val isJapanese = vocabulary.language.equals("japanese", true)
     val windowState = rememberDialogState(
         size = DpSize(650.dp, 650.dp),
         position = WindowPosition(parentWindow.location.x.dp,parentWindow.location.y.dp)
@@ -147,7 +149,7 @@ fun ExportVocabulary(
                         platformFile?.let{
                             val fileToSave = platformFile.file
                             if(format == "xlsx"){
-                                val workbook = createWorkbook(vocabulary.wordList,vocabulary.type, cellVisible)
+                                val workbook = createWorkbook(vocabulary.wordList,vocabulary.type, cellVisible, isJapanese)
                                 try{
                                     FileOutputStream(fileToSave).use { out ->
                                         workbook.write(out)
@@ -308,7 +310,7 @@ fun ExportVocabulary(
                                 )
 
                                 ListItem(
-                                    text = { Text("英国音标", color = MaterialTheme.colors.onBackground) },
+                                    text = { Text(if (isJapanese) "假名" else "英国音标", color = MaterialTheme.colors.onBackground) },
                                     modifier = Modifier.clickable { cellVisible.uKPhoneVisible = !cellVisible.uKPhoneVisible },
                                     trailing = {
                                         Switch(
@@ -319,7 +321,7 @@ fun ExportVocabulary(
                                     }
                                 )
                                 ListItem(
-                                    text = { Text("美国音标", color = MaterialTheme.colors.onBackground) },
+                                    text = { Text(if (isJapanese) "罗马字" else "美国音标", color = MaterialTheme.colors.onBackground) },
                                     modifier = Modifier.clickable { cellVisible.usPhoneVisible = !cellVisible.usPhoneVisible },
                                     trailing = {
                                         Switch(
@@ -425,7 +427,10 @@ fun SaveOtherVocabulary(
     fileName:String,
     close: () -> Unit,
     colors: Colors,
+    language: String = "",
 ){
+    // 日语词条没有英美音标，导出时改为假名与罗马字（分拍）
+    val isJapanese = language.equals("japanese", true)
     MaterialTheme(colors = colors) {
         val windowState = rememberDialogState(
             size = DpSize(650.dp, 650.dp),
@@ -447,7 +452,7 @@ fun SaveOtherVocabulary(
                     platformFile?.let{
                         val fileToSave = platformFile.file
                         if(format == "xlsx"){
-                            val workbook = createWorkbook(wordList, vocabularyType,cellVisible)
+                            val workbook = createWorkbook(wordList, vocabularyType,cellVisible, isJapanese)
                             try{
                                 if (fileToSave.exists()) {
                                     // 是-0,否-1，取消-2
@@ -625,7 +630,7 @@ fun SaveOtherVocabulary(
                                 )
 
                                 ListItem(
-                                    text = { Text("英国音标", color = MaterialTheme.colors.onBackground) },
+                                    text = { Text(if (isJapanese) "假名" else "英国音标", color = MaterialTheme.colors.onBackground) },
                                     modifier = Modifier.clickable { cellVisible.uKPhoneVisible = !cellVisible.uKPhoneVisible },
                                     trailing = {
                                         Switch(
@@ -636,7 +641,7 @@ fun SaveOtherVocabulary(
                                     }
                                 )
                                 ListItem(
-                                    text = { Text("美国音标", color = MaterialTheme.colors.onBackground) },
+                                    text = { Text(if (isJapanese) "罗马字" else "美国音标", color = MaterialTheme.colors.onBackground) },
                                     modifier = Modifier.clickable { cellVisible.usPhoneVisible = !cellVisible.usPhoneVisible },
                                     trailing = {
                                         Switch(
@@ -697,7 +702,8 @@ fun SaveOtherVocabulary(
 fun createWorkbook(
     wordList: List<Word>,
     vocabularyType: VocabularyType,
-    cellVisible: CellVisibleState
+    cellVisible: CellVisibleState,
+    isJapanese: Boolean = false
 ): Workbook {
     val workbook = XSSFWorkbook()
     val sheet = workbook.createSheet("单词列表")
@@ -742,12 +748,12 @@ fun createWorkbook(
 
         val cell = headerRow.createCell(cellIndex++)
         cell.cellStyle = headerStyle
-        cell.setCellValue("英国音标")
+        cell.setCellValue(if (isJapanese) "假名" else "英国音标")
     }
     if(cellVisible.usPhoneVisible){
         val cell = headerRow.createCell(cellIndex++)
         cell.cellStyle = headerStyle
-        cell.setCellValue("美国音标")
+        cell.setCellValue(if (isJapanese) "罗马字" else "美国音标")
     }
     if(cellVisible.exchangeVisible){
         // 40 个字符宽度
@@ -794,12 +800,12 @@ fun createWorkbook(
         }
         if(cellVisible.uKPhoneVisible){
             val cell = row.createCell(cellIndex++)
-            cell.setCellValue(word.ukphone)
+            cell.setCellValue(if (isJapanese) word.kana else word.ukphone)
             cell.cellStyle = bodyStyle
         }
         if(cellVisible.usPhoneVisible){
             val cell =  row.createCell(cellIndex++)
-            cell.setCellValue(word.usphone)
+            cell.setCellValue(if (isJapanese) word.romaji else word.usphone)
             cell.cellStyle = bodyStyle
         }
         if(cellVisible.exchangeVisible){
