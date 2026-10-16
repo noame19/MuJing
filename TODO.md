@@ -79,7 +79,34 @@
 （UTF-8、Aegisub v4.00+、620 条 Dialogue **全部是日文**、内联 `{\an3\pos(...)\fs90}`
 标签很碎，没有中文行）。
 
-- [ ] **日语 `.ass` 字幕根本不被支持**（用户 0 词的直接原因）
+**本轮实现（`japanese-support-dev`，2026-10-16，待用户实测）**
+
+- `.ass`：`ui/util/GenerateVocabulary.kt:760` 新增 `parseJapaneseASS`
+  （ffmpeg `convertToSrt` → `parseJapaneseSRT`），
+  `ui/dialog/GenerateVocabularyDialog.kt` 的 SUBTITLES 分支按扩展名分派。
+  这正是用户「没有发现词语」的直接原因：此前日语分支对 `.ass` 也走
+  `FormatSRT`，解析结果为空。
+- 点词/悬停查词：`player/HoverableCaption.kt:633` 新增
+  `renderJapaneseCaptionLine`（Kuromoji 分词、**表层写法显示、基本形查词**），
+  `HoverableText` 新增 `isJapanese`/`lookupTerm`，查词改走
+  `JapaneseDictionary.query`；`player/HoverableCaption.kt:401`、`:734`
+  的语言取自词库 `language` 字段（不用字符范围判断）。
+- 读音展示：`player/danmaku/WordDetail.kt:202` 日语改显示 `kana`/`romaji`。
+- 文档：「用文档生成词库」新增 `ui/util/GenerateVocabulary.kt:588`
+  `parseJapaneseDocument`（日文标点断句 + Kuromoji 基本形 + jadic 查询，
+  所在句子写入 `pos`），`GenerateVocabularyDialog.kt:613` 的 `isJapanese`
+  在 DOCUMENT 分支真正生效。
+- 匹配词库：`ui/util/GenerateVocabulary.kt:1268` `generateMatchedVocabulary`
+  按**当前词库语言**分派（日语走 `parseJapaneseASS`/`parseJapaneseSRT`），
+  生成的词库 `language` 不再写死空串。
+- 包含词库：`ui/dialog/GenerateVocabularyDialog.kt:2645` `includeWords`
+  新增 `isJapanese`；日语关闭 BNC/COCA 词频分支（日语无词频，恒为 0，
+  否则整张词表都会被当成「词频为 0 的词」而全部包含）。
+- 端到端用例：`src/test/kotlin/com/mujingx/util/TestJapaneseVocabulary.kt`
+  + `src/test/resources/japanese.{srt,ass}`（分词表层/基本形、SRT、ASS 回归；
+  依赖 `jadic.db`/ffmpeg 的用例缺失时自动跳过）。
+
+- [x] **日语 `.ass` 字幕根本不被支持**（用户 0 词的直接原因）
       `ui/dialog/GenerateVocabularyDialog.kt:517-527` 文件选择器允许
       `listOf("srt","ass")`，但 `:634-639` 的 SUBTITLES 分支对日语
       **无条件**调用 `parseJapaneseSRT`（注释写「ASS 会先转换为 SRT」，实际没有），
@@ -88,34 +115,34 @@
       英语路径有 `parseASS`（`:664`，走 ffmpeg 转 SRT）。
       修法：日语分支按扩展名分派，`.ass` 复用已有的 ffmpeg 转换后按 SRT 解析
       （或另写 ASS 解析器）。
-- [ ] **日语字幕在播放器/字幕浏览器里无法点词、悬停查词**：
+- [x] **日语字幕在播放器/字幕浏览器里无法点词、悬停查词**：
       `player/HoverableCaption.kt:512` 的 `renderCaptionLine` 用
       `line.split(Regex("\\s+"))` 按空格切词，`:516`/`:520` 又只用
       `a..z`/`A..Z`/数字判定词边界 —— 日语没有空格且不是 ASCII，
       整行被当作 `leadingPunctuation`、`wordPart` 为空，
       于是永远不生成 `HoverableText`（字幕浏览器同 `:578`）。
       修法：日语走 `JapaneseWordSegmenter.tokenize()` 得到词与起止下标。
-- [ ] **悬停查词恒查英语词典**：`player/HoverableCaption.kt:149`
+- [x] **悬停查词恒查英语词典**：`player/HoverableCaption.kt:149`
       `val dictWord = Dictionary.query(text.lowercase().trim())` 硬编码英语
       ECDICT，未按词库 `language` 分派 `JapaneseDictionary` →
       日语词只会显示「内置词典里面没有 …」。
       （`player/danmaku/WordDetail.kt:202` 还硬编码 `英 … 美 …` 音标，
       且完全没展示 kana/romaji。）
-- [ ] **「用文档生成词库」忽略目标语言**：
+- [x] **「用文档生成词库」忽略目标语言**：
       `ui/dialog/GenerateVocabularyDialog.kt:613` 算了 `isJapanese`，
       但 DOCUMENT 分支 `:615-628` 完全不用它，恒调 `parseDocument`
       （`ui/util/GenerateVocabulary.kt:81` 英语 OpenNLP `:117-130`，
       再用 ECDICT 过滤 `:179`）→ 选「日语」仍走英语链路，日文词全被丢弃。
-- [ ] **播放器「匹配词库」恒按英语分词**：
+- [x] **播放器「匹配词库」恒按英语分词**：
       `ui/util/GenerateVocabulary.kt:1147` `generateMatchedVocabulary`
       恒调 `parseSRT(..., enablePhrases=true)` 且 `language = ""`（`:1165`），
       不看播放器当前词库的语言。
-- [ ] 「包含词库」未做语言防护：`GenerateVocabularyDialog.kt:992-1003`
+- [x] 「包含词库」未做语言防护：`GenerateVocabularyDialog.kt:992-1003`
       调用 `includeWords(...)` 没传 `isJapanese`；`:2662-2673` 的
       BNC/COCA 条件缺少 `applyFrequencyFilters` 守卫（对比 `filterWords:2482`）。
-- [ ] 目标语言下拉对「用文档生成词库」等类型仍显示（`:899`）但无效：
+- [x] 目标语言下拉对「用文档生成词库」等类型仍显示（`:899`）但无效：
       要么让它真正生效，要么按类型隐藏。
-- [ ] 补一套日语字幕的端到端用例：`.srt` / `.ass` / `.mkv` 三种源
+- [ ] 补一套日语字幕的端到端用例（`.srt`/`.ass` 已加，见下；`.mkv` 待真实样本）：`.srt` / `.ass` / `.mkv` 三种源
       都要能出词，并覆盖「播放器点词 → 查词 → 加入词库」这条链。
 
 ### P1 — 内置词库：学习数据与进度分离（路线 B，用户已选定）
@@ -225,6 +252,8 @@
       `けれど/けれども` 在 N4 与 N2 重复收录（源数据如此）；
       OpenJLPT 的英文释义本身有错（`はい` 的 meanings 是
       `wear; put on (sword)`），只能照抄
+- [ ] 音调（アクセント）展示：NHK 词典不可分发，
+      需另找开放许可的音调数据源
 
 ### P5 — 验证与收尾
 
@@ -237,11 +266,8 @@
 - [ ] 清理仓库外的验证残留：`~/work_rom/MuJing/glyph/`、`squashfs-root/`、
       `verifyA/`、`testA/`（等用户确认后删）
 
-### P6 — 后续语言与功能（承接）
-
-- [ ] 韩语支持：按 `AGENTS.md` §6 的清单实施
-      （`resources/common/vocabulary/TOPIK한국어/` + `KoreanDictionary`）
-- [ ] 音调（アクセント）展示：NHK 词典不可分发，需另找开放许可的数据源
+（不再规划后续语言：当前专注日语。音调（アクセント）展示归入 P4，
+NHK 词典不可分发，需另找开放许可的数据源。）
 
 ## 已知的坑
 

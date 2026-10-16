@@ -199,7 +199,19 @@ fun WordDetail(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("英 ${word.ukphone}  美 ${word.usphone}")
+                        // 语言以当前词库为准（AGENTS.md §8：不用字符范围判断语言）。
+                        // 日语没有英/美音标，改显示假名与分拍罗马字。
+                        val isJapanese = playerState.vocabulary?.language == "japanese" ||
+                                playerState.wordScreenVocabulary?.language == "japanese"
+                        if (isJapanese) {
+                            Text(
+                                listOf(word.kana, word.romaji)
+                                    .filter { it.isNotEmpty() }
+                                    .joinToString("  ")
+                            )
+                        } else {
+                            Text("英 ${word.ukphone}  美 ${word.usphone}")
+                        }
                         IconButton(onClick = {
                             scope.launch(Dispatchers.IO) {
                                 playAudio(word.value)

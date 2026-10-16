@@ -512,18 +512,111 @@ private fun extractJapaneseWords(
     words: MutableMap<String, MutableList<Caption>>,
     orderList: MutableList<String>
 ) {
+    collectJapaneseForms(content, dataCaption, words, orderList)
+}
+
+/**
+ * 从一段日语文本里收集「基本形 → 上下文」映射，保持首次出现顺序。
+ *
+ * 每个词最多保留 3 条上下文：字幕场景是 [Caption]，文档场景是所在句子。
+ */
+private fun <T> collectJapaneseForms(
+    content: String,
+    context: T,
+    words: MutableMap<String, MutableList<T>>,
+    orderList: MutableList<String>
+) {
     for (form in JapaneseWordSegmenter.tokenizeToBaseForms(content)) {
         // 只保留确有语义的词，过滤掉纯符号与空白
         if (form.isBlank() || form.all { !it.isLetterOrDigit() }) continue
 
         val existing = words[form]
         if (existing == null) {
-            words[form] = mutableListOf(dataCaption)
+            words[form] = mutableListOf(context)
             orderList.add(form)
-        } else if (existing.size < 3 && !existing.contains(dataCaption)) {
-            existing.add(dataCaption)
+        } else if (existing.size < 3 && !existing.contains(context)) {
+            existing.add(context)
         }
     }
+}
+
+/**
+ * 读取文档纯文本（pdf / txt / md / 源码等）。
+ * 与 [parseDocument] 中的读取逻辑一致，单独抽出供日语链路复用。
+ */
+private fun readDocumentText(file: File, setProgressText: (String) -> Unit): String {
+    val extension = file.extension
+    val otherExtensions = listOf("txt", "java", "md", "cs", "cpp", "c", "kt", "js", "py", "ts")
+    return try {
+        if (extension == "pdf") {
+            setProgressText("正在加载文档")
+            val document: PDDocument = PDDocument.load(file)
+            val pdfStripper = PDFTextStripper()
+            val text = pdfStripper.getText(document)
+            document.close()
+            text
+        } else if (otherExtensions.contains(extension)) {
+            var text = file.readText()
+            // 移除 windows text 文件的 BOM
+            if (extension == "txt" && text.isNotEmpty() && text[0].code == 65279) {
+                text = text.substring(1)
+            }
+            text
+        } else {
+            ""
+        }
+    } catch (exception: InvalidPasswordException) {
+        JOptionPane.showMessageDialog(null, exception.message)
+        ""
+    } catch (exception: IOException) {
+        JOptionPane.showMessageDialog(null, exception.message)
+        ""
+    }
+}
+
+/**
+ * 解析日语文档（txt / md / pdf 等）里的词条。
+ *
+ * 与英语链路 [parseDocument] 的区别：
+ *  1. 断句按日语标点（。！？）与换行，而不是 OpenNLP 英语断句模型；
+ *  2. 分词用 Kuromoji 并还原为基本形，查 jadic.db；
+ *  3. 忽略 enablePhrases —— 日语没有「词组」按钮的语义，词性由 Kuromoji 给出。
+ *
+ * @param setProgressText 设置进度文本
+ */
+@Throws(IOException::class)
+fun parseJapaneseDocument(
+    pathName: String,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val text = readDocumentText(File(pathName), setProgressText)
+
+    val words: MutableMap<String, MutableList<String>> = HashMap()
+    val orderList = mutableListOf<String>()
+
+    setProgressText("正在断句")
+    // 日语句末标点与换行即句子边界；不引入额外依赖即可得到「词所在句」
+    val sentences = text.split(Regex("[。！？!?\\r\\n]+"))
+
+    setProgressText("正在分词")
+    for (sentence in sentences) {
+        val context = sentence.trim().replace("\\s+".toRegex(), " ")
+        if (context.isEmpty()) continue
+        collectJapaneseForms(context, context, words, orderList)
+    }
+
+    setProgressText("从文档提取出 ${orderList.size} 个词，正在批量查询日汉词典")
+    val results = mutableListOf<Word>()
+    for (term in orderList) {
+        val hit = JapaneseDictionary.query(term) ?: continue
+        // 与英语链路一致：文档来源的词把所在句子放在 pos 里
+        hit.pos = words[term]?.joinToString("\n") ?: ""
+        results.add(hit)
+    }
+
+    setProgressText("${results.size} 个有效单词")
+    setProgressText("")
+    return results
 }
 
 /**
@@ -655,6 +748,34 @@ fun parseJapaneseMKV(
         e.printStackTrace()
     }
     return listOf()
+}
+
+/**
+ * 解析 ASS 字幕文件中的日语词条。
+ *
+ * ASS 不需要单独的分词实现：Kuromoji 只看文本内容，与容器格式无关。
+ * 因此与 [parseASS] 一样先转成 SRT，再交给 [parseJapaneseSRT]。
+ */
+@Throws(IOException::class)
+fun parseJapaneseASS(
+    pathName: String,
+    setProgressText: (String) -> Unit
+): List<Word> {
+    val applicationDir = getSettingsDirectory()
+    val assFile = File(pathName)
+    val srtFile = File("$applicationDir/temp.srt")
+    setProgressText("开始转换字幕")
+    val result = convertToSrt(assFile.absolutePath, srtFile.absolutePath)
+    if (result == "finished") {
+        setProgressText("字幕转换完成")
+        val list = parseJapaneseSRT(srtFile.absolutePath, setProgressText)
+        srtFile.delete()
+        return list
+    } else {
+        setProgressText("字幕转换失败")
+        srtFile.delete()
+        return emptyList()
+    }
 }
 
 /**
@@ -1152,17 +1273,35 @@ fun generateMatchedVocabulary(
 ) {
     val applicationDir = getSettingsDirectory()
     val cachedVocabulary = File("$applicationDir/VideoPlayer/VideoVocabulary.json")
+    // 语言以正在记忆的词库为准：日语的 SUBTITLES 不能按英语链路解析
+    val language = state.wordScreenVocabulary?.language.orEmpty()
+    val isJapanese = language == "japanese"
     if (subPath.isNotEmpty() && File(subPath).exists()) {
         if (!cachedVocabulary.exists() || subIsChanged(videoPath, cachedVocabulary.absolutePath,trackId)) {
-            val words = parseSRT(
-                pathName = subPath,
-                setProgressText = { println(it) },
-                enablePhrases = true
-            )
+            val words = if (isJapanese) {
+                // 日语：按扩展名分派，ASS 需要先转 SRT
+                if (File(subPath).extension.lowercase() == "ass") {
+                    parseJapaneseASS(
+                        pathName = subPath,
+                        setProgressText = { println(it) }
+                    )
+                } else {
+                    parseJapaneseSRT(
+                        pathName = subPath,
+                        setProgressText = { println(it) }
+                    )
+                }
+            } else {
+                parseSRT(
+                    pathName = subPath,
+                    setProgressText = { println(it) },
+                    enablePhrases = true
+                )
+            }
             val newVocabulary = Vocabulary(
                 name = "VideoPlayerVocabulary",
                 type = VocabularyType.SUBTITLES,
-                language = "",
+                language = language,
                 size = words.size,
                 relateVideoPath = videoPath,
                 subtitlesTrackId = trackId,

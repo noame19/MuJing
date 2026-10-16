@@ -45,6 +45,27 @@ data class JapaneseToken(
 )
 
 /**
+ * 日语分词结果中的一个词，同时保留表层写法与基本形。
+ *
+ * 日语词库以基本形为词条（「食べる」），查词必须用 [baseForm]；
+ * 而点词时显示、复制、送去发音引擎的都是字幕里的 [surface]（「食べました」），
+ * 两者都要，故单独提供一个结果类型。
+ *
+ * @param surface 在原文中的表层写法（「食べました」）
+ * @param baseForm 基本形（「食べる」），未登录词与表层写法相同
+ * @param partOfSpeech 词性，如「名詞」「動詞」
+ * @param startIndex 在原句中的起始字符下标（含）
+ * @param endIndex 在原句中的结束字符下标（不含）
+ */
+data class JapaneseSurfaceToken(
+    val surface: String,
+    val baseForm: String,
+    val partOfSpeech: String,
+    val startIndex: Int,
+    val endIndex: Int
+)
+
+/**
  * 日语文本分词器。
  *
  * 底层为 Apache Lucene 的 Kuromoji（`org.apache.lucene:lucene-analysis-kuromoji`）：
@@ -144,6 +165,29 @@ object JapaneseWordSegmenter {
         tokenize(text).map { it.term }
             .filter { it.isNotBlank() && it.any { c -> !c.isWhitespace() } }
             .distinct()
+
+    /**
+     * 同 [tokenize]，但额外保留每个词在原文中的表层写法。
+     *
+     * 基本形过滤器只改写词的文本，不改 [OffsetAttribute]，因此用原文切片即可
+     * 复原表层写法。字幕里是活用形，点词时要显示「食べました」、
+     * 而查词要用「食べる」，故两者都需要。
+     */
+    fun tokenizeSurface(text: String): List<JapaneseSurfaceToken> {
+        if (text.isBlank()) return emptyList()
+        return tokenize(text).mapNotNull { token ->
+            val start = token.startIndex
+            val end = token.endIndex
+            if (start < 0 || start >= end || end > text.length) return@mapNotNull null
+            JapaneseSurfaceToken(
+                surface = text.substring(start, end),
+                baseForm = token.term,
+                partOfSpeech = token.partOfSpeech,
+                startIndex = start,
+                endIndex = end
+            )
+        }
+    }
 
     /**
      * 分词器不可用时的降级实现：逐字切分。

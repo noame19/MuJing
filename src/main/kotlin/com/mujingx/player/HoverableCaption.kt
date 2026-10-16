@@ -46,6 +46,7 @@ import com.mujingx.data.*
 import com.mujingx.player.danmaku.DisplayMode
 import com.mujingx.ui.dialog.GrammarDetailCard
 import com.mujingx.ui.util.JapaneseGrammarMatcher
+import com.mujingx.ui.util.JapaneseWordSegmenter
 import com.mujingx.player.danmaku.WordDetail
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -90,6 +91,18 @@ fun HoverableText(
     addWord: (Word) -> Unit = {},
     addToFamiliar: (Word) -> Unit = {},
     onClick: () -> Unit = {},
+    /**
+     * 是否为日语文本。
+     *
+     * 由调用方按当前词库的 language 字段判断后传入
+     * （见 AGENTS.md §8：日语分支不得用字符范围判断）。
+     */
+    isJapanese: Boolean = false,
+    /**
+     * 查词用的词条。日语字幕里显示的是活用形（食べました），
+     * 而词典以基本形（食べる）收录，故查词要用这个字段。
+     */
+    lookupTerm: String? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var isInPopup by remember { mutableStateOf(false) }
@@ -146,12 +159,15 @@ fun HoverableText(
                 text.dropLast(2)
             }
 
-            val dictWord = Dictionary.query(text.lowercase().trim())
+            val dictWord = if (isJapanese)
+                JapaneseDictionary.query(lookupTerm ?: text)
+            else
+                Dictionary.query(text.lowercase().trim())
 
             // 日语文本额外做语法检出：结合视频学语法。
             // 只取区分度较高的语法，避免「〜に」「〜を」这类几乎每句都有的
             // 裸助词把真正值得学的语法淹掉。
-            val grammarMatch = if (text.containsJapanese()) {
+            val grammarMatch = if (isJapanese) {
                 JapaneseGrammarMatcher.match(text, onlyHighSpecificity = true).firstOrNull()
             } else {
                 null
@@ -207,7 +223,7 @@ fun HoverableText(
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     Text(
-                                        text = "内置词典里面没有 \"$text\"",
+                                        text = if (isJapanese) "日汉词典里面没有 \"$text\"" else "内置词典里面没有 \"$text\"",
                                         style = MaterialTheme.typography.body1,
                                         color =  MaterialTheme.colors.onBackground
                                     )
@@ -248,7 +264,7 @@ fun HoverableText(
                                         Button(
                                             onClick = {
                                                 val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
-                                                val lang = if (text.containsJapanese()) "ja" else "en"
+                                                val lang = if (isJapanese) "ja" else "en"
                                                 uriHandler.openUri("https://www.youdao.com/result?word=$encoded&lang=$lang")
                                             },
                                             colors = ButtonDefaults.buttonColors(
@@ -260,7 +276,7 @@ fun HoverableText(
                                         }
 
                                         // 以下词典只收英语词条，日语文本下不予展示
-                                        if (!text.containsJapanese()) {
+                                        if (!isJapanese) {
                                             Button(
                                                 onClick = {
                                                     val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
@@ -276,7 +292,7 @@ fun HoverableText(
                                         }
                                     }
 
-                                    if (!text.containsJapanese()) Row(
+                                    if (!isJapanese) Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
@@ -313,7 +329,7 @@ fun HoverableText(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
                                         // Oxford 只收英语词条
-                                        if (!text.containsJapanese()) {
+                                        if (!isJapanese) {
                                             Button(
                                                 onClick = {
                                                     val encoded = URLEncoder.encode(text, Charset.forName("UTF-8"))
@@ -341,7 +357,7 @@ fun HoverableText(
                                             ) {
                                                 Text("系统词典", color = Color.White)
                                             }
-                                        } else if (text.containsJapanese()) {
+                                        } else if (isJapanese) {
                                             Spacer(modifier = Modifier.weight(1f))
                                         }
 
@@ -377,6 +393,13 @@ fun HoverableCaption(
 ) {
     Column(modifier) {
         val lines = caption.split("\n")
+
+        // 字幕语言以当前词库的 language 字段为准。
+        // 记忆单词界面打开播放器时词库在 wordScreenVocabulary，
+        // 拖放词库/弹幕时在 vocabulary，两者都要看。
+        // 注意：这里不使用字符范围判断语言（见 AGENTS.md §8）。
+        val isJapanese = playerState.vocabulary?.language == "japanese" ||
+                playerState.wordScreenVocabulary?.language == "japanese"
 
         // 处理双语字幕的显示顺序
         if (isBilingual && lines.size >= 2) {
@@ -424,7 +447,8 @@ fun HoverableCaption(
                     onPopupHoverChanged,
                     addWord,
                     addToFamiliar,
-                    alwaysActive = false
+                    alwaysActive = false,
+                    isJapanese = isJapanese
                 )
 
             }
@@ -453,7 +477,8 @@ fun HoverableCaption(
                     onPopupHoverChanged,
                     addWord,
                     addToFamiliar,
-                    alwaysActive = false
+                    alwaysActive = false,
+                    isJapanese = isJapanese
                 )
 
             }
@@ -503,7 +528,27 @@ private fun renderCaptionLine(
     addToFamiliar: (Word) -> Unit,
     alwaysActive: Boolean = false,
     onClick: () -> Unit = {},
+    /** 是否为日语字幕。日语按 Kuromoji 分词，英语按空格分词。 */
+    isJapanese: Boolean = false,
 ) {
+    if (isJapanese) {
+        renderJapaneseCaptionLine(
+            line = line,
+            color = color,
+            hoverColor = hoverColor,
+            style = style,
+            fontFamily = fontFamily,
+            playAudio = playAudio,
+            playerState = playerState,
+            onPopupHoverChanged = onPopupHoverChanged,
+            addWord = addWord,
+            addToFamiliar = addToFamiliar,
+            alwaysActive = alwaysActive,
+            onClick = onClick,
+        )
+        return
+    }
+
     Row (
         Modifier
             .padding(horizontal = 3.dp)// 这里是为了给文本选择留出一点空间
@@ -574,6 +619,99 @@ private fun renderCaptionLine(
 }
 
 
+/**
+ * 渲染日语字幕行。
+ *
+ * 与英语链路（按空格切分）不同，日语词与词之间没有空格，
+ * 因此用 Kuromoji 分词：[JapaneseWordSegmenter.tokenizeSurface] 给出每个词的
+ * 表层写法与字符区间，标点/空白按原样插回，保证字幕一字不差。
+ *
+ * 每个实词渲染为 [HoverableText]，查词用基本形（
+ * 「食べました」→「食べる」），点词弹窗里的显示与复制仍是表层写法。
+ */
+@Composable
+private fun renderJapaneseCaptionLine(
+    line: String,
+    color: Color,
+    hoverColor: Color = Color(0xFF29417F),
+    style: TextStyle = MaterialTheme.typography.h4,
+    fontFamily: FontFamily? = null,
+    playAudio: (String) -> Unit,
+    playerState: PlayerState,
+    onPopupHoverChanged: (Boolean) -> Unit,
+    addWord: (Word) -> Unit,
+    addToFamiliar: (Word) -> Unit,
+    alwaysActive: Boolean = false,
+    onClick: () -> Unit = {},
+) {
+    // 分词结果只与字幕文本有关，按行缓存，避免每次重组都重新分词
+    val tokens = remember(line) { JapaneseWordSegmenter.tokenizeSurface(line) }
+    val isActive = if (alwaysActive) true else color != Color.Transparent
+
+    if (tokens.isEmpty()) {
+        // 分词失败（降级或空行）时按原样显示，不丢字
+        Text(line, color = color, style = style, fontFamily = fontFamily)
+        return
+    }
+
+    Row(
+        Modifier.padding(horizontal = 3.dp)
+    ) {
+        var cursor = 0
+        tokens.forEach { token ->
+            // 分词器跳过的空白等原样补回
+            if (token.startIndex > cursor) {
+                Text(
+                    line.substring(cursor, token.startIndex),
+                    color = color,
+                    style = style,
+                    fontFamily = fontFamily,
+                )
+            }
+
+            val surface = token.surface
+            if (surface.any { it.isLetterOrDigit() }) {
+                HoverableText(
+                    text = surface,
+                    color = color,
+                    hoverColor = hoverColor,
+                    style = style,
+                    fontFamily = fontFamily,
+                    isActive = isActive,
+                    playAudio = playAudio,
+                    playerState = playerState,
+                    modifier = Modifier,
+                    onPopupHoverChanged = onPopupHoverChanged,
+                    addWord = addWord,
+                    addToFamiliar = addToFamiliar,
+                    onClick = onClick,
+                    isJapanese = true,
+                    lookupTerm = token.baseForm,
+                )
+            } else {
+                // 标点、记号等不参与查词
+                Text(
+                    surface,
+                    color = color,
+                    style = style,
+                    fontFamily = fontFamily,
+                )
+            }
+            cursor = token.endIndex
+        }
+
+        if (cursor < line.length) {
+            Text(
+                line.substring(cursor),
+                color = color,
+                style = style,
+                fontFamily = fontFamily,
+            )
+        }
+    }
+}
+
+
 @Composable
 fun SubtitleHoverableCaption(
      content: String,
@@ -592,6 +730,9 @@ fun SubtitleHoverableCaption(
 ){
     val scope = rememberCoroutineScope()
 
+    // 字幕语言以记忆单词界面的词库为准（AGENTS.md §8：不用字符范围判断语言）
+    val isJapanese = wordScreenState.vocabulary.language == "japanese"
+
     renderCaptionLine(
         line = content,
         hoverColor = Color.Transparent,
@@ -602,6 +743,7 @@ fun SubtitleHoverableCaption(
         playerState = playerState,
         onPopupHoverChanged ={},
         alwaysActive = true,
+        isJapanese = isJapanese,
         onClick = {
             // 点击单词时切换 currentIndex，模拟 BasicTextField 的行为
             if (!multipleLines.enabled && currentIndex != index) {

@@ -619,6 +619,11 @@ fun GenerateVocabularyDialog(
                             relateVideoPath = vocabulary.relateVideoPath
                             selectedTrackId = vocabulary.subtitlesTrackId
                             vocabulary.wordList
+                        } else if (isJapanese) {
+                            // 日语文档走 Kuromoji 分词 + jadic 查询
+                            parseJapaneseDocument(
+                                pathName = pathName,
+                                setProgressText = { progressText = it })
                         } else {
                             parseDocument(
                                 pathName = pathName,
@@ -630,13 +635,21 @@ fun GenerateVocabularyDialog(
                     }
 
                     SUBTITLES -> {
-                        val extension = File(pathName).extension
+                        val extension = File(pathName).extension.lowercase()
                         if (isJapanese) {
-                            // 日语字幕统一按 SRT 解析；ASS 会先转换为 SRT
-                            parseJapaneseSRT(
-                                pathName = pathName,
-                                setProgressText = { progressText = it }
-                            )
+                            // 日语：按扩展名分派。ASS 需要先转 SRT（与英语链路一致），
+                            // 否则 FormatSRT 解析 ASS 会得到空结果。
+                            if (extension == "ass") {
+                                parseJapaneseASS(
+                                    pathName = pathName,
+                                    setProgressText = { progressText = it }
+                                )
+                            } else {
+                                parseJapaneseSRT(
+                                    pathName = pathName,
+                                    setProgressText = { progressText = it }
+                                )
+                            }
                         } else if (extension == "srt") {
                             parseSRT(
                                 pathName = pathName,
@@ -999,7 +1012,8 @@ fun GenerateVocabularyDialog(
                                                         bncZeroFilter,
                                                         frqZeroFilter,
                                                         replaceToLemma,
-                                                        selectedFileList.isNotEmpty()
+                                                        selectedFileList.isNotEmpty(),
+                                                        isJapanese = targetLanguage == "japanese"
                                                     )
                                                     // 根据选择的词库包含单词
                                                     val includeList = includeSelectVocabulary(
@@ -2638,9 +2652,14 @@ fun includeWords(
     bncZeroFilter: Boolean,
     frqZeroFilter: Boolean,
     replaceToLemma: Boolean,
-    isBatchMKV: Boolean
+    isBatchMKV: Boolean,
+    isJapanese: Boolean = false
 ): List<Word> {
     val resultList = ArrayList<Word>()
+
+    // 日语词条没有 BNC/COCA 词频（字段恒为 0），若沿用英语的词频条件
+    // 会把整份词表都当成「词频为 0 的词」而全部包含进来，故对日语关闭词频分支。
+    val applyFrequencyFilters = !isJapanese
 
     /**
      * Key 为需要转换为原型的单词，
@@ -2659,16 +2678,16 @@ fun includeWords(
         if (numberFilter && (word.value.toDoubleOrNull() != null)) {
             // 包含数字
             resultList.add(word)
-        } else if (bncNumFilter && (word.bnc!! in 1 until bncNum)) {
+        } else if (applyFrequencyFilters && bncNumFilter && (word.bnc!! in 1 until bncNum)) {
             // 包含最常见的词
             resultList.add(word)
-        } else if (frqNumFilter && (word.frq!! in 1 until frqNum)) {
+        } else if (applyFrequencyFilters && frqNumFilter && (word.frq!! in 1 until frqNum)) {
             // 包含最常见的词
             resultList.add(word)
-        } else if (bncZeroFilter && word.bnc == 0) {
+        } else if (applyFrequencyFilters && bncZeroFilter && word.bnc == 0) {
             // 包含 BNC 词频为 0 的词
             resultList.add(word)
-        } else if (frqZeroFilter && word.frq == 0) {
+        } else if (applyFrequencyFilters && frqZeroFilter && word.frq == 0) {
             // 包含 COCA 词频为 0 的词
             resultList.add(word)
         }
