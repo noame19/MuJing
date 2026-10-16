@@ -22,7 +22,9 @@ package com.mujingx.ui.wordscreen
 import androidx.compose.runtime.*
 import com.formdev.flatlaf.FlatLightLaf
 import com.mujingx.data.Vocabulary
+import com.mujingx.data.VocabularyProgress
 import com.mujingx.data.Word
+import com.mujingx.data.WordProgressStore
 import com.mujingx.data.loadMutableVocabulary
 import com.mujingx.data.loadVocabulary
 import kotlinx.coroutines.Dispatchers
@@ -152,7 +154,7 @@ class WordScreenState(wordScreenData: WordScreenData) {
     /**
      * 熟悉词库的索引，从0开始，在标题栏显示的时候 +1
      */
-    var familiarVocabularyIndex by mutableStateOf(wordScreenData.hardVocabularyIndex)
+    var familiarVocabularyIndex by mutableStateOf(wordScreenData.familiarVocabularyIndex)
 
     /**
      * 当前单词的单元，从1开始
@@ -214,6 +216,79 @@ class WordScreenState(wordScreenData: WordScreenData) {
 
     /** 当前正在学习的词库 */
     var vocabulary = loadMutableVocabulary(vocabularyPath)
+
+    /**
+     * 当前词库是否是内置词库（应用资源目录里的词库，只读）。
+     *
+     * 内置词库不需要用户先另存为一个副本，程序也不会把改动写回资源目录，
+     * 学习进度、删除、熟悉/困难标记都记在学习进度文件里（见 data/WordProgress.kt）。
+     */
+    val isReadOnlyVocabulary: Boolean
+        get() = WordProgressStore.isBuiltIn(vocabularyPath)
+
+    /** 当前词库的学习进度，与词库文件分离保存 */
+    var progress = VocabularyProgress(id = WordProgressStore.idFor(vocabularyPath), name = vocabularyName)
+
+    init {
+        loadProgress(index)
+    }
+
+    /**
+     * 载入当前词库的学习进度。
+     *
+     * 构造时和切换词库（AppState.changeVocabulary）时调用：
+     * 内置词库只读，已移除的词按进度过滤掉（效果与旧版从文件里删掉一致），编辑过的词条按覆盖层还原；
+     * 下标优先用进度文件里记住的，没有进度时用 [legacyIndex]（旧设置文件里的下标）。
+     */
+    fun loadProgress(legacyIndex: Int = index) {
+        progress = WordProgressStore.loadOrMigrate(vocabularyPath, vocabularyName, legacyIndex)
+        if (isReadOnlyVocabulary) {
+            val marks = progress.marks
+            val overrides = progress.overrides
+            val wordList = vocabulary.wordList
+            // 内置词库不能删词：把「已从当前词库移除」的词过滤掉，效果与旧版从文件里删掉一致
+            var i = 0
+            while (i < wordList.size) {
+                if (marks[wordList[i].value]?.removed == true) wordList.removeAt(i) else i++
+            }
+            // 内置词库不能改词：把编辑过的词条覆盖回去
+            if (overrides.isNotEmpty()) {
+                for (i in wordList.indices) {
+                    overrides[wordList[i].value]?.let { wordList[i] = it }
+                }
+            }
+            // 内置词库不能重排：按照进度里记住的顺序还原（打乱后不丢失）
+            val order = progress.order
+            if (order.size == wordList.size) {
+                val reordered = order.mapNotNull { wordList.getOrNull(it) }
+                if (reordered.size == wordList.size) {
+                    wordList.clear()
+                    wordList.addAll(reordered)
+                }
+            }
+        }
+        index = progress.index.coerceIn(0, maxOf(vocabulary.wordList.size - 1, 0))
+        unit = (index / 20) + 1
+    }
+
+    /**
+     * 打乱当前词库。
+     *
+     * 可写词库直接洗牌并写回词库文件；内置词库只读，把新的顺序记进学习进度，
+     * 下次打开这个词库仍然是打乱后的顺序。
+     */
+    fun shuffleVocabulary() {
+        vocabulary.wordList.shuffle()
+        if (isReadOnlyVocabulary) {
+            progress = progress.copy(
+                order = vocabulary.wordList.indices.toList(),
+                updatedAt = System.currentTimeMillis()
+            )
+            WordProgressStore.save(progress)
+        } else {
+            saveCurrentVocabulary()
+        }
+    }
 
     /** 记忆单词界面的记忆策略 */
     var memoryStrategy by mutableStateOf(MemoryStrategy.Normal)
@@ -352,6 +427,10 @@ class WordScreenState(wordScreenData: WordScreenData) {
 
     /** 保存当前的词库 */
     fun saveCurrentVocabulary() {
+        // 内置词库位于应用资源目录，是只读的：改动只能记入学习进度（见 markWordRemoved）
+        if (isReadOnlyVocabulary) {
+            return
+        }
 
         runBlocking {
             launch (Dispatchers.IO){
@@ -412,6 +491,71 @@ class WordScreenState(wordScreenData: WordScreenData) {
             }
         }
 
+        saveProgressIndex()
+
+    }
+
+    /**
+     * 把当前下标写进学习进度文件。
+     *
+     * 学习进度与词库文件分离：内置词库（只读）也能记住上次学到第几个词，
+     * 用户自己另存的词库同样受益 —— 换词库文件后进度不会跟着错位。
+     */
+    private fun saveProgressIndex() {
+        if (progress.index == index) return
+        progress = progress.copy(index = index)
+        WordProgressStore.save(progress)
+    }
+
+    /**
+     * 词库改动后的持久化。
+     *
+     * 可写词库（用户自己的词库）直接写回词库文件；内置词库是只读资源，
+     * 改为把「该词已从当前词库移除」记入学习进度（见 [markWordRemoved]）。
+     */
+    fun persistVocabularyChange(removedValue: String? = null, familiar: Boolean = false, hard: Boolean = false) {
+        if (isReadOnlyVocabulary) {
+            if (removedValue != null) {
+                markWordRemoved(removedValue, familiar = familiar, hard = hard)
+            }
+            return
+        }
+        saveCurrentVocabulary()
+    }
+
+    /**
+     * 记录单词已从当前词库移除（内置词库不能真正删词，只能记标记）。
+     */
+    fun markWordRemoved(value: String, familiar: Boolean = false, hard: Boolean = false) {
+        progress = progress.withMark(value) { mark ->
+            mark.copy(
+                removed = true,
+                familiar = mark.familiar || familiar,
+                hard = mark.hard || hard
+            )
+        }
+        WordProgressStore.save(progress)
+    }
+
+    /**
+     * 保存编辑后的词条。
+     *
+     * 可写词库直接写回词库文件；内置词库是只读资源，编辑结果记入学习进度（覆盖层），
+     * 下次打开这个词库时仍然生效。
+     *
+     * @param originalValue 词库里原来的写法（覆盖层的键）
+     * @param newWord 编辑后的词条
+     */
+    fun overrideWord(originalValue: String, newWord: Word) {
+        if (isReadOnlyVocabulary) {
+            progress = progress.copy(
+                overrides = progress.overrides + (originalValue to newWord),
+                updatedAt = System.currentTimeMillis()
+            )
+            WordProgressStore.save(progress)
+        } else {
+            saveCurrentVocabulary()
+        }
     }
 
     fun changePlayerBounds(rectangle: Rectangle){

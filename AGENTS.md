@@ -28,6 +28,7 @@ repo/
 ├── src/main/kotlin/com/mujingx/     Kotlin 源码（按职责分包）
 │   ├── data/                        数据模型与词典后端
 │   │   ├── Vocabulary.kt            Word / Vocabulary / VocabularyType
+│   │   ├── WordProgress.kt          学习进度（内置词库只读，进度另存，见 §3.5）
 │   │   ├── Dictionary.kt            英语词典（ECDICT）
 │   │   └── JapaneseDictionary.kt    日语词典（jadic.db）
 │   ├── state/                       AppState：资源定位、设置持久化
@@ -164,6 +165,29 @@ resources/common/vocabulary/
 | 词尾促音用 `'` | `あっ` → `a-'` |
 | 长音单独占 1 拍，写作前一拍的元音 | `アワー` → `a-wa-a` |
 | 拨音单独占 1 拍 | `にほんご` → `ni-ho-n-go` |
+
+### 3.5 内置词库只读：学习进度与词库数据分离
+
+内置词库位于**应用资源目录**（打包后在 `app/resources/vocabulary`，开发态在
+`resources/common/vocabulary`），是只读资源：**任何代码都不得写回**，否则软件升级或
+卸载时用户的学习记录会被重置或删除。因此内置词库不需要「另存为副本」也能直接学习，
+学习数据单独存放：
+
+- 进度文件：`~/.MuJing/progress/<SHA-1(词库标识)>.json`，见
+  `src/main/kotlin/com/mujingx/data/WordProgress.kt`
+  - 词库标识：内置词库用 `builtin:<分类>/<文件名>`（换机器、换解压目录都能对上）；
+    用户自己的词库用**规范化的绝对路径**
+  - `VocabularyProgress.index` 记住学到第几个词（原先全机只有一份
+    `~/.MuJing/TypingWordSettings.json` 的 `index`，换词库就会串位）；
+    `marks` 记录「已从当前词库移除 / 已加入熟悉词库 / 已加入困难词库」；
+    `overrides` 是内置词库的**编辑覆盖层**；`order` 是「打乱词库」后的顺序
+- 表现层约定：凡是原先「写回当前词库文件」的动作（删词、加入熟悉词库、编辑词条、
+  打乱词库），对内置词库一律改为写进度（`WordScreenState.persistVocabularyChange()`
+  / `markWordRemoved()` / `overrideWord()` / `shuffleVocabulary()`），
+  读取时再按进度还原（`WordScreenState.loadProgress()`），用户观感与旧版一致
+- 「熟悉词库」「困难词库」本身仍是可以写的独立文件（`~/.MuJing/` 下的
+  `FamiliarVocabulary.json` / `HardVocabulary.json`），只有「从当前词库删掉这个词」
+  这一步变成了进度标记
 
 ---
 
@@ -313,6 +337,8 @@ gh run download <run-id> --repo noame19/MuJing --name MuJing-linux-appimage-x86_
   文件为准，改动风格请同步更新 `.editorconfig` 与本节
 - 日语相关分支一律以 `vocabulary.language` 或 `Word` 字段为判断依据，
   **不要**用字符范围正则判断语言
+- 内置词库（应用资源目录下的词库）**只读**：不得写回，学习数据一律写
+  `~/.MuJing/progress/`（见 §3.5）
 - 改动英语既有路径时须回归验证：日语分支不得影响英语词库的显示与发音
 - `resources/` 下的词库 JSON 由脚本生成，**不手工编辑**
 

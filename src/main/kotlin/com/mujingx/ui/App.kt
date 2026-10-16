@@ -568,6 +568,11 @@ private fun FrameWindowScope.WindowMenuBar(
             close = {showBuiltInVocabulary = false},
             openChooseVocabulary = { path ->
                 openVocabularyFile(path, appState, wordScreenState)
+            },
+            openBuiltInVocabulary = { path ->
+                // 直接学习内置词库：不复制文件，学习进度记在 ~/.MuJing/progress 下
+                openVocabularyFile(path, appState, wordScreenState)
+                showBuiltInVocabulary = false
             }
         )
         Item("熟悉词库${if(isWindows) "(F)" else ""}", mnemonic = 'F',onClick = {

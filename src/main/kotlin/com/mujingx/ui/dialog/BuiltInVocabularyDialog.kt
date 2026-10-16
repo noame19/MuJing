@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
@@ -58,10 +59,11 @@ fun BuiltInVocabularyDialog(
     show: Boolean,
     close: () -> Unit,
     openChooseVocabulary: (String) -> Unit = {},
+    openBuiltInVocabulary: (String) -> Unit = openChooseVocabulary,
 ) {
     if(show){
         DialogWindow(
-            title = "选择内置词库到本地文件系统",
+            title = "内置词库",
             icon = painterResource("logo/logo.png"),
             onCloseRequest = { close() },
             resizable = false,
@@ -83,11 +85,17 @@ fun BuiltInVocabularyDialog(
                     val stateVertical = rememberScrollState(0)
                     Box(Modifier.fillMaxSize().verticalScroll(stateVertical)){
                         Column (Modifier.padding(10.dp)){
+                            Text(
+                                text = "点击词库直接学习（只读，学习进度单独保存）；点「另存为…」可复制一份到本地编辑。",
+                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),
+                                modifier = Modifier.padding(start = 17.dp, top = 5.dp, bottom = 5.dp)
+                            )
                             getBuiltInVocabularyDirectories().forEach { directory ->
                                 VocabularyCategory(
                                     directory = directory,
                                     success = { success = true },
-                                    openChooseVocabulary = openChooseVocabulary
+                                    openChooseVocabulary = openChooseVocabulary,
+                                    openBuiltInVocabulary = openBuiltInVocabulary
                                 )
                             }
                         }
@@ -141,6 +149,7 @@ fun VocabularyCategory(
     directory: File,
     success:()->Unit = {},
     openChooseVocabulary: (String) -> Unit = {},
+    openBuiltInVocabulary: (String) -> Unit = {},
 ){
     val scope = rememberCoroutineScope()
     var selectedFile by remember { mutableStateOf<File?>(null) }
@@ -202,19 +211,34 @@ fun VocabularyCategory(
                         modifier = Modifier
                             .padding(7.5.dp)
                             .clickable {
-                                selectedFile = file
-                                launcher.launch(name,"json")
+                                // 直接学习内置词库：不复制文件，学习进度记在 ~/.MuJing/progress 下
+                                openBuiltInVocabulary(file.absolutePath)
                             },
                         backgroundColor = MaterialTheme.colors.surface,
                         elevation = 3.dp
                     ) {
-                        Box(Modifier.size(width = 160.dp, height = 65.dp)) {
+                        Box(Modifier.size(width = 160.dp, height = 84.dp)) {
                             Text(
                                 text = disPlayName,
                                 color = MaterialTheme.colors.onBackground,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.TopCenter)
+                                    .padding(top = 8.dp, start = 6.dp, end = 6.dp)
                             )
+                            TextButton(
+                                onClick = {
+                                    selectedFile = file
+                                    launcher.launch(name,"json")
+                                },
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                                modifier = Modifier.align(Alignment.BottomCenter)
+                            ) {
+                                Text(
+                                    text = "另存为…",
+                                    color = MaterialTheme.colors.primary,
+                                    fontSize = 12.sp
+                                )
+                            }
                         }
                     }
                 }

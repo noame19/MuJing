@@ -319,6 +319,11 @@ fun WordScreen(
             show = showBuiltInVocabulary,
             close = {showBuiltInVocabulary = false},
             openChooseVocabulary = openChooseVocabulary,
+            openBuiltInVocabulary = { path ->
+                // 直接学习内置词库：不复制文件，学习进度记在 ~/.MuJing/progress 下
+                openChooseVocabulary(path)
+                showBuiltInVocabulary = false
+            },
         )
 
         GenerateVocabularyListDialog(
@@ -500,7 +505,7 @@ fun MainContent(
                 appState.hardVocabulary.size = appState.hardVocabulary.wordList.size
             }
             try{
-                wordScreenState.saveCurrentVocabulary()
+                wordScreenState.persistVocabularyChange(removedValue = currentWord.value)
                 wordScreenState.clearInputtedState()
             }catch (e:Exception){
                 // 回滚
@@ -548,6 +553,10 @@ fun MainContent(
             try{
                 saveVocabulary(familiar, file.absolutePath)
                 deleteWord()
+                if (wordScreenState.isReadOnlyVocabulary) {
+                    // 内置词库只读：把「已加入熟悉词库」也记进学习进度
+                    wordScreenState.persistVocabularyChange(removedValue = familiarWord.value, familiar = true)
+                }
             }catch(e:Exception){
                 // 回滚
                 if(familiar.wordList.contains(familiarWord)){
@@ -1417,24 +1426,13 @@ fun MainContent(
             val resetIndex: (isShuffle: Boolean) -> Unit = { isShuffle ->
                 // 如果要打乱顺序
                 if (isShuffle) {
-                    // 内置词库的地址
-                    val path = getResourcesFile("vocabulary").absolutePath
-                    // 如果要打乱的词库是内置词库，要选择一个地址，保存打乱后的词库，
-                    // 如果不选择地址的话，软件升级后词库会被重置。
-                    if(wordScreenState.vocabularyPath.startsWith(path)){
-                        val fileName = File(wordScreenState.vocabularyPath).nameWithoutExtension
-                        launcher.launch(fileName, "json")
-                    }else{
-                        try{
-                            wordScreenState.vocabulary.wordList.shuffle()
-                            wordScreenState.saveCurrentVocabulary()
-                        }catch(e:Exception){
-                            e.printStackTrace()
-                            JOptionPane.showMessageDialog(window, "保存词库失败,错误信息:\n${e.message}")
-                        }
-
+                    // 内置词库是只读资源，打乱后的顺序记在学习进度里（见 WordScreenState.shuffleVocabulary）
+                    try{
+                        wordScreenState.shuffleVocabulary()
+                    }catch(e:Exception){
+                        e.printStackTrace()
+                        JOptionPane.showMessageDialog(window, "保存词库失败,错误信息:\n${e.message}")
                     }
-
                 }
 
                 wordScreenState.index = 0
@@ -1697,7 +1695,7 @@ fun MainContent(
                             wordScreenState.vocabulary.wordList.removeAt(index)
                             wordScreenState.vocabulary.wordList.add(index, newWord)
                             try{
-                                wordScreenState.saveCurrentVocabulary()
+                                wordScreenState.overrideWord(currentWord.value, newWord)
                                 showEditWordDialog = false
                             }catch(e:Exception){
                                 // 回滚

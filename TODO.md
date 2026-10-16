@@ -147,7 +147,7 @@
 
 ### P1 — 内置词库：学习数据与进度分离（路线 B，用户已选定）
 
-现状（读代码确认）：
+现状（读代码确认，改动前）：
 
 - 内置词库是**只读模板**，必须「另存为」才能用：
   `ui/dialog/BuiltInVocabularyDialog.kt:64` 标题即「选择内置词库到本地文件系统」，
@@ -168,15 +168,44 @@
 
 待办：
 
-- [ ] 支持直接从内置词库开始学习（不必先另存为）——只读词库 + 外部进度
-- [ ] 进度存储与词库数据分离：新建进度存储（按词库指纹 + `value` 索引
-      记录熟练度/复习状态），词库文件保持只读；迁移旧的
+- [x] 支持直接从内置词库开始学习（不必先另存为）——只读词库 + 外部进度
+- [x] 进度存储与词库数据分离：新建进度存储（按词库标识 + `value` 索引
+      记录标记/复习状态），词库文件保持只读；迁移旧的
       `~/.MuJing/TypingWordSettings.json`
-- [ ] 「熟悉词库」改为进度标记，不再从词库文件里删词
+- [x] 「熟悉词库」改为进度标记，不再从词库文件里删词
       （现在删词会让只读内置词库不可用）
-- [ ] 修 `WordScreenState.kt:155`：`familiarVocabularyIndex` 初始化误用了
+- [x] 修 `WordScreenState.kt:155`：`familiarVocabularyIndex` 初始化误用了
       `hardVocabularyIndex`
 - [ ] 进度要不要接 `fsrs/`（现在 FSRS 只服务 apkg 复习，与词屏无关）——待定
+
+**本轮实现（`japanese-support-dev`，2026-10-16，待用户实测）**
+
+- 新增 `data/WordProgress.kt`：`WordMark`（熟悉/已从当前词库移除/困难/`seen`/`wrong`）、
+  `VocabularyProgress`（`index` + `marks` + `overrides` 覆盖层 + `order` 打乱顺序）、
+  `WordProgressStore`（进度文件放 `~/.MuJing/progress/<SHA-1(词库标识)>.json`；
+  内置词库标识 = `builtin:JLPT日语/2 N4.json`，用户自己的词库 = 规范化绝对路径；
+  第一次接触某个词库时用旧设置文件里的下标迁移一次）。
+- `ui/wordscreen/WordScreenState.kt`：新增 `isReadOnlyVocabulary`（内置词库=只读）、
+  `loadProgress()`（构造与切换词库时载入：内置词库按 `marks` 过滤已移除的词、
+  按 `overrides` 还原被编辑的词、按 `order` 还原打乱后的顺序）、
+  `saveCurrentVocabulary()` 对内置词库直接返回（绝不写应用资源目录）、
+  `saveProgressIndex()`（下标写进度文件）、`persistVocabularyChange()`、
+  `markWordRemoved()`、`overrideWord()`、`shuffleVocabulary()`；
+  顺手修掉 `familiarVocabularyIndex` 取错字段的 bug。
+- `ui/wordscreen/WordScreen.kt`：删词、加入熟悉词库、编辑词条、「打乱词库」
+  四处改为走上面的接口 —— 内置词库不再需要「另存为」才能删词/加熟词/打乱，
+  改动全部落进进度文件，词库文件保持原样。
+- `ui/dialog/BuiltInVocabularyDialog.kt`：标题改为「内置词库」，
+  卡片点击 = **直接学习**（只读），卡片底部新增「另存为…」按钮保留原来
+  「复制一份到本地编辑」的用法；`ui/App.kt`、`ui/wordscreen/WordScreen.kt`
+  的调用点分别接上 `openBuiltInVocabulary`。
+- 兼容：`~/.MuJing/TypingWordSettings.json` 继续维护（界面其它设置仍在里面），
+  其中的 `index` 只用于首次迁移；此后每个词库的下标以进度文件为准，
+  换词库不再串位（原先全机只有一份 `index`）。
+- 遗留：`ui/wordscreen/WordScreen.kt:1376` 的 `rememberFileSaverLauncher`
+  （旧的「内置词库打乱必须另存为」分支）已成为死代码，未删；
+  打字界面（`TypingTextSettings.json`/`TypingSubtitlesSettings.json`）的进度
+  仍走各自的旧设置文件，未接入本进度系统。
 
 ### P2 — 「生成词库」界面交互
 

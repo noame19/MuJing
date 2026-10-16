@@ -220,8 +220,8 @@ class AppState {
             wordScreenState.vocabulary = newVocabulary
             wordScreenState.vocabularyName = vocabularyFile.nameWithoutExtension
             wordScreenState.vocabularyPath = vocabularyFile.absolutePath
-            wordScreenState.unit = (index / 20) + 1
-            wordScreenState.index = index
+            // 载入这个词库自己的学习进度（内置词库只读，已移除的词按进度过滤；下标优先用进度文件）
+            wordScreenState.loadProgress(index)
             vocabularyChanged = true
             wordScreenState.saveWordScreenState()
             return true
