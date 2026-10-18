@@ -37,6 +37,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon
 import com.formdev.flatlaf.extras.components.FlatButton
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import com.mujingx.data.Vocabulary
+import com.mujingx.data.VocabularyJson
 import com.mujingx.data.VocabularyType
 import com.mujingx.data.Word
 import com.mujingx.data.deepCopy

@@ -20,7 +20,6 @@
 package com.mujingx.ui.dialog
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,9 +31,12 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -153,11 +155,8 @@ fun BuiltInVocabularyDialog(
                         }
                     }
 
-                    VerticalScrollbar(
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                            .fillMaxHeight(),
-                        adapter = rememberScrollbarAdapter(stateVertical)
-                    )
+                    // 旧的 VerticalScrollbar 已移到上方 Column 内，
+                    // 这里只剩分隔线，否则两条滚动条会重叠。
                     Divider(Modifier.align(Alignment.TopCenter))
                 }
             }
@@ -171,18 +170,17 @@ fun BuiltInVocabularyDialog(
  *
  * 语言取自词库文件的 `language` 字段（见 getBuiltInVocabularyDirectories），
  * 不按目录名硬编码。没有可识别的语言时返回空列表，调用方不显示 Tab。
+ *
+ * 不是 @Composable：只读磁盘，调用方用 remember 包一层避免每次重组都扫目录。
  */
-@Composable
 private fun availableVocabularyLanguages(): List<String> {
-    return remember {
-        val present = getBuiltInVocabularyDirectories()
-            .map { vocabularyCategoryLanguage(it) }
-            .filter { it.isNotEmpty() }
-            .toSet()
-        // 固定顺序，避免 HashSet 遍历顺序导致 Tab 每次重组都可能换位
-        listOf("english", "japanese").filter { present.contains(it) } +
-            present.filter { it != "english" && it != "japanese" }.sorted()
-    }
+    val present = getBuiltInVocabularyDirectories()
+        .map { vocabularyCategoryLanguage(it) }
+        .filter { it.isNotEmpty() }
+        .toSet()
+    // 固定顺序，避免 HashSet 遍历顺序导致 Tab 每次重组都可能换位
+    return listOf("english", "japanese").filter { present.contains(it) } +
+        present.filter { it != "english" && it != "japanese" }.sorted()
 }
 
 /**
@@ -224,6 +222,7 @@ private fun languageLabel(language: String): String = when (language) {
     else -> language
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VocabularyCategory(
     directory: File,
@@ -295,9 +294,10 @@ fun VocabularyCategory(
                     Card(
                         modifier = Modifier
                             .padding(7.5.dp)
-                            .hoverable(
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { hovered = it },
+                            // Modifier.hoverable() 只接管 interactionSource，不接受回调；
+                            // 悬停状态用 pointer 事件跟踪（与项目里其他处的写法一致）。
+                            .onPointerEvent(PointerEventType.Enter) { hovered = true }
+                            .onPointerEvent(PointerEventType.Exit) { hovered = false },
                         backgroundColor = MaterialTheme.colors.surface,
                         elevation = 3.dp
                     ) {
