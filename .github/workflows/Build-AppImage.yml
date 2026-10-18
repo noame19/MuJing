@@ -70,7 +70,19 @@ jobs:
             libibus-1.0-5 \
             dpkg \
             fakeroot \
+            zstd \
             imagemagick
+
+      - name: Fetch Japanese dictionary data sources
+        # jadic.db 被 .gitignore 排除，每次构建都缺失，后面的 Gradle 任务
+        # 会重新生成它。生成 sense 表（逐义项中文 + 词性）需要 Tomoshi
+        # 数据集与 JMdict，解压后约 700MB。
+        # 失败不让构建中断：词库 JSON 已提交进仓库，只是重新生成的
+        # jadic.db 里没有 sense 表（只影响从字幕新建词库时生成的释义）。
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 tools/japanese/fetch_dict_data.py
 
       - name: Fetch Fcitx5 Qt6 plugin from noble
         # Ubuntu 22.04 (jammy) does not ship Qt6 Fcitx5 plugins. The

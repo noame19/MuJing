@@ -233,7 +233,6 @@ val buildJapaneseDictionary by tasks.registering {
             return@doLast
         }
 
-        val script = layout.projectDirectory.dir("tools/japanese/build_vocabulary.py").asFile
         // Windows 上命令名是 python，其余平台是 python3
         val candidates = if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
             listOf("python", "python3", "py")
@@ -241,25 +240,39 @@ val buildJapaneseDictionary by tasks.registering {
             listOf("python3", "python")
         }
 
-        var executed = false
-        for (command in candidates) {
-            try {
-                val process = ProcessBuilder(command, script.absolutePath, "--dict-only")
-                    .redirectErrorStream(true)
-                    .start()
-                process.inputStream.bufferedReader().forEachLine { println(it) }
-                if (process.waitFor() == 0 && dictFile.exists()) {
-                    executed = true
-                    break
-                }
-            } catch (e: IOException) {
-                // 该命令不存在，尝试下一个
+        fun runScript(name: String, vararg args: String): Boolean {
+            val script = layout.projectDirectory.dir("tools/japanese/$name").asFile
+            if (!script.exists()) {
+                println("脚本不存在，跳过：$script")
+                return false
             }
+            for (command in candidates) {
+                try {
+                    val process = ProcessBuilder(command, script.absolutePath, *args)
+                        .redirectErrorStream(true)
+                        .start()
+                    process.inputStream.bufferedReader().forEachLine { println(it) }
+                    if (process.waitFor() == 0) return true
+                } catch (e: IOException) {
+                    // 该命令不存在，尝试下一个
+                }
+            }
+            return false
         }
 
-        if (!executed) {
+        val ok = runScript("build_vocabulary.py", "--dict-only")
+        if (!ok || !dictFile.exists()) {
             println("警告：未能生成日语词典 jadic.db（日语查词功能将不可用）。")
             println("可手动执行：python3 tools/japanese/build_vocabulary.py --dict-only")
+            return@doLast
+        }
+
+        // sense 表：逐义项中文释义 + 词性。缺了不影响查词，
+        // 但词库里的中文会退化为不带词性的平铺词表（enrich_vocabulary.py
+        // 查不到 sense 表会自动回退，所以不会报错，容易漏）。
+        if (!runScript("build_sense_table.py")) {
+            println("警告：未能生成 sense 表，中文释义将不带词性。")
+            println("需要数据源：python3 tools/japanese/fetch_dict_data.py")
         }
     }
 }
