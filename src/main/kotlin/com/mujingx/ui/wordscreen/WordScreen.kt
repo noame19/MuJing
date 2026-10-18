@@ -1605,13 +1605,11 @@ fun MainContent(
                 isPlaying = isPlaying,
                 isChangeVideoBounds = wordScreenState.isChangeVideoBounds,
                 fontSize = appState.global.detailFontSize,
-                // 底部词性行只在「释义文本本身已经带词性前缀」时才是重复的。
-                // 日语 + 母语英文：display 的是 definition，每行已有「な形容词.」前缀，
-                //   这一行重复，隐去。
-                // 日语 + 母语中文：display 的是中文释义，不含词性，这一行是唯一的
-                //   词性展示处，必须保留。
+                // 日语词条的释义行已带词性前缀（母语中文时是 sense 表生成的
+                // 「な形容词. 安全 · 牢靠」，母语英文时是 definition 自带的
+                // 「な形容词. safe; secure」），底部再列一行词性就是重复。
                 hideWhenMeaningHasPos = wordScreenState.vocabulary.language
-                    .equals("japanese", true) && appState.global.learnerLanguage.equals("en", true)
+                    .equals("japanese", true)
             )
 
             val startPadding = if ( isPlaying && !wordScreenState.isChangeVideoBounds) 0.dp else 50.dp
@@ -2418,9 +2416,10 @@ fun Definition(
  * 区域，按词库语言和学习者母语决定渲染什么：
  *
  * - 英语词库：保持原样，英文释义 + 中文释义两段都显示。
- * - 日语词库：只显示学习者母语对应的那一种。
- *   - 母语中文：《按词性分组的中文释义》——中文去重、同组用「·」合并成一行；
- *   - 母语英文：英文义项，保留每个义项的词性前缀。
+ * - 日语词库：只显示学习者母语对应的那一种。两边都是**按义项分组、
+ *   行首带词性前缀**的：
+ *   - 母语中文：`な形容词. 安全 · 牢靠`（来自 sense 表）
+ *   - 母语英文：`な形容词. safe; secure`（来自 definition）
  *
  * @param language 当前词库的语言（`english` / `japanese`）
  * @param learnerLanguage 学习者的母语（`zh` / `en`）
@@ -2471,27 +2470,41 @@ fun Meaning(
 }
 
 /**
- * 日语词条的中文释义：去重后用「·」合并成一行。
+ * 日语词条的中文释义。
  *
- * 为什么不按词性分组：实测 8334 个带中英双释义的词条里，只有 684 个
- * （8%）的中文条数恰好等于义项数，其余 91% 条数不等（`大丈夫` 是
- * 13 条中文对 4 个义项）。任何均分或按位置对应的做法都会把词归到错
- * 误的词性下（实测会把「安全/稳当」归到副词），不如不分组。
+ * 数据侧（`tools/japanese/enrich_vocabulary.py` 的 `sense_for`）已经把
+ * 中文按义项归好组、行首带词性前缀、用空格对齐，形如：
  *
- * 所以这里只做两件能保证正确的事：
- * - 去重（源数据里有重复，如「贺礼」出现两次）
- * - 合并成一行，不再一词一行占满屏幕
+ *     な形容词.         安全 · 牢靠 · 稳妥 · 无虑 · 没问题 · 没关系
+ *     副词.             确实 · 必然 · 无疑
+ *     感叹词、な形容词. 不用了 · 谢了 · 算了
+ *     名词.             大丈夫 · 堂堂正正的男子汉
  *
- * 词性由页尾的 Sentences 行统一展示，不在每行重复。
- * 按义项精确分组要理解语义，留待接入本地模型后做（见 TODO #14）。
+ * 所以这里原样展示即可，不再重新分组或去重。
+ *
+ * 数据源是 Tomoshi 词典开放数据层（JMdict 逐义项中文，CC BY-SA 4.0），
+ * 经 `tools/japanese/build_sense_table.py` 写进 `jadic.db` 的 sense 表。
+ * 未命中该表的词（实测 8334 个词里只有 4 个）仍是从 jadic 取的平铺中文，
+ * 一行一个词 —— 这种情况才把多行合并成一行。
  */
 private fun JapaneseChineseMeaning(word: Word): String {
-    return word.translation
+    val lines = word.translation
         .lines()
         .map { it.trim() }
         .filter { it.isNotEmpty() }
-        .distinct()
-        .joinToString(" · ")
+    if (lines.isEmpty()) return ""
+
+    // 行首带「词性. 」前缀时，说明是 sense 表生成的已分组文本，原样返回。
+    // 前缀都很短（最长「动词·五段词·r行例外. 」约 22 字符），
+    // 且句点后一定跟空格，据此与正文里的英文缩写（n. / v.）区分。
+    val hasPosPrefix = lines.any { line ->
+        val dot = line.indexOf(". ")
+        dot in 1..24
+    }
+    if (hasPosPrefix) return lines.joinToString("\n")
+
+    // 平铺中文（jadic 兜底）：去重后用「·」合并成一行
+    return lines.distinct().joinToString(" · ")
 }
 
 /**
