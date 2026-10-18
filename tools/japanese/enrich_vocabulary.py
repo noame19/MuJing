@@ -62,6 +62,7 @@ import os
 import re
 import sqlite3
 import sys
+import unicodedata
 
 # 分拍罗马字（モーラ拍）转换与 build_vocabulary.py 共用同一实现，
 # 见 tools/japanese/japanese_romaji.py
@@ -677,6 +678,87 @@ def supplement_translation(value, kana):
     return ''
 
 
+def _display_width(text):
+    """串的终端显示宽度。
+
+    汉字、假名、全角标点在终端占两列，而 len() 只数字符个数，
+    拿它做 ljust 对齐会让「な形容词.」（显示 9 列、len 5）比
+    「副词.」（显示 5 列、len 3）少补 4 个空格，列就错开了。
+    """
+    width = 0
+    for ch in text:
+        if unicodedata.east_asian_width(ch) in ('W', 'F'):
+            width += 2
+        elif unicodedata.combining(ch):
+            width += 0
+        else:
+            width += 1
+    return width
+
+
+def _pad_right(text, width):
+    """把 text 补空格到指定显示宽度。"""
+    return text + ' ' * max(0, width - _display_width(text))
+
+
+def sense_for(con, forms, readings):
+    """按义项取中文释义，每义项一行，行首带词性前缀。
+
+    数据源是 jadic.db 的 sense 表（由 Tomoshi 词典开放数据层生成，
+    见 build_sense_table.py）。这是唯一能把中文准确归到词性下的办法：
+    jadic 的平铺中文与 JMdict 义项之间没有对应关系。
+
+    输出形如：
+
+        な形容词. 安全 · 牢靠 · 稳妥
+        副词.     确实 · 必然 · 无疑
+
+    词性前缀按本词条里最长的词性名对齐，不会参差不齐。
+    表格不存在（未跑过 build_sense_table.py）或未命中时返回空串，
+    调用方回退到 chinese_for() 的平铺中文。
+
+    @return 已排好版的多行文本；没有数据时为空串
+    """
+    tries = []
+    for f in forms:
+        for r in readings:
+            tries.append((f, r))
+        tries.append((f, ''))
+
+    rows = []
+    for w, r in tries:
+        if not w:
+            continue
+        try:
+            rows = con.execute(
+                'select idx, pos, gloss from sense where word=? and reading=? '
+                'order by idx', (w, r)).fetchall()
+        except sqlite3.Error:
+            # sense 表还不存在（未跑 build_sense_table.py），走兜底
+            return ''
+        if rows:
+            break
+    if not rows:
+        return ''
+
+    # 词性对齐：取本词条里最长的词性名（含末尾句点）作为列宽。
+    # 不用全表最长（「动词·五段词·r行例外」有 10 个字），
+    # 否则短词条会出现大片空白。
+    labels = [f'{pos}. ' if pos else '' for _, pos, _ in rows]
+    width = max((_display_width(x) for x in labels), default=0)
+
+    lines = []
+    for label, (_, _, gloss) in zip(labels, rows, strict=True):
+        # gloss 内部用的是全角分号（Tomoshi 原文的分隔），
+        # 换成界面上更紧凑的「 · 」。
+        words = [x.strip() for x in gloss.replace('；', ';').split(';') if x.strip()]
+        if not words:
+            continue
+        merged = ' · '.join(dict.fromkeys(words))
+        lines.append((_pad_right(label, width) + merged).rstrip())
+    return '\n'.join(lines)
+
+
 def chinese_for(con, forms, readings):
     """按 (词形, 假名) 精确取中文释义，避免同音异形词串味。
 
@@ -822,6 +904,9 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     readings = list(dict.fromkeys(
         [r for r in ([kana] + _split_alt(kana) + ([dict_kana] if dict_kana else [])
                      + list(ent['kana']) + _particle_stems(kana)) if r]))
+    # 中文释义优先走 sense 表（Tomoshi 逐义项中文，带词性）；
+    # 未命中时回退到 jadic 的平铺中文。两者都没有时用人工校订表。
+    sense_text = sense_for(con, forms, readings or forms)
     cn = chinese_for(con, forms, readings or forms)
 
     # 活用基准形：并列写法取第一个（作る/造る → 作る），否则活用形里的「/」
@@ -856,7 +941,10 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     src_cn = (word.get('translation') or '').strip()
     pos_text = '、'.join(names) if names else (src_pos if keep_source else '')
     def_text = src_def if (keep_source and src_def) else '\n'.join(en_lines)
-    cn_text = src_cn if (keep_source and src_cn) else '\n'.join(cn)
+    if sense_text:
+        cn_text = sense_text
+    else:
+        cn_text = src_cn if (keep_source and src_cn) else '\n'.join(cn)
 
     return {
         'value': value,
