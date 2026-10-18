@@ -1604,7 +1604,14 @@ fun MainContent(
                 sentencesVisible = wordScreenState.sentencesVisible,
                 isPlaying = isPlaying,
                 isChangeVideoBounds = wordScreenState.isChangeVideoBounds,
-                fontSize = appState.global.detailFontSize
+                fontSize = appState.global.detailFontSize,
+                // 底部词性行只在「释义文本本身已经带词性前缀」时才是重复的。
+                // 日语 + 母语英文：display 的是 definition，每行已有「な形容词.」前缀，
+                //   这一行重复，隐去。
+                // 日语 + 母语中文：display 的是中文释义，不含词性，这一行是唯一的
+                //   词性展示处，必须保留。
+                hideWhenMeaningHasPos = wordScreenState.vocabulary.language
+                    .equals("japanese", true) && appState.global.learnerLanguage.equals("en", true)
             )
 
             val startPadding = if ( isPlaying && !wordScreenState.isChangeVideoBounds) 0.dp else 50.dp
@@ -2629,8 +2636,18 @@ fun Sentences(
     isPlaying: Boolean,
     isChangeVideoBounds:Boolean = false,
     word: Word,
-    fontSize: TextUnit
+    fontSize: TextUnit,
+    /**
+     * 释义文本已经逐行带词性前缀时，这一行是重复的，隐去。
+     *
+     * 目前只在「日语词库 + 母语英文」下成立：那时释义区直接展示
+     * `word.definition`，每行形如「な形容词. safe; secure」。
+     * 母语中文时展示的是不含词性的中文释义，这一行是唯一的词性来源，
+     * 不能隐。英语词库的释义不带词性前缀，保持原有展示。
+     */
+    hideWhenMeaningHasPos: Boolean = false
 ) {
+    if (hideWhenMeaningHasPos) return
     if (sentencesVisible && word.pos.isNotEmpty() && (isChangeVideoBounds || !isPlaying )) {
         // 计算行数,用于判断是否显示滚动条
         // 通过原始字符串长度减去去掉换行符后的长度，得到换行符的个数
