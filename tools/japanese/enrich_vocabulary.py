@@ -841,6 +841,14 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     if conjugatable(codes):
         ex = '/'.join(f'{n}:{f}' for n, f in display_forms(base, codes))
 
+    # 词条写法以 する 结尾、而假名没带（あいさつする → あいさつ）时，
+    # 假名与罗马字都要补回 する：否则标题写「あいさつする」、音标行却是
+    # 「a-i-sa-tsu [あいさつ]」，拍数对不上，学的人会以为是两个词。
+    # JMdict 把 挨拶 的读音只收作「あいさつ」（名词形），する 是接尾的
+    # サ变用法，所以这里不从词典取，按写法直接补。
+    if value.endswith('する') and kana and not kana.endswith('する'):
+        kana = kana + 'する'
+
     # 教材分类不覆盖原有内容：词性用 JMdict 的中文全称补/换（原先只有
     # [名]/[动3] 这类括号码），释义与中文只在缺失时补。
     src_pos = (word.get('pos') or '').strip()
