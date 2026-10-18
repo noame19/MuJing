@@ -29,6 +29,16 @@ import java.io.File
 import javax.swing.JOptionPane
 
 /**
+ * 词库解析用的 Json。
+ *
+ * 开启 ignoreUnknownKeys：词库文件可能来自服务端新版本或手工编辑，
+ * 多出一个未知字段不应导致整份词库无法加载（曾经因为语法库里的
+ * `level` 字段直接报「Encountered an unknown key 'level'」）。
+ * 已知字段仍按声明类型严格解析，真正的结构错误依然会报错。
+ */
+val VocabularyJson = Json { ignoreUnknownKeys = true }
+
+/**
  * 词库
  */
 @Serializable
@@ -178,7 +188,7 @@ fun loadMutableVocabulary(path: String): MutableVocabulary {
     }else if (file.exists()) {
 
         try {
-            val vocabulary = Json.decodeFromString<Vocabulary>(file.readText())
+            val vocabulary = VocabularyJson.decodeFromString<Vocabulary>(file.readText())
             if(vocabulary.size != vocabulary.wordList.size){
                 vocabulary.size = vocabulary.wordList.size
             }
@@ -228,7 +238,7 @@ fun loadVocabulary(path: String): Vocabulary {
     if (file.exists()) {
         return try {
             //  TODO 链接字幕词库时选取了一个错误文件，导致程序卡死。定位到这里  error:  Required array length 2147483638 + 16142 is too large
-           val vocabulary =  Json.decodeFromString<Vocabulary>(file.readText())
+           val vocabulary = VocabularyJson.decodeFromString<Vocabulary>(file.readText())
             // 如果用户修改了词库的文件名，以用户修改的为准。
             if(vocabulary.name != name){
                 vocabulary.name = name
@@ -269,7 +279,7 @@ fun loadMutableVocabularyByName(name: String):MutableVocabulary{
 
     return if (file.exists()) {
         try {
-            val vocabulary = Json.decodeFromString<Vocabulary>(file.readText())
+            val vocabulary = VocabularyJson.decodeFromString<Vocabulary>(file.readText())
             MutableVocabulary(vocabulary)
         } catch (exception: Exception) {
             exception.printStackTrace()

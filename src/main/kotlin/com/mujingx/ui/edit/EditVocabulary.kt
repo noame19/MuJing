@@ -123,7 +123,7 @@ fun checkVocabulary(vocabularyPath: String):Boolean{
     try{
         val file = getResourcesFile(vocabularyPath)
         if (file.exists()) {
-            Json.decodeFromString<Vocabulary>(file.readText())
+            VocabularyJson.decodeFromString<Vocabulary>(file.readText())
         }
     } catch (exception: Exception) {
         exception.printStackTrace()

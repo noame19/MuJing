@@ -56,6 +56,10 @@ private val NUMERIC_SORT_CATEGORIES = setOf(
 /**
  * 扫描内置词库的全部分类目录，按名称排序返回。
  *
+ * 只返回**真词库**分类：目录里至少有一个 json 含 `wordList`。
+ * 同目录下还放着语法库（顶层是 `grammarList`，如「日语语法」），
+ * 它不是词库，列进菜单会在选中后报「词库解析错误」。
+ *
  * @param language 只看某个语言的分类（`english` / `japanese`），传空串表示全部。
  *   分类语言取自分类下第一个词库文件的 `language` 字段，不做名称硬编码。
  */
@@ -64,6 +68,7 @@ fun getBuiltInVocabularyDirectories(language: String = ""): List<File> {
     if (!root.isDirectory) return emptyList()
     return root.listFiles()
         ?.filter { it.isDirectory }
+        ?.filter { vocabularyCategoryLanguage(it).isNotEmpty() }
         ?.filter { language.isEmpty() || vocabularyCategoryLanguage(it) == language }
         ?.sortedBy { it.name }
         ?: emptyList()
@@ -74,6 +79,9 @@ fun getBuiltInVocabularyDirectories(language: String = ""): List<File> {
  */
 private val LANGUAGE_REGEX = Regex("\"language\"\\s*:\\s*\"([A-Za-z_-]+)\"")
 
+/** 顶层是否有 `wordList` —— 用于区分真词库与语法库。 */
+private val WORD_LIST_REGEX = Regex("\"wordList\"\\s*:")
+
 /**
  * 分类语言的缓存，避免每次重组都去读磁盘。
  */
@@ -82,22 +90,30 @@ private val categoryLanguageCache = mutableMapOf<String, String>()
 /**
  * 判断一个分类的语言（`english` / `japanese` / 其它）。
  *
- * 词库文件可能十几 MB，因此只读文件开头若干字节 —— `language` 是 JSON 的顶层字段，
- * 位置很靠前。读不到（文件损坏、字段缺失）时返回空串，调用方按「未知」处理，
- * 不要让 UI 因此丢掉整个分类。
+ * 词库文件可能十几 MB，因此只读文件开头若干字节 —— `language` 与 `wordList`
+ * 都是 JSON 的顶层字段，位置很靠前。读不到（文件损坏、字段缺失）时返回空串，
+ * 调用方据此把整个分类当作「不是词库」隐去。
+ *
+ * 注意：只有含 `wordList` 的文件才算词库。同目录下的语法库顶层是
+ * `grammarList`，若把它当词库解析，会报 unknown key。所以这里找的是第一个
+ * **真词库**文件，不是第一个 json。
  */
 fun vocabularyCategoryLanguage(directory: File): String {
     val key = directory.absolutePath
     categoryLanguageCache[key]?.let { return it }
-    val file = listVocabularyFiles(directory).firstOrNull() ?: return ""
-    val language = runCatching {
-        file.bufferedReader(Charsets.UTF_8).use { reader ->
-            val buffer = CharArray(4096)
-            val count = reader.read(buffer)
-            if (count <= 0) return@use ""
-            LANGUAGE_REGEX.find(String(buffer, 0, count))?.groupValues?.get(1).orEmpty()
-        }
-    }.getOrDefault("")
+    val language = listVocabularyFiles(directory).firstNotNullOfOrNull { file ->
+        runCatching {
+            file.bufferedReader(Charsets.UTF_8).use { reader ->
+                val buffer = CharArray(4096)
+                val count = reader.read(buffer)
+                if (count <= 0) return@use null
+                val head = String(buffer, 0, count)
+                // 不含 wordList 的（语法库等）跳过，继续看下一个文件
+                if (!WORD_LIST_REGEX.containsMatchIn(head)) return@use null
+                LANGUAGE_REGEX.find(head)?.groupValues?.get(1)?.takeIf { it.isNotEmpty() }
+            }
+        }.getOrNull()
+    }.orEmpty()
     if (categoryLanguageCache.size < 128) {
         categoryLanguageCache[key] = language
     }
