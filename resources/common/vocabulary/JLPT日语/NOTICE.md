@@ -8,6 +8,16 @@
 两步顺序不可颠倒；也可用 `python3 tools/japanese/build_vocabulary.py --enrich`
 一次完成（脚本会先重建基础词库再增强）。重新生成方式见各脚本头部说明。
 
+中文释义按义项分组需要额外的一步，且要先于第 2 步：
+
+    python3 tools/japanese/fetch_dict_data.py      # 下载数据源（含 Tomoshi）
+    python3 tools/japanese/build_vocabulary.py --dict-only
+    python3 tools/japanese/build_sense_table.py    # 重建 jadic.db 的 sense 表
+    python3 tools/japanese/enrich_vocabulary.py --all --write
+
+漏掉 `build_sense_table.py` 不会报错，但中文释义会退化为平铺词表
+（不带词性），因为 `enrich_vocabulary.py` 查不到 sense 表会自动回退。
+
 ---
 
 ## 数据来源
@@ -64,6 +74,25 @@ Electronic Dictionary Research and Development Group (EDRDG) 提供。
 > 由各自编译器持有独立版权，不得分发。本目录只取日→英部分，合规。
 > 详见 <https://www.edrdg.org/edrdg/licence.html>。
 
+### 6. 逐义项中文释义 — Tomoshi 词典开放数据层
+
+由 `tools/japanese/build_sense_table.py` 使用，为 yori 的平铺中文提供
+**按义项分组**的版本：yori 给的是整条词表，而这里每个义项单独一条，
+还带该义项的词性。
+
+- 项目：<https://huggingface.co/datasets/yuany1z/tomoshi-dict-data>
+- 取用内容：`zh_defs` 表（逐义项中文）与 `entries` 表（义项词性），
+  均按 JMdict 的 entry_id 与 sense 序号对齐
+- 许可：Creative Commons Attribution-ShareAlike 4.0 International
+  （JMdict/KANJIDIC2 血统 © EDRDG，Tomoshi 衍生部分 © Y1Z，同许可）
+- 署名要求：注明 EDRDG 与 “Tomoshi (Y1Z)”，并以同许可分发衍生内容
+- 使用方式：仅在**构建期**下载（86MB 压缩 / 630MB 解压），
+  转换后写进 `jadic.db` 的 `sense` 表，不随应用分发原始数据集
+
+> 该数据集的日文释义与中文翻译为 LLM 辅助生成后经另一模型复核，
+> **非人工逐条校对**。发现有误的词条可直接改 `jadic_supplement.json`
+> （校订表优先级高于所有自动生成内容）。
+
 ---
 
 ## 未使用的数据源及原因
@@ -92,7 +121,8 @@ Electronic Dictionary Research and Development Group (EDRDG) 提供。
 
 本词库的等级分级与英文释义来自 OpenJLPT (CC BY-SA 4.0)，
 其等级清单源自 Jonathan Waller 的 JLPT 词表 (CC BY)。
-中文释义来自 Yori Dict (CC BY-SA 4.0)。
+中文释义来自 Yori Dict 与 Tomoshi 词典开放数据层
+（后者由 Y1Z 制作），均以 CC BY-SA 4.0 授权。
 词性与活用形来自 JMdict / JMdictDB。
 
 上述词典数据均由 EDRDG (CC BY-SA 4.0) 提供，
