@@ -360,14 +360,11 @@ fun SettingTextStyle(
                     fontSize = state.global.detailFontSize,
                     language = wordScreenState.vocabulary.language
                 )
-                Definition(
+                Meaning(
                     word = currentWord,
+                    language = wordScreenState.vocabulary.language,
+                    learnerLanguage = state.global.learnerLanguage,
                     definitionVisible = true,
-                    isPlaying = false,
-                    fontSize = state.global.detailFontSize
-                )
-                Translation(
-                    word = currentWord,
                     translationVisible = true,
                     isPlaying = false,
                     fontSize = state.global.detailFontSize
@@ -773,6 +770,12 @@ private val subtitleLanguageOptions = listOf(
     "ko" to "韩语"
 )
 
+/** 学习者母语选项：决定词条释义展示哪种语言。 */
+private val learnerLanguageOptions = listOf(
+    "zh" to "中文",
+    "en" to "英文"
+)
+
 @OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun OtherSettings(appState: AppState) {
@@ -792,6 +795,53 @@ fun OtherSettings(appState: AppState) {
                     appState.global.showInputCount = it
                     appState.saveGlobalState()
                 }
+            )
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // 学习者母语：决定词条释义展示哪种语言。
+        // 日语词库同时带中英两套释义，取其中一种，不再并列占据整屏。
+        Row(modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center){
+            Text("我的母语")
+            Spacer(Modifier.width(20.dp))
+            Row(
+                modifier = Modifier
+                    .border(
+                        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+                    )
+            ){
+                learnerLanguageOptions.forEach { (code, label) ->
+                    val selected = appState.global.learnerLanguage == code
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp)
+                            .background(
+                                if (selected) MaterialTheme.colors.primary.copy(alpha = 0.15f)
+                                else Color.Transparent
+                            )
+                            .clickable {
+                                appState.global.learnerLanguage = code
+                                appState.saveGlobalState()
+                            }
+                    ){
+                        Text(
+                            text = label,
+                            color = if (selected) MaterialTheme.colors.primary
+                            else MaterialTheme.colors.onBackground
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = "影响词条释义的展示语言",
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
+                style = MaterialTheme.typography.caption
             )
         }
 

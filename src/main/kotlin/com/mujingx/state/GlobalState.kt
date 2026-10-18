@@ -60,7 +60,16 @@ data class GlobalData(
     val maxSentenceLength:Int = 25,
     val showInputCount:Boolean = true,
     /** 视频播放器自动选择字幕轨道的语言，默认英语 */
-    val preferredSubLanguage:String = "en"
+    val preferredSubLanguage:String = "en",
+    /**
+     * 学习者的母语，决定词条释义用哪种语言展示：`zh`（默认）或 `en`。
+     *
+     * 日语词库同时带了中英两套释义，以前把它们并列显示，一个词条就能
+     * 占满一屏。现在只显示母语对应的那一种。
+     * 英语词库保持原样（中英都显示），因为它的 ui 布局本来就是围绕
+     * 「英文释义 + 中文释义」设计的。
+     */
+    val learnerLanguage: String = "zh"
 )
 
 /** 全局状态的需要持久化的部分 */
@@ -191,6 +200,13 @@ class GlobalState(globalData: GlobalData) {
      * 学日语时设为 "ja"，播放日语视频可自动选中日语字幕轨。
      */
     var preferredSubLanguage by mutableStateOf(globalData.preferredSubLanguage)
+
+    /**
+     * 学习者的母语：`zh` 或 `en`，默认中文。
+     *
+     * 决定词条释义展示哪种语言（见 ui/wordscreen/WordScreen.kt 的释义区）。
+     */
+    var learnerLanguage by mutableStateOf(globalData.learnerLanguage)
 }
 @Composable
  fun computeFontSize(textStyle: String): TextUnit {

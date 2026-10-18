@@ -184,7 +184,8 @@ class AppState {
                     global.frqNum,
                     global.maxSentenceLength,
                     global.showInputCount,
-                    global.preferredSubLanguage
+                    global.preferredSubLanguage,
+                    global.learnerLanguage
                 )
                 val json = encodeBuilder.encodeToString(globalData)
                 val settings = getGlobalSettingsFile()

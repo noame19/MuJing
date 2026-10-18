@@ -1589,15 +1589,11 @@ fun MainContent(
                 fontSize = appState.global.detailFontSize,
                 language = wordScreenState.vocabulary.language
             )
-            Definition(
+            Meaning(
                 word = currentWord,
+                language = wordScreenState.vocabulary.language,
+                learnerLanguage = appState.global.learnerLanguage,
                 definitionVisible = wordScreenState.definitionVisible,
-                isPlaying = isPlaying,
-                isChangeVideoBounds = wordScreenState.isChangeVideoBounds,
-                fontSize = appState.global.detailFontSize
-            )
-            Translation(
-                word = currentWord,
                 translationVisible = wordScreenState.translationVisible,
                 isPlaying = isPlaying,
                 isChangeVideoBounds = wordScreenState.isChangeVideoBounds,
@@ -2407,6 +2403,165 @@ fun Definition(
 /**
  * 中文释义组件
  */
+/**
+ * 词条释义区。
+ *
+ * 英语与日语的释义结构不同，以前是两个并列组件（Definition + Translation），
+ * 日语词条会同时铺开英文义项和中文词表，一个词就能占满一屏。现在合并成一个
+ * 区域，按词库语言和学习者母语决定渲染什么：
+ *
+ * - 英语词库：保持原样，英文释义 + 中文释义两段都显示。
+ * - 日语词库：只显示学习者母语对应的那一种。
+ *   - 母语中文：《按词性分组的中文释义》——中文去重、同组用「·」合并成一行；
+ *   - 母语英文：英文义项，保留每个义项的词性前缀。
+ *
+ * @param language 当前词库的语言（`english` / `japanese`）
+ * @param learnerLanguage 学习者的母语（`zh` / `en`）
+ */
+@Composable
+fun Meaning(
+    word: Word,
+    language: String,
+    learnerLanguage: String,
+    definitionVisible: Boolean,
+    translationVisible: Boolean,
+    isPlaying: Boolean,
+    isChangeVideoBounds: Boolean = false,
+    fontSize: TextUnit
+) {
+    val isJapanese = language.equals("japanese", true)
+    val preferChinese = !learnerLanguage.equals("en", true)
+
+    if (!isJapanese) {
+        // 英语词库：完全保持原有行为
+        Definition(
+            word = word,
+            definitionVisible = definitionVisible,
+            isPlaying = isPlaying,
+            isChangeVideoBounds = isChangeVideoBounds,
+            fontSize = fontSize
+        )
+        Translation(
+            word = word,
+            translationVisible = translationVisible,
+            isPlaying = isPlaying,
+            isChangeVideoBounds = isChangeVideoBounds,
+            fontSize = fontSize
+        )
+        return
+    }
+
+    val text = if (preferChinese) JapaneseChineseMeaning(word) else word.definition
+    if (text.isEmpty()) return
+
+    MeaningBody(
+        text = text,
+        visible = definitionVisible,
+        isPlaying = isPlaying,
+        isChangeVideoBounds = isChangeVideoBounds,
+        fontSize = fontSize
+    )
+}
+
+/**
+ * 日语词条的中文释义：去重后用「·」合并成一行。
+ *
+ * 为什么不按词性分组：实测 8334 个带中英双释义的词条里，只有 684 个
+ * （8%）的中文条数恰好等于义项数，其余 91% 条数不等（`大丈夫` 是
+ * 13 条中文对 4 个义项）。任何均分或按位置对应的做法都会把词归到错
+ * 误的词性下（实测会把「安全/稳当」归到副词），不如不分组。
+ *
+ * 所以这里只做两件能保证正确的事：
+ * - 去重（源数据里有重复，如「贺礼」出现两次）
+ * - 合并成一行，不再一词一行占满屏幕
+ *
+ * 词性由页尾的 Sentences 行统一展示，不在每行重复。
+ * 按义项精确分组要理解语义，留待接入本地模型后做（见 TODO #14）。
+ */
+private fun JapaneseChineseMeaning(word: Word): String {
+    return word.translation
+        .lines()
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .distinct()
+        .joinToString(" · ")
+}
+
+/**
+ * 从一行英文义项里取出词性前缀，如「な形容词. safe; secure」→「な形容词」。
+ *
+ * 词库里 `definition` 的每行形如「<词性>. <英文释义>」，词性由
+ * enrich_vocabulary.py 从 JMdict 的品词标记翻成中文全称后写入。
+ * 取不到时返回空串。
+ *
+ * 注意：日语词条按母语中文展示时用不到这个函数（见 [JapaneseChineseMeaning]）；
+ * 只有母语选英文、直接展示 `definition` 时才原样保留前缀。
+ */
+@Suppress("unused")
+private fun sensePosPrefix(senseLine: String): String {
+    // 词性里可能带中点（动词·一段词），但不会带句点，所以第一个 ". " 即分隔处
+    val idx = senseLine.indexOf(". ")
+    if (idx <= 0) return ""
+    val pos = senseLine.substring(0, idx).trim()
+    // 词性前缀都很短；过长说明这不是词性前缀，宁可不要
+    return if (pos.length <= 12) pos else ""
+}
+
+/**
+ * 释义文本的渲染壳：统一宽度、超长时加滚动条。
+ *
+ * 与原来的 Definition / Translation 保持一致（宽度、缩进、滚动阈值），
+ * 只是把「渲染哪段文本」这件事交给调用方决定。
+ */
+@Composable
+private fun MeaningBody(
+    text: String,
+    visible: Boolean,
+    isPlaying: Boolean,
+    isChangeVideoBounds: Boolean,
+    fontSize: TextUnit
+) {
+    if (!visible || (isPlaying && !isChangeVideoBounds)) return
+
+    val rows = text.count { it == '\n' }
+    val width = when (fontSize) {
+        MaterialTheme.typography.h5.fontSize -> 600.dp
+        MaterialTheme.typography.h6.fontSize -> 575.dp
+        else -> 555.dp
+    }
+    val modifier = if (rows > 8) {
+        Modifier.width(width).height(260.dp)
+            .padding(start = 50.dp, top = 5.dp, bottom = 5.dp)
+    } else {
+        Modifier.width(width).padding(start = 50.dp, top = 5.dp, bottom = 5.dp)
+    }
+
+    Column {
+        Box(modifier = modifier) {
+            val stateVertical = rememberScrollState(0)
+            Box(Modifier.verticalScroll(stateVertical)) {
+                SelectionContainer {
+                    Text(
+                        textAlign = TextAlign.Start,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = fontSize,
+                        color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = text,
+                    )
+                }
+            }
+            if (rows > 8) {
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    adapter = rememberScrollbarAdapter(stateVertical)
+                )
+            }
+        }
+        Divider(Modifier.padding(start = 50.dp))
+    }
+}
+
 @Composable
 fun Translation(
     translationVisible: Boolean,

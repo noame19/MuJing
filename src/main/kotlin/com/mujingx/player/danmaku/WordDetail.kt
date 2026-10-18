@@ -83,6 +83,7 @@ import com.mujingx.data.Word
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.mujingx.player.PlayerState
+import com.mujingx.state.rememberAppState
 import com.mujingx.ui.wordscreen.AddButton
 import com.mujingx.ui.wordscreen.CopyButton
 import com.mujingx.ui.wordscreen.DeleteButton
@@ -163,7 +164,14 @@ fun WordDetail(
 
 
             Box {
-                var tabState by remember { mutableStateOf(if (playerState.preferredChinese) 0 else 1) }
+                // 释义页签的初始选中项跟随「我的母语」设置。
+                // 以前只读 playerState.preferredChinese，与设置页的母语选项脱节，
+                // 改成中文后弹窗仍停在英文页。两处都看，设置优先。
+                val preferChinese = rememberAppState().global.learnerLanguage != "en" ||
+                        playerState.preferredChinese
+                var tabState by remember(preferChinese) {
+                    mutableStateOf(if (preferChinese) 0 else 1)
+                }
                 Column(Modifier.align(Alignment.Center)) {
                     Row(
                         verticalAlignment = Alignment.Top,
