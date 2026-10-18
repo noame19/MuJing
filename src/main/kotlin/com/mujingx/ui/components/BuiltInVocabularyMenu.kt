@@ -67,72 +67,85 @@ fun BuiltInVocabularyMenu(
         showList = false
     }
 
+    // 高度分配：页脚固定 40dp 常驻底部，中间内容区占据剩余高度。
+    // 原先写死「容器 440 + 列表 400 + 页脚 40」，加分隔线后是 441，
+    // 页脚被挤出了可视区，用户必须滚动才能看到「已选 N 个词库」与「确定」。
+    val contentHeight = 400.dp
+    val footerHeight = 40.dp
+
     DropdownMenu(
         expanded = expanded,
         offset = DpOffset(20.dp, 0.dp),
         onDismissRequest = onDismissRequest,
-        modifier = Modifier.width(width).height(440.dp),
+        modifier = Modifier.width(width).height(contentHeight + footerHeight + 1.dp),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.width(width).height(400.dp)){
-            val directories = getBuiltInVocabularyDirectories(language)
-            Column(
-                modifier = Modifier.width(240.dp).height(400.dp)
-                    .verticalScroll(rememberScrollState())
-            ){
-                if (directories.isEmpty()) {
-                    Text(
-                        text = "没有内置的" + if (language == "japanese") "日语" else "该语言" + "词库",
-                        color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                }
-                directories.forEach { directory ->
-                    VocabularyDirectory(
-                        directory = directory,
-                        selectedDirectory = selectedDirectory,
-                        onClick = {
-                            showList = true
-                            selectedDirectory = directory
-                        }
-                    )
-                }
-            }
-
-            if(showList && selectedDirectory != null){
-                Divider(Modifier.width(1.dp).height(400.dp))
-               VocabularyList(
-                   directory = selectedDirectory!!,
-                   selectedFiles = selectedFiles,
-               )
-            }
-        }
-
-        Divider()
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.width(width).height(40.dp)
-        ) {
-            Text(
-                text = "已选 ${selectedFiles.size} 个词库",
-                color = MaterialTheme.colors.onBackground,
-                modifier = Modifier.padding(start = 12.dp)
-            )
-            Spacer(Modifier.weight(1f))
-            TextButton(
-                enabled = selectedFiles.isNotEmpty(),
-                onClick = {
-                    selectedFiles.toList().forEach { addVocabulary(it) }
-                    selectedFiles.clear()
-                    onDismissRequest()
-                }
+        // 用 Column 分成「内容 / 分隔线 / 页脚」三段，页脚不再参与滚动，
+        // 也不会因为内容变高而被挤出去。
+        Column(Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.width(width).height(contentHeight)
             ) {
-                Text("确定")
+                val directories = getBuiltInVocabularyDirectories(language)
+                // 左右两栏各自独立滚动：分类多时只滚左栏，词库列表位置保持不动
+                Column(
+                    modifier = Modifier.width(240.dp).fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (directories.isEmpty()) {
+                        Text(
+                            text = if (language == "japanese") "没有内置的日语词库"
+                            else "没有内置的该语言词库",
+                            color = MaterialTheme.colors.onBackground,
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                    directories.forEach { directory ->
+                        VocabularyDirectory(
+                            directory = directory,
+                            selectedDirectory = selectedDirectory,
+                            onClick = {
+                                showList = true
+                                selectedDirectory = directory
+                            }
+                        )
+                    }
+                }
+
+                if (showList && selectedDirectory != null) {
+                    Divider(Modifier.width(1.dp).fillMaxHeight())
+                    VocabularyList(
+                        directory = selectedDirectory!!,
+                        selectedFiles = selectedFiles,
+                    )
+                }
+            }
+
+            Divider()
+            // 页脚固定高度，永远可见
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.width(width).height(footerHeight)
+            ) {
+                Text(
+                    text = "已选 ${selectedFiles.size} 个词库",
+                    color = MaterialTheme.colors.onBackground,
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+                Spacer(Modifier.weight(1f))
+                TextButton(
+                    enabled = selectedFiles.isNotEmpty(),
+                    onClick = {
+                        selectedFiles.toList().forEach { addVocabulary(it) }
+                        selectedFiles.clear()
+                        onDismissRequest()
+                    }
+                ) {
+                    Text("确定")
+                }
             }
         }
-
     }
 }
 
@@ -168,13 +181,15 @@ fun VocabularyList(
 ) {
     val files = listVocabularyFiles(directory)
     if (files.isNotEmpty()) {
-        Box(Modifier.width(200.dp).height(400.dp)){
+        // 高度交给外层（fillMaxHeight），不再写死 400dp：
+        // 写死后一旦外层高度变化，列表会溢出或留白。
+        Box(Modifier.width(200.dp).fillMaxHeight()){
             val listState = rememberLazyListState()
             LazyColumn(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .width(200.dp)
-                    .height(400.dp),
+                    .fillMaxHeight(),
                 state = listState
             ) {
                 items(files) { file ->

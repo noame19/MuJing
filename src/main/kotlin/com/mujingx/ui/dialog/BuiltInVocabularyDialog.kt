@@ -20,6 +20,7 @@
 package com.mujingx.ui.dialog
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
@@ -50,6 +51,7 @@ import kotlinx.coroutines.launch
 import com.mujingx.ui.components.formatVocabularyName
 import com.mujingx.ui.components.getBuiltInVocabularyDirectories
 import com.mujingx.ui.components.listVocabularyFiles
+import com.mujingx.ui.components.vocabularyCategoryLanguage
 import com.mujingx.ui.window.windowBackgroundFlashingOnCloseFixHack
 import java.io.File
 import javax.swing.JOptionPane
@@ -82,23 +84,43 @@ fun BuiltInVocabularyDialog(
 
                 ){
                     var success by remember{ mutableStateOf(false)}
+                    // 当前选中的语言 Tab。默认按目录里实际存在的语言决定：
+                    // 有日语词库就先展示日语，否则英语。
+                    val languages = remember { availableVocabularyLanguages() }
+                    var selectedLanguage by remember {
+                        mutableStateOf(
+                            when {
+                                languages.contains("japanese") -> "japanese"
+                                languages.contains("english") -> "english"
+                                else -> languages.firstOrNull().orEmpty()
+                            }
+                        )
+                    }
                     val stateVertical = rememberScrollState(0)
-                    Box(Modifier.fillMaxSize().verticalScroll(stateVertical)){
-                        Column (Modifier.padding(10.dp)){
-                            Text(
-                                text = "点击词库直接学习（只读，学习进度单独保存）；点「另存为…」可复制一份到本地编辑。",
-                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),
-                                modifier = Modifier.padding(start = 17.dp, top = 5.dp, bottom = 5.dp)
+                    Column(Modifier.fillMaxSize()) {
+                        if (languages.size > 1) {
+                            LanguageTabs(
+                                languages = languages,
+                                selected = selectedLanguage,
+                                onSelect = { selectedLanguage = it },
                             )
-                            getBuiltInVocabularyDirectories().forEach { directory ->
-                                VocabularyCategory(
-                                    directory = directory,
-                                    success = { success = true },
-                                    openChooseVocabulary = openChooseVocabulary,
-                                    openBuiltInVocabulary = openBuiltInVocabulary
-                                )
+                        }
+                        Box(Modifier.fillMaxSize().verticalScroll(stateVertical)){
+                            Column (Modifier.padding(10.dp)){
+                                getBuiltInVocabularyDirectories(selectedLanguage).forEach { directory ->
+                                    VocabularyCategory(
+                                        directory = directory,
+                                        success = { success = true },
+                                        openChooseVocabulary = openChooseVocabulary,
+                                        openBuiltInVocabulary = openBuiltInVocabulary
+                                    )
+                                }
                             }
                         }
+                        VerticalScrollbar(
+                            modifier = Modifier.align(Alignment.End),
+                            adapter = rememberScrollbarAdapter(stateVertical)
+                        )
                     }
 
                     if(success){
@@ -142,6 +164,64 @@ fun BuiltInVocabularyDialog(
         }
     }
 
+}
+
+/**
+ * 目录里实际存在哪些语言的内置词库，按「英语在前、日语在后」排列。
+ *
+ * 语言取自词库文件的 `language` 字段（见 getBuiltInVocabularyDirectories），
+ * 不按目录名硬编码。没有可识别的语言时返回空列表，调用方不显示 Tab。
+ */
+@Composable
+private fun availableVocabularyLanguages(): List<String> {
+    return remember {
+        val present = getBuiltInVocabularyDirectories()
+            .map { vocabularyCategoryLanguage(it) }
+            .filter { it.isNotEmpty() }
+            .toSet()
+        // 固定顺序，避免 HashSet 遍历顺序导致 Tab 每次重组都可能换位
+        listOf("english", "japanese").filter { present.contains(it) } +
+            present.filter { it != "english" && it != "japanese" }.sorted()
+    }
+}
+
+/**
+ * 内置词库的语言切换 Tab。
+ *
+ * 英语与日语词库数量都不少，混在一个长列表里很难找，
+ * 因此按语言分页。只有一种语言时不显示 Tab。
+ */
+@Composable
+private fun LanguageTabs(
+    languages: List<String>,
+    selected: String,
+    onSelect: (String) -> Unit,
+) {
+    TabRow(
+        selectedTabIndex = languages.indexOf(selected).coerceAtLeast(0),
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.primary,
+    ) {
+        languages.forEach { language ->
+            Tab(
+                selected = language == selected,
+                onClick = { onSelect(language) },
+            ) {
+                Text(
+                    text = languageLabel(language),
+                    fontWeight = if (language == selected) FontWeight.Bold else FontWeight.Normal,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+        }
+    }
+}
+
+/** 语言的展示名称。 */
+private fun languageLabel(language: String): String = when (language) {
+    "english" -> "英语"
+    "japanese" -> "日语"
+    else -> language
 }
 
 @Composable
@@ -207,37 +287,58 @@ fun VocabularyCategory(
                         disPlayName = "高中英语3500-乱序版"
                     }
 
+                    // 鼠标悬停才显示「另存为」图标。
+                    // 每个卡片底部常驻一个文字按钮会堆成一片，把卡片本身的
+                    // 名字淹没；而「另存为」只是偶发操作，收进悬停态就够了。
+                    var hovered by remember { mutableStateOf(false) }
+
                     Card(
                         modifier = Modifier
                             .padding(7.5.dp)
-                            .clickable {
-                                // 直接学习内置词库：不复制文件，学习进度记在 ~/.MuJing/progress 下
-                                openBuiltInVocabulary(file.absolutePath)
-                            },
+                            .hoverable(
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { hovered = it },
                         backgroundColor = MaterialTheme.colors.surface,
                         elevation = 3.dp
                     ) {
                         Box(Modifier.size(width = 160.dp, height = 84.dp)) {
-                            Text(
-                                text = disPlayName,
-                                color = MaterialTheme.colors.onBackground,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.TopCenter)
-                                    .padding(top = 8.dp, start = 6.dp, end = 6.dp)
-                            )
-                            TextButton(
-                                onClick = {
-                                    selectedFile = file
-                                    launcher.launch(name,"json")
-                                },
-                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                                modifier = Modifier.align(Alignment.BottomCenter)
+                            // 整个卡片点击即开始学习
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .clickable {
+                                        // 直接学习内置词库：不复制文件，学习进度记在
+                                        // ~/.MuJing/progress 下
+                                        openBuiltInVocabulary(file.absolutePath)
+                                    }
                             ) {
                                 Text(
-                                    text = "另存为…",
-                                    color = MaterialTheme.colors.primary,
-                                    fontSize = 12.sp
+                                    text = disPlayName,
+                                    color = MaterialTheme.colors.onBackground,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.Center)
+                                        .padding(horizontal = 8.dp)
                                 )
+                            }
+
+                            // 悬停时才出现的另存为入口，放在右上角，不占名字的位置
+                            if (hovered) {
+                                IconButton(
+                                    onClick = {
+                                        selectedFile = file
+                                        launcher.launch(name, "json")
+                                    },
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(28.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.FileDownload,
+                                        contentDescription = "另存为",
+                                        tint = MaterialTheme.colors.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
                     }
