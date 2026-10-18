@@ -33,17 +33,44 @@ import java.io.File
 import java.io.InputStreamReader
 import javax.swing.JOptionPane
 
+/**
+ * 定位随应用分发的 ffmpeg。
+ *
+ * 可执行权限由构建脚本烙进 AppImage（见 Build-AppImage.yml 的 Stage AppDir
+ * 步骤）：AppImage 挂载点是只读 squashfs，运行期 setExecutable() 会静默失败，
+ * 不能依赖它。这里仍尝试一次，只是为了覆盖直接从源码目录运行、或用 zip/deb
+ * 安装（权限位可能没有被保留）的情形。
+ */
 fun findFFmpegPath(): String {
     val path: String = if(isWindows()){
         getResourcesFile("ffmpeg/ffmpeg.exe").absolutePath
     }else{
         val ffmpegFile = getResourcesFile("ffmpeg/ffmpeg")
         if(ffmpegFile.exists() && !ffmpegFile.canExecute()){
+            // 只读挂载上一定失败，失败也不报错：真正运行时若权限不对，
+            // 由 extractSubtitles 的异常处理给出可读提示。
             ffmpegFile.setExecutable(true)
         }
-        getResourcesFile("ffmpeg/ffmpeg").absolutePath
+        ffmpegFile.absolutePath
     }
     return path
+}
+
+/**
+ * 把 ffmpeg 启动失败翻译成能给用户看的提示。
+ *
+ * 最常见的是权限位没保留（errno 13）——AppImage 挂载点只读，无法现场 chmod，
+ * 只能提示重新下载或改用其他安装包，而不是把裸的 errno 抡给用户。
+ */
+private fun ffmpegErrorMessage(e: Exception): String {
+    val raw = e.message.orEmpty()
+    return if (raw.contains("error: 13") || raw.contains("Permission denied")) {
+        "ffmpeg 没有执行权限，无法处理字幕。\n" +
+            "路径：${findFFmpegPath()}\n" +
+            "请重新下载应用包；若仍报错，请告知开发者。"
+    } else {
+        "选择的字幕格式暂时不支持\n $raw"
+    }
 }
 
 /**
@@ -72,7 +99,7 @@ fun extractSubtitles(
             "failed"
         }
     } catch (e: Exception) {
-        JOptionPane.showMessageDialog(null, "选择的字幕格式暂时不支持\n ${e.message}", "错误", JOptionPane.ERROR_MESSAGE)
+        JOptionPane.showMessageDialog(null, ffmpegErrorMessage(e), "错误", JOptionPane.ERROR_MESSAGE)
         "failed"
     }
 }
@@ -85,19 +112,21 @@ fun convertToSrt(
     output:String,
     verbosity: Verbosity = Verbosity.INFO
     ):String{
-    val ffmpeg = FFmpeg(findFFmpegPath())
-    val builder = FFmpegBuilder()
-        .setVerbosity(verbosity)
-        .setInput(input)
-        .addOutput(output)
-        .done()
-    val executor = FFmpegExecutor(ffmpeg)
-    val job = executor.createJob(builder)
-    job.run()
-    if (job.state == FFmpegJob.State.FINISHED) {
-        return "finished"
+    return try {
+        val ffmpeg = FFmpeg(findFFmpegPath())
+        val builder = FFmpegBuilder()
+            .setVerbosity(verbosity)
+            .setInput(input)
+            .addOutput(output)
+            .done()
+        val executor = FFmpegExecutor(ffmpeg)
+        val job = executor.createJob(builder)
+        job.run()
+        if (job.state == FFmpegJob.State.FINISHED) "finished" else "failed"
+    } catch (e: Exception) {
+        JOptionPane.showMessageDialog(null, ffmpegErrorMessage(e), "错误", JOptionPane.ERROR_MESSAGE)
+        "failed"
     }
-    return "failed"
 }
 
 

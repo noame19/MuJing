@@ -270,6 +270,19 @@ jobs:
             cp -v resources/linux/ffmpeg/ffmpeg "$APPDIR/$INNER/bin/ffmpeg"
             chmod +x "$APPDIR/$INNER/bin/ffmpeg"
           fi
+          # Compose Desktop copies resources/linux/* into the app resources
+          # dir, and that is the copy the app actually runs: findFFmpegPath()
+          # returns <resources>/ffmpeg/ffmpeg, not <app>/bin/ffmpeg. Git cannot
+          # reliably carry the exec bit through every checkout path, and the
+          # AppImage mount is a read-only squashfs where setExecutable()
+          # silently fails, so bake the permission in here.
+          RES_FFMPEG="$APPDIR/$INNER/lib/app/resources/ffmpeg/ffmpeg"
+          if [ -f "$RES_FFMPEG" ]; then
+            chmod +x "$RES_FFMPEG"
+            echo "Baked exec bit into $RES_FFMPEG"
+          else
+            echo "::warning::ffmpeg missing at $RES_FFMPEG"
+          fi
           ls -la "$APPDIR/$INNER"
           echo "AppDir contents:"
           ls -la "$APPDIR"
