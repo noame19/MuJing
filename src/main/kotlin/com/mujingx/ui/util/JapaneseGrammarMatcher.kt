@@ -192,12 +192,22 @@ object JapaneseGrammarMatcher {
                     if (exact >= 0) return exact until (exact + tail.length)
                     for (n in tail.length - 1 downTo 2) {
                         val at = haystack.indexOf(tail.substring(0, n))
-                        if (at >= 0) return at until (at + n)
+                        if (at < 0) continue
+                        // 前缀命中后要把后面的送假名/助动词一并包进来：
+                        // 「〜ている」遇到「食べています」只标「てい」会把
+                        // 「ます」切在外面，看起来像被截断。一直吃到非平假名。
+                        var end = at + n
+                        while (end < haystack.length && haystack[end].isHiraganaTail()) end++
+                        return at until end
                     }
                 }
             }
             return null
         }
+
+        /** 这一段是否属于可并入高亮范围的平假名（含长音符）。 */
+        private fun Char.isHiraganaTail(): Boolean =
+            this in '\u3041'..'\u309F' || this == '\u30FC'
 
         /**
          * 模式的区分度。
