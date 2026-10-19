@@ -165,11 +165,12 @@ fun WordDetail(
 
 
             Box {
-                // 释义页签的初始选中项跟随「我的母语」设置。
-                // 以前只读 playerState.preferredChinese，与设置页的母语选项脱节，
-                // 改成中文后弹窗仍停在英文页。两处都看，设置优先。
-                val preferChinese = rememberAppState().global.learnerLanguage != "en" ||
-                        playerState.preferredChinese
+                // 释义页签的选中项以「我的母语」设置为唯一来源。
+                // 原来这里写的是 `... != "en" || playerState.preferredChinese`，
+                // 母语默认中文时前半句恒为 true，`||` 让后半句永远不起作用
+                // —— 弹窗里的「优先显示英文」开关就完全失效了。
+                val appState = rememberAppState()
+                val preferChinese = !appState.global.learnerLanguage.equals("en", true)
                 var tabState by remember(preferChinese) {
                     mutableStateOf(if (preferChinese) 0 else 1)
                 }
@@ -260,7 +261,10 @@ fun WordDetail(
                             onClick = { tabState = 0 }
                         )
                         Tab(
-                            text = { Text("英文") },
+                            // 日语词条没有英文释义：第二个页签是 definition，
+                            // 里面带词性前缀（な形容词. safe; secure），仍属英文，
+                            // 但叫「英文释义」比「英文」准确，也不与读音行重复。
+                            text = { Text(if (isJapanese) "英文释义" else "英文") },
                             selected = tabState == 1,
                             onClick = { tabState = 1 }
                         )
@@ -306,10 +310,14 @@ fun WordDetail(
                             modifier = modifier
                         ) {
                             Text("优先显示中文", modifier = Modifier.padding(start = 10.dp))
-                            Switch(checked = playerState.preferredChinese, onCheckedChange = {
-                                playerState.preferredChinese = it
-                                if (it && tabState == 1) tabState = 0
-                                playerState.savePlayerState()
+                            // 两个开关现在写全局设置，而不是各存一份：
+                            // 否则设置页选了中文、弹窗里又选了英文，两处永远对不上。
+                            Switch(checked = appState.global.learnerLanguage != "en", onCheckedChange = {
+                                if (it) {
+                                    appState.global.learnerLanguage = "zh"
+                                    appState.saveGlobalState()
+                                    tabState = 0
+                                }
                             })
                         }
                         Row(
@@ -318,10 +326,12 @@ fun WordDetail(
                             modifier = modifier
                         ) {
                             Text("优先显示英文", modifier = Modifier.padding(start = 10.dp))
-                            Switch(checked = !playerState.preferredChinese, onCheckedChange = {
-                                playerState.preferredChinese = !it
-                                if (it && tabState == 0) tabState = 1
-                                playerState.savePlayerState()
+                            Switch(checked = appState.global.learnerLanguage == "en", onCheckedChange = {
+                                if (it) {
+                                    appState.global.learnerLanguage = "en"
+                                    appState.saveGlobalState()
+                                    tabState = 1
+                                }
                             })
                         }
                     }

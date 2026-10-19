@@ -71,6 +71,16 @@ class PlayerState(playerData: PlayerData) {
     var danmakuVisible by mutableStateOf(playerData.danmakuVisible)
     var autoCopy by mutableStateOf(playerData.autoCopy)
     var autoSpeak by mutableStateOf(playerData.autoSpeak)
+    /**
+     * 是否优先显示中文释义。
+     *
+     * 已被全局的「我的母语」设置（`AppState.global.learnerLanguage`）取代：
+     * 释义语言应当整个应用统一，而不是播放器再各存一份 —— 两边不一致时
+     * 用户会看到设置页选了中文、弹窗却停在英文。
+     *
+     * 字段保留仅为了旧播放器配置文件能正常反序列化（删掉不会报错，
+     * 但没必要提前做这个决定）。当前没有任何地方读它。
+     */
     var preferredChinese by mutableStateOf(playerData.preferredChinese)
     var autoPause by mutableStateOf(playerData.autoPause)
     var showClose by mutableStateOf(playerData.showClose)

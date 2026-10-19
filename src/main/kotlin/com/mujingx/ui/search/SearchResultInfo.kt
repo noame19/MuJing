@@ -53,6 +53,9 @@ fun SearchResultInfo(
 ){
     // 日语词条没有「英文释义」，第二个页签改为显示假名与罗马字读音
     val isJapanese = wordScreenState.vocabulary.language.equals("japanese", true)
+    // 释义页签的初始选中项跟随「我的母语」设置，与背单词页、弹窗保持一致。
+    // 以前固定打开「中文」页，改成英文后搜索结果仍先显示中文。
+    val preferChinese = !appState.global.learnerLanguage.equals("en", true)
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()){
@@ -76,7 +79,7 @@ fun SearchResultInfo(
     )
     Spacer(Modifier.height(8.dp))
     Divider()
-    var tabState by remember { mutableStateOf(0) }
+    var tabState by remember(preferChinese) { mutableStateOf(if (preferChinese) 0 else 1) }
 
     TabRow(
         selectedTabIndex = tabState,
