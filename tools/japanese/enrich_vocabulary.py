@@ -80,6 +80,10 @@ JMDICT = os.path.join(DATA, 'jmdict-eng-3.6.2.json')
 # 仅在 jadic 查不到时使用，见 chinese_for 的末级兜底
 SUPPLEMENT = os.path.join(_HERE, 'jadic_supplement.json')
 JADIC = os.path.join(REPO, 'resources', 'common', 'dictionary', 'jadic.db')
+# jiten.moe 词频表（CC BY-SA 4.0）。填进词条的 frq 字段，
+# 供界面上的「过滤前 N / 过滤无排名 / 按词频排序」使用 —— 与英语的
+# BNC/COCA 字段同一语义（1 = 最常见）。
+JITEN_FREQ_CSV = 'jiten-frequency.csv'
 VOCAB_ROOT = os.path.join(REPO, 'resources', 'common', 'vocabulary')
 VOCAB_DIR = os.path.join(VOCAB_ROOT, 'JLPT日语')
 LEVELS = [('1 N5.json', 'N5'), ('2 N4.json', 'N4'), ('3 N3.json', 'N3'),
@@ -1015,15 +1019,83 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     }
 
 
-def to_vocabulary(entries, name, level, tag):
+def load_frequency():
+    """读取 jiten.moe 词频表：(词形, 读音) → 排名。
+
+    数据源：https://api.jiten.moe/api/frequency-list/download?downloadType=csv
+    许可 CC BY-SA 4.0。CSV 三列：Word,Form,Rank。
+
+    排名语义与英语的 BNC/COCA 一致（1 = 最常见），因此直接写进词条的
+    `frq` 字段，界面上现成的「过滤前 N / 过滤排名为 0 / 按词频排序」
+    全部能直接复用，不用改过滤逻辑。
+
+    Rank 超过 100 万的视为「语料里没这种用法」，当作无排名（不写入），
+    否则「过滤排名为 0」会把它们当成生僻词误删。
+
+    @return (word, form) → rank；文件缺失时返回空 dict
+    """
+    path = os.path.join(DATA, JITEN_FREQ_CSV)
+    if not os.path.exists(path):
+        print(f"  ⚠ 未找到词频表 {path}，frq 字段将全部为 0")
+        print("     可先运行 tools/japanese/fetch_dict_data.py 下载")
+        return {}
+    table = {}
+    try:
+        with open(path, encoding='utf-8') as f:
+            reader = csv.reader(f)
+            next(reader, None)  # 跳过表头 Word,Form,Rank
+            for row in reader:
+                if len(row) < 3:
+                    continue
+                word, form, raw = row[0], row[1], row[2]
+                try:
+                    rank = int(raw)
+                except ValueError:
+                    continue
+                if rank <= 0 or rank > 1_000_000:
+                    continue
+                table[(word, form)] = rank
+                # 不区分读音的索引：词频表里同一写法常有多个读音条目
+                table.setdefault((word, ''), rank)
+    except OSError as e:
+        print(f"  ⚠ 读取词频表失败：{e}")
+        return {}
+    print(f"  词频表 {len(table)} 条")
+    return table
+
+
+def frequency_rank(freq, value, kana):
+    """查词频排名。依次尝试词条写法、假名、去 する 的写法。
+
+    词频表按（表层写法, 读音）组织，而词库里的 kana 有时带编者注、有时为空，
+    因此多种候选依次查找；查不到返回 0（界面上表示「无排名」）。
+    """
+    if not freq:
+        return 0
+    candidates = [value, kana]
+    for s in (value, kana):
+        if s and s.endswith('する'):
+            candidates.append(s[:-2])
+    for c in candidates:
+        if not c:
+            continue
+        hit = freq.get((c, '')) or freq.get((c, kana)) or freq.get((c, value))
+        if hit:
+            return hit
+    return 0
+
+
+def to_vocabulary(entries, name, level, tag, freq=None):
     """转成 MuJing 词库 schema（顶层为对象，非裸数组）。"""
+    freq = freq or {}
     wl = []
     for e in entries:
         wl.append({
             'value': e['value'], 'usphone': '', 'ukphone': '',
             'definition': e['definition'], 'translation': e['translation'],
             'pos': e['pos'], 'collins': 0, 'oxford': False,
-            'tag': tag, 'bnc': 0, 'frq': 0,
+            'tag': tag, 'bnc': 0,
+            'frq': frequency_rank(freq, e['value'], e.get('kana', '')),
             'exchange': e['exchange'], 'kana': e['kana'], 'romaji': e['romaji'],
             'level': e.get('level') or level, 'externalCaptions': [], 'captions': [],
         })
@@ -1042,7 +1114,7 @@ def _write_json(path, obj):
         raise RuntimeError(f"无法写入 {path}：{e}") from e
 
 
-def run_level(filename, level, out_dir, category='JLPT日语', indexes=None):
+def run_level(filename, level, out_dir, category='JLPT日语', indexes=None, freq=None):
     cat = CATEGORIES[category]
     keep_source = cat['keep_source']
     src_dir = os.path.join(VOCAB_ROOT, category)
@@ -1091,7 +1163,7 @@ def run_level(filename, level, out_dir, category='JLPT日语', indexes=None):
         src_name = src.get('name') or f'JLPT {level}'
         src_tag = next((w['tag'] for w in src['wordList'] if w.get('tag')),
                        'jlpt-' + level.lower())
-        vocab = to_vocabulary(entries, src_name, level, src_tag)
+        vocab = to_vocabulary(entries, src_name, level, src_tag, freq)
         in_place = os.path.abspath(out_dir) == os.path.abspath(src_dir)
         out_name = filename if in_place else f'{category}-{level}-增强版.json'
         path = os.path.join(out_dir, out_name)
@@ -1181,8 +1253,11 @@ if __name__ == '__main__':
 
     # JMdict 索引只建一次，供该分类下所有文件复用（115MB，逐文件重建太慢）。
     indexes = load_jmdict()
+    # 词频表同理：一次读入，所有文件共用
+    print('读取 jiten.moe 词频表 …')
+    freq = load_frequency()
     for fn, lv in targets:
-        entries, kept = run_level(fn, lv, out_dir, category, indexes)
+        entries, kept = run_level(fn, lv, out_dir, category, indexes, freq)
         if kept:
             print(f"     无 JMdict 条目（已按源数据保留）: {kept}")
         if out_dir is None and not opts['all']:

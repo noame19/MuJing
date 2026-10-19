@@ -42,6 +42,12 @@ JMDB_FILES = ('conj.csv', 'conjo.csv', 'conotes.csv', 'kwpos.csv')
 TOMOSHI_ZST = 'tomoshi-dict-open.db.zst'
 TOMOSHI_DB = 'tomoshi-dict-open.db'
 
+# jiten.moe 词频表（CC BY-SA 4.0，约 16MB）。
+# 填进词条的 frq 字段，供界面上「过滤前 N / 过滤无排名 / 按词频排序」使用。
+# 排名语义与英语的 BNC/COCA 一致（1 = 最常见）。
+# 语料是 17,485 部影视作品 / 35.8 亿字，正好对应「影视字幕背单词」场景。
+JITEN_FREQ_CSV = 'jiten-frequency.csv'
+
 
 def _save(resp, dest):
     """把响应流写入 dest。"""
@@ -146,6 +152,18 @@ _JMDB_FETCHERS = {
 }
 
 
+def _fetch_jiten_freq(dest):
+    """下载 jiten.moe 全局词频表（CSV，三列 Word,Form,Rank）。"""
+    try:
+        with urllib.request.urlopen(
+            'https://api.jiten.moe/api/frequency-list/download?downloadType=csv',
+            timeout=600,
+        ) as resp:
+            _save(resp, dest)
+    except (urllib.error.URLError, OSError) as e:
+        raise RuntimeError(f"下载 {JITEN_FREQ_CSV} 失败：{e}") from e
+
+
 def _fetch_tomoshi(dest):
     """下载 Tomoshi 词典开放数据层（86MB 压缩的 SQLite）。"""
     try:
@@ -229,6 +247,16 @@ def main():
         print(f"解压 {TOMOSHI_ZST} …（解压后约 630MB）")
         _decompress_zstd(zst, tomoshi_db)
         print(f"  → {tomoshi_db}")
+
+    # jiten.moe 词频表：约 16MB，用于填词条的 frq 字段。
+    # 没有它也能生成词库（frq 全为 0），只是少了「过滤高频词」能力。
+    freq_csv = os.path.join(DATA, JITEN_FREQ_CSV)
+    if os.path.exists(freq_csv):
+        print(f"已存在，跳过：{freq_csv}")
+    else:
+        print(f"下载 {JITEN_FREQ_CSV} …（约 16MB）")
+        _fetch_jiten_freq(freq_csv)
+        print(f"  → {freq_csv}")
 
     print("\n数据源就绪。")
     return 0

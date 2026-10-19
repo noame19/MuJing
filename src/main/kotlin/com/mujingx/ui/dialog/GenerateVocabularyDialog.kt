@@ -1644,7 +1644,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        if (!isJapanese) Row(
+        Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1656,7 +1656,12 @@ fun BasicFilter(
                 AnimatedVisibility(visible = include) {
                     Text("包含 ", color = MaterialTheme.colors.onBackground)
                 }
-                Text("COCA 词频前 ", color = MaterialTheme.colors.onBackground)
+                // 英语用 COCA 词频，日语用 jiten.moe（影视作品语料）词频。
+                // 两个字段语义相同（1 = 最常见），只是数据来源与名称不同。
+                Text(
+                    if (isJapanese) "高频词排名前 " else "COCA 词频前 ",
+                    color = MaterialTheme.colors.onBackground
+                )
                 var frqNumFieldValue by remember { mutableStateOf(TextFieldValue("$frqNum")) }
                 BasicTextField(
                     value = frqNumFieldValue,
@@ -1698,7 +1703,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        if (!isJapanese) Row(
+        Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -1754,7 +1759,7 @@ fun BasicFilter(
             )
         }
         Divider()
-        if (!isJapanese) Row(
+        Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
