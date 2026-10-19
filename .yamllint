@@ -1,0 +1,17 @@
+---
+# yamllint 配置
+#
+# Release notes 里的下载链接把完整的 URL 写在一行上：
+#
+#   - [Windows 安装包 (MSI)](https://github.com/<owner>/<repo>/releases/...)
+#
+# 这种行的长度无法压缩到 80 字符以内 —— 光是 markdown 链接前缀加上
+# GitHub 的表达式语法就占掉了大半。而 URL 一旦折行就会失效（markdown
+# 不把跨行内容视作单个链接目标），所以这类超长是必须的，不是疏漏。
+#
+# 关掉行宽检查，而不是把每处都写成 `# yamllint disable-line`：
+# 后者每加一条链接就要记得加一行注释，漏掉就报错，维护成本更高。
+extends: default
+
+rules:
+  line-length: disable

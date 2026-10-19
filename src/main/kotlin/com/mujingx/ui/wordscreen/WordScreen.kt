@@ -583,7 +583,10 @@ fun MainContent(
                     wordScreenState.vocabulary.wordList.remove(currentWord)
                     wordScreenState.vocabulary.size = wordScreenState.vocabulary.wordList.size
                     try{
-                        wordScreenState.saveCurrentVocabulary()
+                        // 用 persistVocabularyChange 而非 saveCurrentVocabulary：
+                        // 后者对内置词库是空操作（只读资源不能写），词会从内存
+                        // 列表移除但不记进学习进度，重启后又回来。
+                        wordScreenState.persistVocabularyChange(removedValue = currentWord.value)
                     }catch (e:Exception){
                         // 回滚
                         appState.hardVocabulary.wordList.add(index,currentWord)

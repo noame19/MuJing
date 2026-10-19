@@ -42,9 +42,15 @@ data class WordMark(
     var removed: Boolean = false,
     /** 已加入困难词库 */
     var hard: Boolean = false,
-    /** 记忆过的次数 */
+    /**
+     * 记忆过的次数。
+     *
+     * 目前没有任何地方写入（记忆统计还挂在 FSRS 那一套上），保留字段是为了
+     * 以后接统计时不用再改进度文件的格式 —— 删掉会让旧进度文件反序列化
+     * 丢失该字段，虽然无害但没必要提前做决定。无写入时它恒为 0。
+     */
     var seen: Int = 0,
-    /** 记错的次数 */
+    /** 记错的次数。同上，当前未写入。 */
     var wrong: Int = 0,
     /** 最近一次修改时间 */
     var updatedAt: Long = 0L,

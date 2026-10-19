@@ -259,13 +259,17 @@ class WordScreenState(wordScreenData: WordScreenData) {
             }
             // 内置词库不能重排：按照进度里记住的顺序还原（打乱后不丢失）
             val order = progress.order
-            if (order.size == wordList.size) {
+            if (order.size == wordList.size && order.withIndex().all { (i, v) -> v == i }.not()) {
                 val reordered = order.mapNotNull { wordList.getOrNull(it) }
                 if (reordered.size == wordList.size) {
                     wordList.clear()
                     wordList.addAll(reordered)
                 }
             }
+            // 过滤掉已移除的词之后，实际词数变少。size 是学习界面显示的分母、
+            // 也是「是否最后一词」「单元划分（% 20）」的判断依据，不同步就会出现
+            // 学到最后不弹单元完成、或 index 永远到不了 size-1。
+            vocabulary.size = wordList.size
         }
         index = progress.index.coerceIn(0, maxOf(vocabulary.wordList.size - 1, 0))
         unit = (index / 20) + 1
@@ -278,10 +282,18 @@ class WordScreenState(wordScreenData: WordScreenData) {
      * 下次打开这个词库仍然是打乱后的顺序。
      */
     fun shuffleVocabulary() {
+        // 洗牌前记下每个词原有的下标。不能再写 wordList.indices.toList() ——
+        // 洗牌后 indices 依然是 0..n-1，这是个恒等排列，等于什么都没记，
+        // 内置词库的打乱效果永远不会被保存下来。
+        val originalIndex = vocabulary.wordList
+            .withIndex()
+            .associate { it.value.value to it.index }
         vocabulary.wordList.shuffle()
         if (isReadOnlyVocabulary) {
+            // order 的语义：新列表第 i 位放的是原列表的哪个下标，
+            // 与 loadProgress 里的 mapNotNull { wordList.getOrNull(it) } 对应。
             progress = progress.copy(
-                order = vocabulary.wordList.indices.toList(),
+                order = vocabulary.wordList.map { originalIndex[it.value] ?: 0 },
                 updatedAt = System.currentTimeMillis()
             )
             WordProgressStore.save(progress)

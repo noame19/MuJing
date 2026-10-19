@@ -40,6 +40,7 @@ import com.mujingx.data.Vocabulary
 import com.mujingx.data.VocabularyJson
 import com.mujingx.data.VocabularyType
 import com.mujingx.data.Word
+import com.mujingx.data.WordProgressStore
 import com.mujingx.data.deepCopy
 import com.mujingx.data.loadVocabulary
 import kotlinx.coroutines.launch
@@ -209,7 +210,16 @@ fun Table(
     // 保存词库
     var showSaveWindow = false
     val saveVocabulary :(String) -> Unit = {text ->
-        if (!showSaveWindow) {
+        // 内置词库是应用资源目录里的只读文件，不能直接写回：
+        // AppImage 的挂载点是只读 squashfs，写会抛异常；从源码目录运行时
+        // 则会真的改坏内置词库。这类词库要改，只能先「另存为」一份副本。
+        if (WordProgressStore.isBuiltIn(vocabularyPath)) {
+            JOptionPane.showMessageDialog(
+                null,
+                "内置词库是只读的，无法直接修改。\n" +
+                    "请先在「内置词库」窗口里用「另存为」复制一份到本地，再编辑副本。"
+            )
+        } else if (!showSaveWindow) {
             showSaveWindow = true
 
             runBlocking {

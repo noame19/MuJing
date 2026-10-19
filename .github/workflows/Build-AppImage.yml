@@ -112,7 +112,7 @@ jobs:
           if ! command -v cargo >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
               sh -s -- -y --default-toolchain stable
-            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+            echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
           fi
           cargo --version
           rustc --version
@@ -236,7 +236,7 @@ jobs:
           LINUXDEPLOY_URL="https://github.com/linuxdeploy/linuxdeploy"
           LINUXDEPLOY_URL="$LINUXDEPLOY_URL/releases/download/continuous"
           LINUXDEPLOY_URL="$LINUXDEPLOY_URL/linuxdeploy-x86_64.AppImage"
-          for i in 1 2 3 4 5; do
+          for _ in 1 2 3 4 5; do
             if wget -q --tries=2 --timeout=30 \
               "$LINUXDEPLOY_URL" \
               -O linuxdeploy-x86_64.AppImage; then
@@ -542,7 +542,7 @@ jobs:
           APPIMAGE_PATH=$(find . -maxdepth 2 -name '*.AppImage' \
             -type f -print -quit || true)
           echo "DEBUG: find output = '$APPIMAGE_PATH'"
-          ls -la *.AppImage 2>&1 || true
+          ls -la ./*.AppImage 2>&1 || true
           if [ -z "$APPIMAGE_PATH" ]; then
             echo "::error::AppImage not produced by linuxdeploy."
             exit 1

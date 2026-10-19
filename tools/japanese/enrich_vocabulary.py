@@ -701,6 +701,63 @@ def _pad_right(text, width):
     return text + ' ' * max(0, width - _display_width(text))
 
 
+def primary_kana(kana):
+    """从可能带多种写法的假名字段里取可生成罗马字的那个读法。
+
+    词库里的 kana 有几个来源，写法不统一：
+
+        行く            いく; ゆく        多个读法用分号并列
+        結婚            けっこん (する)   带括注
+        ～円            ～えん           带全角波浪（量词/句型卡片）
+        あの 人（あの 方）  あの ひと（あの かた）  带括注与空格
+
+    直接拿去分拍会把标点、分号、括注都当成假名，生成奇怪的串
+    （「～えん」→「～-e-n」），所以这里只取第一个读法、去掉注记。
+
+    @return 纯假名串；取不出来时返回空串
+    """
+    if not kana:
+        return ''
+    # 并列写法：分号、全角分号、斜杠
+    first = re.split(r'[;；/／]', kana)[0]
+    # 全角波浪与括注不是读音的一部分
+    first = first.replace('～', '').replace('~', '')
+    first = re.sub(r'[（(].*?[）)]', '', first)
+    first = first.replace(' ', '').replace('\u3000', '')
+    return first
+
+
+def split_romaji_with_fallback(kana):
+    """生成分拍罗马字；kana 不是纯假名时先取第一个读法再试。
+
+    之前的实现是 `romaji(kana) if is_kana_text(kana) else ''`：只要 kana 里
+    混着分号或括注就直接留空，于是「行く」（kana=いく; ゆく）、
+    「いい; よい」这类**读法完全清楚**的词也丢了罗马字，
+    三个教材分类合计 1203 条。
+
+    改为：先按原样试；不行再取第一个读法试；仍不行的（如「お～」这种
+    没有假名的模板卡片）才留空。
+
+    @return 分拍罗马字；无法生成时为空串
+    """
+    if is_kana_text(kana):
+        return romaji(kana)
+    # 带全角波浪的是「接续卡片」（お～ / ～円 / ～か月）：波浪处要接别的词，
+    # 整个词没有单一读音。剥掉波浪剩下的那点假名不是它的读法，不能当罗马字用。
+    if '～' in kana or '~' in kana:
+        return ''
+    primary = primary_kana(kana)
+    if primary and is_kana_text(primary):
+        return romaji(primary)
+    # 再试一次：去掉 [名] 这类编者注（标准日本语里写作「そば　　　[名]」）。
+    # 只在剩下的部分确实是纯假名时才用，不然还是留空。
+    stripped = re.sub(r'[\[［][^\]］]*[\]］]', '', kana)
+    stripped = stripped.replace(' ', '').replace('\u3000', '')
+    if stripped and is_kana_text(stripped):
+        return romaji(stripped)
+    return ''
+
+
 def sense_for(con, forms, readings):
     """按义项取中文释义，每义项一行，行首带词性前缀。
 
@@ -834,7 +891,7 @@ def _source_only_entry(word, kana):
     return {
         'value': word['value'],
         'kana': kana,
-        'romaji': romaji(kana) if is_kana_text(kana) else '',
+        'romaji': split_romaji_with_fallback(kana),
         'pos': (word.get('pos') or '').strip(),
         'definition': (word.get('definition') or '').strip(),
         'translation': trans,
@@ -949,7 +1006,7 @@ def build_entry(word, exact, by_kana, by_kanji, con, keep_source=False):
     return {
         'value': value,
         'kana': kana,
-        'romaji': romaji(kana) if is_kana_text(kana) else '',
+        'romaji': split_romaji_with_fallback(kana),
         'pos': pos_text,
         'definition': def_text,
         'translation': cn_text,
@@ -1006,7 +1063,12 @@ def run_level(filename, level, out_dir, category='JLPT日语', indexes=None):
             skipped += 1
             e = dict(w)
             e['level'] = w.get('level', level)
-            # 卡片（句型/量词）不做词性活用增强，但中文释义仍可查人工校订表补齐
+            # 卡片（句型/量词）不做词性活用增强，但罗马字仍可补：
+            # 「だれ（どなた）」这类卡片有明确读音，只是写法带括注。
+            # 带 ～ 的（お～ / ～円）由 split_romaji_with_fallback 自己判空。
+            if not (e.get('romaji') or '').strip():
+                e['romaji'] = split_romaji_with_fallback(e.get('kana', ''))
+            # 中文释义仍可查人工校订表补齐
             # （例：－階 / －本 / 建て —— 源数据只有英文释义）。
             if not (e.get('translation') or '').strip():
                 e['translation'] = supplement_translation(
