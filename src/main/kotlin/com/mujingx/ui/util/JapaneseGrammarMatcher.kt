@@ -146,36 +146,7 @@ object JapaneseGrammarMatcher {
                     e.printStackTrace()
                 }
             }
-        return result
-    }
-
-        /**
-         * 在文本里定位语法尾巴的位置。
-         *
-         * 与 [findStart] 不同，这里不要求前面有实词，也不考虑区分度 ——
-         * 只用于例句高亮：知道“ことだ”落在哪几个字上即可。
-         *
-         * @param text 例句原文
-         * @return 命中区间的 [start, end) 字符下标；未命中返回 null
-         */
-        fun findTailRange(text: String): IntRange? {
-            if (tails.isEmpty() || text.isEmpty()) return null
-            // 例句里语法常有活用（食べて**います** / ことに**した**），
-            // 与词条写法（ている / ことにする）不完全一致，因此除完整
-            // 匹配外再试「尾巴的前缀」：从长到短退到 2 字。
-            // 再短就会把「〜が」这类助词乱标到无关的汉字上。
-            val candidates = listOf(text, text.trimEnd { it in "。．.!！?？、, " })
-            for (haystack in candidates) {
-                for (tail in tails.sortedByDescending { it.length }) {
-                    val exact = haystack.indexOf(tail)
-                    if (exact >= 0) return exact until (exact + tail.length)
-                    for (n in tail.length - 1 downTo 2) {
-                        val at = haystack.indexOf(tail.substring(0, n))
-                        if (at >= 0) return at until (at + n)
-                    }
-                }
-            }
-            return null
+                return result
         }
 
         /**
@@ -198,6 +169,35 @@ object JapaneseGrammarMatcher {
         private val hasLeadingLiteral: Boolean
     ) {
         val isUsable: Boolean get() = tails.isNotEmpty()
+
+        /**
+         * 在文本里定位语法尾巴的位置。
+         *
+         * 与 [findStart] 不同，这里不要求前面有实词，也不考虑区分度 ——
+         * 只用于例句高亮：知道「ことだ」落在哪几个字上即可。
+         *
+         * @param text 例句原文
+         * @return 命中区间的字符下标范围（含首含尾）；未命中返回 null
+         */
+        fun findTailRange(text: String): IntRange? {
+            if (tails.isEmpty() || text.isEmpty()) return null
+            // 例句里语法常有活用（食べて**います** / ことに**した**），
+            // 与词条写法（ている / ことにする）不完全一致，因此除完整
+            // 匹配外再试「尾巴的前缀」：从长到短退到 2 字。
+            // 再短就会把「〜が」这类助词乱标到无关的汉字上。
+            val candidates = listOf(text, text.trimEnd { it in "。．.!！?？、, " })
+            for (haystack in candidates) {
+                for (tail in tails.sortedByDescending { it.length }) {
+                    val exact = haystack.indexOf(tail)
+                    if (exact >= 0) return exact until (exact + tail.length)
+                    for (n in tail.length - 1 downTo 2) {
+                        val at = haystack.indexOf(tail.substring(0, n))
+                        if (at >= 0) return at until (at + n)
+                    }
+                }
+            }
+            return null
+        }
 
         /**
          * 模式的区分度。
