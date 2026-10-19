@@ -28,7 +28,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -162,8 +164,11 @@ fun RubyText(
     rubyColor: Color = MaterialTheme.colors.onBackground,
     fontFamily: FontFamily? = null,
     letterSpacing: TextUnit = 0.sp,
-    modifier: androidx.compose.ui.Modifier = androidx.compose.ui.Modifier,
+    modifier: Modifier = Modifier,
 ) {
+    // 占位空白的高度要按 sp→dp 换算：TextUnit 不是 Dp，直接 .value.sp 传进
+    // Modifier.height() 会编译失败（那是 TextUnit，不是 Dp）。
+    val placeholderHeight = with(LocalDensity.current) { rubyFontSize.toDp() }
     Row(modifier = modifier, verticalAlignment = Alignment.Bottom) {
         segments.forEach { segment ->
             Column(
@@ -180,10 +185,7 @@ fun RubyText(
                     )
                 } else {
                     // 无读音的段留出与读音等高的空白，让底行汉字保持在同一水平线
-                    Spacer(
-                        androidx.compose.ui.Modifier
-                            .height(rubyFontSize.value.sp),
-                    )
+                    Spacer(Modifier.height(placeholderHeight))
                 }
                 Text(
                     text = segment.text,
