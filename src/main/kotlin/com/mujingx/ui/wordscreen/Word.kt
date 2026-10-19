@@ -62,6 +62,8 @@ import com.mujingx.data.Word
 import com.mujingx.player.AudioButton
 import com.mujingx.state.GlobalState
 import com.mujingx.state.getResourcesFile
+import com.mujingx.ui.components.RubyText
+import com.mujingx.ui.components.japaneseRubySegments
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
@@ -172,108 +174,134 @@ fun Word(
                 LaunchedEffect(Unit) {
                     focusRequester.requestFocus()
                 }
-                Text(
-                    modifier = Modifier
-                        .testTag("Word")
-                        .padding(bottom = bottom)
-                        .align(Alignment.Center)
-                        .onGloballyPositioned { layoutCoordinates ->
-                            // 测量单词的高度
-                        textHeight = (layoutCoordinates.size.height).dp
-                    },
-                    text = buildAnnotatedString {
-                        typingResult.forEach { (char, correct) ->
-                            if (correct) {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colors.primary,
-                                        fontSize = fontSize,
-                                        letterSpacing = global.letterSpacing,
-                                        fontFamily = fontFamily,
-                                    )
-                                ) {
-                                    append(char)
-                                }
-                            } else {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = Color.Red,
-                                        fontSize =fontSize,
-                                        letterSpacing = global.letterSpacing,
-                                        fontFamily =fontFamily,
-                                    )
-                                ) {
-                                    if (char == ' ') {
-                                        append("_")
-                                    } else {
+
+                // 日语且尚未开始输入时，用带假名注音的标题代替纯文本。
+                // 一旦开始打字就不能再走这条：逐字着色要按字符下标对应，
+                // 而 ruby 把同一个词拆成了上下两行，下标对不上。
+                val rubySegments = remember(wordValue, word.kana, isJapanese) {
+                    if (isJapanese) japaneseRubySegments(wordValue, word.kana) else null
+                }
+                if (rubySegments != null && typingResult.isEmpty() && !isDictation && wordVisible) {
+                    RubyText(
+                        segments = rubySegments,
+                        fontSize = fontSize,
+                        rubyFontSize = fontSize * 0.42f,
+                        color = MaterialTheme.colors.onBackground,
+                        rubyColor = MaterialTheme.colors.onBackground.copy(alpha = 0.55f),
+                        fontFamily = fontFamily,
+                        letterSpacing = global.letterSpacing,
+                        modifier = Modifier
+                            .testTag("Word")
+                            .padding(bottom = bottom)
+                            .align(Alignment.Center)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                textHeight = (layoutCoordinates.size.height).dp
+                            }
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier
+                            .testTag("Word")
+                            .padding(bottom = bottom)
+                            .align(Alignment.Center)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                // 测量单词的高度
+                                textHeight = (layoutCoordinates.size.height).dp
+                            },
+                        text = buildAnnotatedString {
+                            typingResult.forEach { (char, correct) ->
+                                if (correct) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colors.primary,
+                                            fontSize = fontSize,
+                                            letterSpacing = global.letterSpacing,
+                                            fontFamily = fontFamily,
+                                        )
+                                    ) {
                                         append(char)
                                     }
+                                } else {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = Color.Red,
+                                            fontSize =fontSize,
+                                            letterSpacing = global.letterSpacing,
+                                            fontFamily =fontFamily,
+                                        )
+                                    ) {
+                                        if (char == ' ') {
+                                            append("_")
+                                        } else {
+                                            append(char)
+                                        }
+                                    }
                                 }
                             }
-                        }
-                        val remainChars = wordValue.substring(typingResult.size)
-                        if (isDictation) {
-                            if(showUnderline){
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colors.onBackground,
-                                        fontSize = fontSize,
-                                        letterSpacing =  global.letterSpacing,
-                                        fontFamily = fontFamily,
-                                    )
-                                ) {
-                                    repeat(remainChars.length) {
-                                        append("_")
+                            val remainChars = wordValue.substring(typingResult.size)
+                            if (isDictation) {
+                                if(showUnderline){
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colors.onBackground,
+                                            fontSize = fontSize,
+                                            letterSpacing =  global.letterSpacing,
+                                            fontFamily = fontFamily,
+                                        )
+                                    ) {
+                                        repeat(remainChars.length) {
+                                            append("_")
+                                        }
+
                                     }
+                                }else{
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colors.onBackground,
+                                            fontSize = fontSize,
+                                            letterSpacing =  global.letterSpacing,
+                                            fontFamily = fontFamily,
+                                        )
+                                    ) {
+                                        repeat(remainChars.length) {
+                                            append(" ")
+                                        }
 
-                                }
-                            }else{
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colors.onBackground,
-                                        fontSize = fontSize,
-                                        letterSpacing =  global.letterSpacing,
-                                        fontFamily = fontFamily,
-                                    )
-                                ) {
-                                    repeat(remainChars.length) {
-                                        append(" ")
                                     }
-
                                 }
-                            }
 
-                        } else {
-                            if (wordVisible) {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colors.onBackground,
-                                        fontSize = fontSize,
-                                        letterSpacing =  global.letterSpacing,
-                                        fontFamily =fontFamily,
-                                    )
-                                ) {
-                                    append(remainChars)
-                                }
                             } else {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colors.onBackground,
-                                        fontSize = fontSize,
-                                        letterSpacing =  global.letterSpacing,
-                                        fontFamily = fontFamily,
-                                    )
-                                ) {
-                                    repeat(remainChars.length) {
-                                        append("_")
+                                if (wordVisible) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colors.onBackground,
+                                            fontSize = fontSize,
+                                            letterSpacing =  global.letterSpacing,
+                                            fontFamily =fontFamily,
+                                        )
+                                    ) {
+                                        append(remainChars)
                                     }
+                                } else {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colors.onBackground,
+                                            fontSize = fontSize,
+                                            letterSpacing =  global.letterSpacing,
+                                            fontFamily = fontFamily,
+                                        )
+                                    ) {
+                                        repeat(remainChars.length) {
+                                            append("_")
+                                        }
+                                    }
+
                                 }
 
                             }
-
                         }
-                    }
-                )
+                    )
+                }
             }
 
             if(global.showInputCount){

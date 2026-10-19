@@ -84,6 +84,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.mujingx.player.PlayerState
 import com.mujingx.state.rememberAppState
+import com.mujingx.ui.components.RubyText
+import com.mujingx.ui.components.japaneseRubySegments
 import com.mujingx.ui.wordscreen.AddButton
 import com.mujingx.ui.wordscreen.CopyButton
 import com.mujingx.ui.wordscreen.DeleteButton
@@ -147,8 +149,7 @@ fun WordDetail(
                         text = word.value,
                         style = MaterialTheme.typography.h5,
                         color =  MaterialTheme.colors.onBackground,
-                    )
-                }
+                    )                }
                 IconButton(
                     onClick = { settingsExpanded = !settingsExpanded },
                     modifier = Modifier.align(Alignment.CenterEnd)
@@ -212,11 +213,26 @@ fun WordDetail(
                         val isJapanese = playerState.vocabulary?.language == "japanese" ||
                                 playerState.wordScreenVocabulary?.language == "japanese"
                         if (isJapanese) {
-                            Text(
-                                listOf(word.kana, word.romaji)
-                                    .filter { it.isNotEmpty() }
-                                    .joinToString("  ")
-                            )
+                            // 词条带汉字时用带注音的写法：弹窗里看词最想知道
+                            // 的正是「这个汉字怎么读」。纯假名词或无注音数据时
+                            // 回退到假名 + 罗马字。
+                            val rubySegments = remember(word.value, word.kana) {
+                                japaneseRubySegments(word.value, word.kana)
+                            }
+                            if (rubySegments != null) {
+                                RubyText(
+                                    segments = rubySegments,
+                                    fontSize = MaterialTheme.typography.body1.fontSize * 1.4f,
+                                    rubyFontSize = MaterialTheme.typography.body1.fontSize * 0.6f,
+                                    rubyColor = MaterialTheme.colors.onBackground.copy(alpha = 0.55f),
+                                )
+                            } else {
+                                Text(
+                                    listOf(word.kana, word.romaji)
+                                        .filter { it.isNotEmpty() }
+                                        .joinToString("  ")
+                                )
+                            }
                         } else {
                             Text("英 ${word.ukphone}  美 ${word.usphone}")
                         }
