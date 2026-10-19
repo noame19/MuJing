@@ -32,8 +32,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mujingx.ui.util.GrammarMatch
@@ -93,7 +97,10 @@ fun GrammarDetailCard(
             }
         }
 
-        // 中文释义/接续由 tools/japanese/enrich_grammar.py 注入，缺失时回退上游英文
+        // 中文释义/接续由 tools/japanese/enrich_grammar.py 注入。
+        // 只展示中文：学习者的母语是中文时，英文释义没有额外信息量，
+        // 反而把卡片拉长（同一句话既写中文又写英文）。
+        // 中文缺失（上游新增条目还没翻译）时才回退到英文。
         val meaningText = point.meaningZh.ifEmpty { point.meaning }
         val formationText = point.formationZh.ifEmpty { point.formation }
         if (meaningText.isNotEmpty()) {
@@ -114,7 +121,7 @@ fun GrammarDetailCard(
                 point.examples.forEach { example ->
                     Column(Modifier.padding(vertical = 4.dp)) {
                         Text(
-                            text = example.ja,
+                            text = highlightGrammar(example.ja, point),
                             fontSize = 14.sp,
                             fontFamily = FontFamily.Default,
                             color = MaterialTheme.colors.onBackground
@@ -133,11 +140,52 @@ fun GrammarDetailCard(
             }
         }
 
+        // 标签放最后，弱化展示：它是给检索/分类用的，不是学习内容
+        if (point.tags.isNotEmpty()) {
+            Text(
+                text = point.tags.joinToString(" · "),
+                fontSize = 11.sp,
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.4f)
+            )
+        }
+
         Text(
             text = "提示：匹配只判断句中是否出现该形式，具体含义需结合上下文判断。",
             fontSize = 11.sp,
             color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
         )
+    }
+}
+
+/**
+ * 把例句里的语法片段着色。
+ *
+ * 把一个语法点学到手的关键是看清「这句话里哪部分是这条语法」——
+ * 例如「毎日復習することだ」要能一眼找到结尾的「ことだ」。
+ * 这里用与「本句命中」相同的 primary 色标出。
+ *
+ * 定位走 [JapaneseGrammarMatcher.PatternMatcher.findTailRange]：
+ * 它直接在原文上找去掉「〜」后的尾巴，不依赖分词，因为例句里的
+ * 活用形不一定能还原成词库里的基本形。
+ *
+ * 定位失败时原样返回纯文本，不高亮 —— 宁可不标，也不标错位置。
+ */
+@Composable
+private fun highlightGrammar(sentence: String, point: GrammarPoint): AnnotatedString {
+    val highlightColor = MaterialTheme.colors.primary
+    val plain = AnnotatedString(sentence)
+    if (sentence.isEmpty()) return plain
+
+    val matcher = JapaneseGrammarMatcher.compile(point.patterns)
+    val range = matcher.findTailRange(sentence) ?: return plain
+    if (range.first < 0 || range.last >= sentence.length) return plain
+
+    return buildAnnotatedString {
+        append(sentence.substring(0, range.first))
+        withStyle(SpanStyle(color = highlightColor, fontWeight = FontWeight.Bold)) {
+            append(sentence.substring(range.first, range.last + 1))
+        }
+        append(sentence.substring(range.last + 1))
     }
 }
 
@@ -236,7 +284,7 @@ fun GrammarLibraryDialog(
                                             color = MaterialTheme.colors.onBackground
                                         )
                                         Text(
-                                            text = point.meaning,
+                                            text = point.meaningZh.ifEmpty { point.meaning },
                                             fontSize = 11.sp,
                                             color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
                                         )
