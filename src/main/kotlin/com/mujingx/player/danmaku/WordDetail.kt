@@ -204,15 +204,17 @@ fun WordDetail(
                     }
 
 
+                    // 语言以当前词库为准（AGENTS.md §8：不用字符范围判断语言）。
+                    // 声明在 Row 之外：下面的 TabRow 也要用它决定页签标题。
+                    val isJapanese = playerState.vocabulary?.language == "japanese" ||
+                            playerState.wordScreenVocabulary?.language == "japanese"
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // 语言以当前词库为准（AGENTS.md §8：不用字符范围判断语言）。
                         // 日语没有英/美音标，改显示假名与分拍罗马字。
-                        val isJapanese = playerState.vocabulary?.language == "japanese" ||
-                                playerState.wordScreenVocabulary?.language == "japanese"
                         if (isJapanese) {
                             // 词条带汉字时用带注音的写法：弹窗里看词最想知道
                             // 的正是「这个汉字怎么读」。纯假名词或无注音数据时
